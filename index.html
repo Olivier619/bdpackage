@@ -588,43 +588,66 @@
 
             function displayScenario(scenario) {
                  // Check if scenario is the expected structured object
-                 if (!scenario || typeof scenario !== 'object' || !scenario.title || !Array.isArray(scenario.chapters)) {
-                     scenarioOutput.innerHTML = '<p class="text-danger">Erreur : Le format du scénario généré est incorrect.</p>';
+                 if (!scenario || typeof scenario !== 'object' || !scenario.title) {
+                     scenarioOutput.innerHTML = '<p class="text-danger">Erreur : Le format du scénario généré est invalide.</p>';
                      console.error("Invalid scenario structure:", scenario);
                      return;
                  }
 
-                let html = `<h3>${scenario.title}</h3>`;
+                let html = `<h3>${scenario.title}</h3>`; // Display title even if parsing failed below
+
+                 // Check if parsing failed (indicated by rawContent in the first chapter)
+                 if (scenario.chapters && scenario.chapters.length > 0 && scenario.chapters[0].rawContent) {
+                      html += `<div class="scenario-section"><h4>Synopsis</h4><p>${scenario.synopsis || "Synopsis Non Trouvé"}</p></div>`;
+                      html += `<div class="scenario-chapter"><h4>${scenario.chapters[0].title || "Chapitre 1"}</h4>`;
+                      html += `<p><strong>Erreur de Structuration :</strong> L'IA n'a pas suivi le format demandé. Voici le texte brut généré :</p>`;
+                      html += `<pre style="white-space: pre-wrap; background-color: #eee; padding: 10px; border-radius: 4px;">${scenario.chapters[0].rawContent}</pre>`;
+                      html += `</div>`;
+                      scenarioOutput.innerHTML = html;
+                      console.warn("Displaying raw content due to parsing failure.");
+                      return; // Stop further processing
+                 }
+
+                 // --- Original display logic if parsing seems successful ---
                 if(scenario.synopsis) {
                      html += `<div class="scenario-section"><h4>Synopsis</h4><p>${scenario.synopsis.replace(/\n/g, '<br>')}</p></div>`;
                 }
 
-                 scenario.chapters.forEach((chapter, index) => {
-                     html += `<div class="scenario-chapter"><h4>Chapitre ${index + 1}: ${chapter.title || ''}</h4>`;
-                     if (chapter.summary) {
-                          html += `<p><strong>Résumé :</strong> ${chapter.summary.replace(/\n/g, '<br>')}</p>`;
-                     }
-                     if (Array.isArray(chapter.pages)) {
-                          chapter.pages.forEach(page => {
-                               html += `<div class="scenario-page" style="margin-left: 20px; border-left: 2px solid #eee; padding-left: 15px; margin-top:10px;"><h5>Page ${page.pageNumber}</h5>`;
-                               if(Array.isArray(page.panels)) {
-                                    page.panels.forEach(panel => {
-                                         html += `<div class="scenario-panel" style="margin-left: 20px; margin-bottom: 5px;"><strong>Case ${panel.panelNumber}:</strong> `;
-                                         html += `<em>${panel.description || 'Pas de description.'}</em>`;
-                                         if(panel.dialogue) {
-                                              html += ` Dialogue: "${panel.dialogue}"`;
-                                         }
-                                         html += `</div>`;
-                                    });
-                               }
-                               html += `</div>`; // Close scenario-page
-                          });
-                     } else {
-                          html += `<p><em>(Détail des pages/cases non disponible dans ce format)</em></p>`;
-                     }
-                     html += `</div>`; // Close scenario-chapter
-                 });
-                scenarioOutput.innerHTML = html;
+                 if (!Array.isArray(scenario.chapters) || scenario.chapters.length === 0) {
+                      html += "<p><em>Aucun chapitre n'a pu être extrait du scénario.</em></p>";
+                 } else {
+                     scenario.chapters.forEach((chapter, index) => {
+                         html += `<div class="scenario-chapter"><h4>Chapitre ${chapter.chapterNumber || (index + 1)}: ${chapter.title || ''}</h4>`;
+                         if (chapter.summary) { // If summary exists (though ideally we parse pages/panels)
+                              html += `<p><strong>Résumé :</strong> ${chapter.summary.replace(/\n/g, '<br>')}</p>`;
+                         }
+                         if (Array.isArray(chapter.pages) && chapter.pages.length > 0) {
+                              chapter.pages.forEach(page => {
+                                   html += `<div class="scenario-page" style="margin-left: 20px; border-left: 2px solid #eee; padding-left: 15px; margin-top:10px;"><h5>Page ${page.pageNumber}</h5>`;
+                                   if(Array.isArray(page.panels)) {
+                                        page.panels.forEach(panel => {
+                                             html += `<div class="scenario-panel" style="margin-left: 20px; margin-bottom: 5px;"><strong>Case ${panel.panelNumber}:</strong> `;
+                                             html += `<em>${panel.description || 'Pas de description.'}</em>`;
+                                             if(panel.dialogue) {
+                                                  html += ` Dialogue: "${panel.dialogue}"`;
+                                             }
+                                              if(panel.thoughts) { // Display thoughts if present
+                                                   html += ` Pensées: (${panel.thoughts})`;
+                                              }
+                                             html += `</div>`;
+                                        });
+                                   } else {
+                                        html += "<p><em>Aucune case trouvée pour cette page.</em></p>";
+                                   }
+                                   html += `</div>`; // Close scenario-page
+                              });
+                         } else if (!chapter.summary) { // Avoid showing this if summary was already displayed
+                              html += `<p><em>Aucune page ou case détaillée n'a pu être extraite pour ce chapitre.</em></p>`;
+                         }
+                         html += `</div>`; // Close scenario-chapter
+                     });
+                 }
+                 scenarioOutput.innerHTML = html;
             }
 
              function updateChapterSelect(selectElement, type) {
