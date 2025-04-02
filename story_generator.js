@@ -1,545 +1,415 @@
-// Fonction pour générer une histoire en français avec Transformers.js
-async function generateStory(keywords) {
-  try {
-    // Afficher un message de chargement
-    document.getElementById('scenario-content').innerHTML = `
-      <div style="padding: 20px; background-color: #f0f0f0; border-radius: 8px; margin-top: 20px;">
-        <h3>Génération du scénario en cours...</h3>
-        <p>Veuillez patienter pendant que l'IA génère votre histoire à partir des mots-clés: ${keywords}</p>
-        <div class="loading-spinner"></div>
-      </div>
-    `;
+// Use an IIFE to encapsulate the code and avoid polluting the global scope
+(function() {
+    let pipelineInstance = null;
+    let isPipelineLoading = false;
+    const modelName = 'Felladrin/onnx-bloomz-560m-sft-chat'; // Model for generation
 
-    // Importer la bibliothèque Transformers.js
-    const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.0');
-    
-    // Créer un facteur d'aléatoire basé sur l'horodatage et un nombre aléatoire
-    const randomSeed = Date.now() + Math.floor(Math.random() * 10000);
-    
-    // Fonction pour générer un nombre aléatoire basé sur le seed
-    const getRandomNumber = (min, max) => {
-      const randomValue = Math.sin(randomSeed * (min + max)) * 10000;
-      return Math.floor((randomValue - Math.floor(randomValue)) * (max - min + 1)) + min;
-    };
+    // --- Initialize Pipeline ---
+    async function getPipeline() {
+        if (pipelineInstance) {
+            return pipelineInstance;
+        }
+        if (isPipelineLoading) {
+            // Wait for the existing loading process to complete
+            await new Promise(resolve => setTimeout(resolve, 100)); // Simple polling
+            return getPipeline(); // Retry getting the instance
+        }
 
-    // Générer un titre aléatoire basé sur les mots-clés
-    const keywordsArray = keywords.split(',').map(k => k.trim());
-    const mainKeyword = keywordsArray[getRandomNumber(0, keywordsArray.length - 1)];
-    
-    // Liste de préfixes et suffixes pour le titre
-    const prefixes = ['Le mystère de', 'L\'aventure de', 'La quête de', 'Le secret de', 'La légende de'];
-    const suffixes = ['perdu', 'éternel', 'oublié', 'interdit', 'mystérieux', 'fantastique'];
-    
-    const prefix = prefixes[getRandomNumber(0, prefixes.length - 1)];
-    const suffix = suffixes[getRandomNumber(0, suffixes.length - 1)];
-    
-    const title = `${prefix} ${mainKeyword} ${suffix}`;
-
-    // Initialiser le modèle de génération de texte
-    const generator = await pipeline('text-generation', 'Felladrin/onnx-bloomz-560m-sft-chat');
-    
-    // Créer un prompt pour générer une histoire en français
-    const prompt = `Écris une histoire captivante de bande dessinée sur ${keywords} avec le titre "${title}". L'histoire doit avoir une introduction, un développement et une conclusion. Elle doit être détaillée et avoir au moins 500 mots.`;
-    
-    // Générer l'histoire
-    const result = await generator(prompt, {
-      max_new_tokens: 1000,
-      temperature: 0.7,
-      top_p: 0.95,
-      repetition_penalty: 1.2
-    });
-    
-    // Extraire le texte généré
-    const generatedText = result[0].generated_text.replace(prompt, '').trim();
-    
-    // Diviser l'histoire en chapitres
-    const numChapters = getRandomNumber(3, 5);
-    const textLength = generatedText.length;
-    const chapterSize = Math.floor(textLength / numChapters);
-    
-    let chapters = [];
-    for (let i = 0; i < numChapters; i++) {
-      const start = i * chapterSize;
-      const end = (i === numChapters - 1) ? textLength : (i + 1) * chapterSize;
-      const chapterText = generatedText.substring(start, end);
-      
-      const chapterTitle = i === 0 ? 'Introduction' : i === numChapters - 1 ? 'Conclusion' : `Chapitre ${i}`;
-      chapters.push({ title: chapterTitle, text: chapterText });
+        isPipelineLoading = true;
+        console.log("Loading text generation pipeline...");
+        try {
+            const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.0');
+            pipelineInstance = await pipeline('text-generation', modelName, {
+                progress_callback: (progress) => {
+                    console.log("Model loading progress:", progress);
+                    // Optional: Update a loading bar UI element here
+                }
+            });
+            console.log("Pipeline loaded successfully.");
+            return pipelineInstance;
+        } catch (error) {
+            console.error("Failed to load pipeline:", error);
+            throw new Error(`Failed to load AI model: ${error.message}`);
+        } finally {
+            isPipelineLoading = false;
+        }
     }
-    
-    // Générer le contenu du scénario
-    let scenarioHTML = `
-      <div style="padding: 20px; background-color: #f0f0f0; border-radius: 8px; margin-top: 20px;">
-        <h3>Scénario généré à partir des mots-clés: ${keywords}</h3>
-        <h4 style="margin-top: 15px; color: #2196F3;">Titre: ${title}</h4>
-        
-        <div class="scenario-section">
-          <h5>Introduction</h5>
-          <p>${generateScenarioIntroduction(keywordsArray, title, getRandomNumber)}</p>
-        </div>
-    `;
-    
-    // Ajouter les chapitres
-    for (let i = 0; i < chapters.length; i++) {
-      const chapter = chapters[i];
-      scenarioHTML += `
-        <div class="scenario-chapter">
-          <h4>${chapter.title}</h4>
-          <p>${chapter.text}</p>
-          
-          <div class="scenario-section">
-            <h5>Séquencier</h5>
-            <p>${generateSequencer(i, numChapters, keywordsArray, getRandomNumber)}</p>
-          </div>
-          
-          <div class="scenario-section">
-            <h5>Découpage</h5>
-            <p>${generatePageBreakdown(i, numChapters, keywordsArray, getRandomNumber)}</p>
-          </div>
-        </div>
-      `;
+
+    // --- Core Generation Functions ---
+
+    /**
+     * Generates the main scenario based on user inputs.
+     * Aims for a structured output.
+     */
+    async function generateStory(keywords, genre, style, tone, details) {
+        console.log("Starting scenario generation...");
+        const generator = await getPipeline();
+
+        // --- Construct Detailed Prompt for Scenario Structure ---
+        // This is the most critical part for guiding the free model
+        let prompt = `Tâche : Écrire un scénario détaillé pour une bande dessinée.\n\n`;
+        prompt += `INPUTS UTILISATEUR :\n`;
+        prompt += `- Idée/Mots-clés : ${keywords}\n`;
+        prompt += `- Genre : ${genre}\n`;
+        prompt += `- Style Visuel Cible (pour info) : ${style}\n`;
+        prompt += `- Ton : ${tone}\n`;
+        if (details) {
+            prompt += `- Détails Additionnels (Personnages, Univers) : ${details}\n`;
+        }
+        prompt += `\nINSTRUCTIONS :\n`;
+        prompt += `1. Crée un titre accrocheur pour la BD.\n`;
+        prompt += `2. Écris un synopsis court (2-3 paragraphes) qui résume l'intrigue principale, les personnages clés et les enjeux.\n`;
+        prompt += `3. Divise l'histoire en 3 à 5 chapitres logiques. Donne un titre à chaque chapitre.\n`;
+        prompt += `4. Pour CHAQUE chapitre, détaille le contenu page par page (vise 5-10 pages par chapitre).\n`;
+        prompt += `5. Pour CHAQUE page, décris le contenu de 3 à 6 cases (panels).\n`;
+        prompt += `6. Pour CHAQUE case, fournis IMPÉRATIVEMENT :\n`;
+        prompt += `   - Description visuelle concise (ce qu'on voit : décor, action, personnages).\n`;
+        prompt += `   - Dialogue (si présent, entre guillemets).\n`;
+        prompt += `   - Pensées (si présentes, entre parenthèses et en italique).\n`;
+        prompt += `7. Assure une progression narrative cohérente, respecte le genre et le ton demandés.\n`;
+        prompt += `8. Adopte un style d'écriture adapté à un scénario de BD (visuel, dynamique).\n\n`;
+        prompt += `FORMAT DE SORTIE ATTENDU (IMPORTANT - Suivre ce format EXACTEMENT) :\n`;
+        prompt += `TITRE : [Titre de la BD]\n\n`;
+        prompt += `SYNOPSIS :\n[Synopsis ici]\n\n`;
+        prompt += `CHAPITRE 1 : [Titre du Chapitre 1]\n`;
+        prompt += `PAGE 1 :\n`;
+        prompt += `Case 1 : [Description Visuelle Case 1]. Dialogue: "..." Pensées: (...)\n`;
+        prompt += `Case 2 : [Description Visuelle Case 2]. Dialogue: "..."\n`;
+        prompt += `...\n`;
+        prompt += `PAGE 2 :\n`;
+        prompt += `Case 1 : [Description Visuelle Case 1]. Pensées: (...)\n`;
+        prompt += `...\n`;
+        prompt += `CHAPITRE 2 : [Titre du Chapitre 2]\n`;
+        prompt += `PAGE X :\n`;
+        prompt += `Case 1 : ...\n`;
+        prompt += `...\n\n`;
+        prompt += `SCÉNARIO COMPLET CI-DESSOUS :\n`;
+        prompt += `------------------------------------\n`;
+
+        console.log("Sending prompt to AI:\n", prompt.substring(0, 500) + "..."); // Log start of prompt
+
+        try {
+            const result = await generator(prompt, {
+                max_new_tokens: 2048, // Increased token limit, adjust based on model capacity/performance
+                temperature: 0.7,
+                top_p: 0.9,
+                repetition_penalty: 1.1,
+                // no_repeat_ngram_size: 3, // Can help reduce repetition
+                // do_sample: true // Ensure sampling for temperature/top_p
+            });
+
+            const generatedText = result[0].generated_text.substring(prompt.length).trim();
+            console.log("Raw AI Response (start):", generatedText.substring(0, 500) + "...");
+
+            // --- Parse the generated text into a structured object ---
+            const structuredScenario = parseScenarioText(generatedText);
+            console.log("Parsed Scenario Structure:", structuredScenario);
+
+            if (!structuredScenario.title || !structuredScenario.chapters || structuredScenario.chapters.length === 0) {
+                 console.error("Parsing failed to extract essential structure.");
+                 // Attempt a simpler extraction if parsing fails
+                 return {
+                      title: "Titre Non Trouvé",
+                      synopsis: "Synopsis Non Trouvé",
+                      chapters: [{ title: "Chapitre 1 (Brut)", summary: generatedText, pages: [] }] // Return raw text as a fallback chapter
+                 };
+                 // throw new Error("L'IA n'a pas retourné un scénario structuré correctement. Essayez de simplifier l'idée.");
+            }
+
+            return structuredScenario;
+
+        } catch (error) {
+            console.error('Erreur lors de la génération du scénario par l\'IA:', error);
+            throw new Error(`AI Scenario Generation Failed: ${error.message}`);
+        }
     }
-    
-    scenarioHTML += `
-        <div class="scenario-section">
-          <h5>Conclusion et thèmes</h5>
-          <p>${generateConclusion(keywordsArray, title, getRandomNumber)}</p>
-        </div>
-        
-        <button class="btn" id="view-storyboard">Voir le storyboard</button>
-      </div>
-    `;
-    
-    // Afficher le scénario généré
-    document.getElementById('scenario-content').innerHTML = scenarioHTML;
-    
-    // Générer le storyboard
-    generateStoryboard(title, keywordsArray, getRandomNumber);
-    
-    // Générer les prompts en anglais
-    generatePrompts(title, keywordsArray, getRandomNumber);
-    
-    // Ajouter des écouteurs d'événements pour les nouveaux boutons
-    document.getElementById('view-storyboard').addEventListener('click', function() {
-      document.querySelector('[data-tab="storyboard"]').click();
-    });
-    
-    document.getElementById('generate-prompts').addEventListener('click', function() {
-      document.querySelector('[data-tab="prompts"]').click();
-    });
-    
-  } catch (error) {
-    console.error('Erreur lors de la génération de l\'histoire:', error);
-    
-    // Afficher un message d'erreur
-    document.getElementById('scenario-content').innerHTML = `
-      <div style="padding: 20px; background-color: #ffebee; border-radius: 8px; margin-top: 20px;">
-        <h3>Erreur lors de la génération du scénario</h3>
-        <p>Nous n'avons pas pu générer votre histoire. Veuillez réessayer avec d'autres mots-clés.</p>
-        <p>Erreur technique: ${error.message}</p>
-      </div>
-    `;
-  }
-}
 
-// Fonction pour générer le storyboard
-function generateStoryboard(title, keywordsArray, getRandomNumber) {
-  // Générer quelques pages de storyboard pour exemple
-  let storyboardHTML = `
-    <div style="padding: 20px; background-color: #f0f0f0; border-radius: 8px; margin-top: 20px;">
-      <h3>Storyboard pour "${title}"</h3>
-      <p>Mise en page proposée pour chaque chapitre de votre BD.</p>
-  `;
-  
-  // Générer 5 pages de storyboard
-  for (let i = 1; i <= 5; i++) {
-    const pageNum = i;
-    const numPanels = getRandomNumber(3, 6);
-    
-    storyboardHTML += `
-      <div class="storyboard-page">
-        <h4>Page ${pageNum}</h4>
-        <p><strong>Nombre de cases:</strong> ${numPanels}</p>
-        <p><strong>Description:</strong> ${getDetailedPageDescription(pageNum, numPanels, keywordsArray, getRandomNumber)}</p>
-        <p><strong>Composition:</strong> ${getPageComposition(pageNum, numPanels, keywordsArray, getRandomNumber)}</p>
-      </div>
-    `;
-  }
-  
-  storyboardHTML += `
-      <button class="btn" id="generate-prompts">Générer les prompts</button>
-    </div>
-  `;
-  
-  document.getElementById('storyboard-content').innerHTML = storyboardHTML;
-}
+     /**
+     * Parses the raw text output from the LLM into a structured scenario object.
+     * This is complex and prone to errors if the LLM doesn't follow the format.
+     */
+     function parseScenarioText(text) {
+         const scenario = {
+             title: "Titre Non Défini",
+             synopsis: "",
+             chapters: []
+         };
+         let currentChapter = null;
+         let currentPage = null;
 
-// Fonction pour générer les prompts en anglais
-function generatePrompts(title, keywordsArray, getRandomNumber) {
-  // Traduire les mots-clés en anglais
-  const englishKeywords = keywordsArray.map(keyword => {
-    const translations = {
-      'aventure': 'adventure',
-      'mystère': 'mystery',
-      'amour': 'love',
-      'science-fiction': 'science fiction',
-      'fantasy': 'fantasy',
-      'magie': 'magic',
-      'espace': 'space',
-      'robots': 'robots',
-      'dragons': 'dragons',
-      'superhéros': 'superheroes',
-      'pirates': 'pirates',
-      'ninja': 'ninja',
-      'zombies': 'zombies',
-      'vampires': 'vampires',
-      'loup-garou': 'werewolf',
-      'sorcier': 'wizard',
-      'chevalier': 'knight',
-      'princesse': 'princess',
-      'roi': 'king',
-      'reine': 'queen',
-      'guerre': 'war',
-      'paix': 'peace',
-      'amitié': 'friendship',
-      'trahison': 'betrayal',
-      'vengeance': 'revenge',
-      'pardon': 'forgiveness',
-      'quête': 'quest',
-      'voyage': 'journey',
-      'découverte': 'discovery',
-      'trésor': 'treasure',
-      'forêt': 'forest',
-      'montagne': 'mountain',
-      'océan': 'ocean',
-      'désert': 'desert',
-      'ville': 'city',
-      'village': 'village',
-      'château': 'castle',
-      'vaisseau spatial': 'spaceship',
-      'futur': 'future',
-      'passé': 'past',
-      'présent': 'present',
-      'apocalypse': 'apocalypse',
-      'utopie': 'utopia',
-      'dystopie': 'dystopia'
-    };
-    
-    return translations[keyword.toLowerCase()] || keyword;
-  });
-  
-  // Traduire le titre en anglais
-  let englishTitle = title;
-  const titleParts = title.split(' ');
-  const translatedParts = titleParts.map(part => {
-    const translations = {
-      'Le': 'The',
-      'La': 'The',
-      'Les': 'The',
-      'mystère': 'mystery',
-      'aventure': 'adventure',
-      'quête': 'quest',
-      'secret': 'secret',
-      'légende': 'legend',
-      'de': 'of',
-      'du': 'of the',
-      'des': 'of the',
-      'perdu': 'lost',
-      'éternel': 'eternal',
-      'oublié': 'forgotten',
-      'interdit': 'forbidden',
-      'mystérieux': 'mysterious',
-      'fantastique': 'fantastic'
-    };
-    
-    return translations[part.toLowerCase()] || part;
-  });
-  englishTitle = translatedParts.join(' ');
-  
-  // Générer les prompts
-  let promptsHTML = `
-    <div style="padding: 20px; background-color: #f0f0f0; border-radius: 8px; margin-top: 20px;">
-      <h3>Prompts pour Midjourney: "${englishTitle}"</h3>
-      <p>Prompts optimisés pour générer des images correspondant à votre scénario.</p>
-  `;
-  
-  // Générer 5 exemples de prompts
-  for (let i = 1; i <= 5; i++) {
-    const panelNum = i;
-    
-    promptsHTML += `
-      <div class="prompt-item">
-        <h4>Case ${panelNum}</h4>
-        <p><strong>Description de la scène (français):</strong> ${getSceneDescription(panelNum, keywordsArray, getRandomNumber)}</p>
-        <pre>${generateDetailedMidjourneyPrompt(panelNum, englishKeywords, getRandomNumber)}</pre>
-      </div>
-    `;
-  }
-  
-  promptsHTML += `
-      <button class="btn" onclick="alert('Prompts exportés avec succès !');">Exporter les prompts</button>
-    </div>
-  `;
-  
-  document.getElementById('prompts-content').innerHTML = promptsHTML;
-}
+         const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
 
-// Fonction pour générer une introduction de scénario
-function generateScenarioIntroduction(keywords, title, randomFunc) {
-  const settings = [
-    'un monde futuriste où la technologie et la nature coexistent',
-    'une époque médiévale fantastique peuplée de créatures mystérieuses',
-    'un univers post-apocalyptique où l\'humanité tente de se reconstruire',
-    'une société utopique cachant de sombres secrets',
-    'une réalité alternative où l\'histoire a pris un tournant différent'
-  ];
-  
-  const conflicts = [
-    'la lutte pour la survie face à une menace imminente',
-    'la quête d\'un artefact légendaire aux pouvoirs inimaginables',
-    'le combat contre un antagoniste puissant et manipulateur',
-    'la résolution d\'un mystère ancien qui bouleverse l\'ordre établi',
-    'la découverte d\'une vérité cachée qui remet en question toutes les croyances'
-  ];
-  
-  const setting = settings[randomFunc(0, settings.length - 1)];
-  const conflict = conflicts[randomFunc(0, conflicts.length - 1)];
-  const keyword1 = keywords[randomFunc(0, keywords.length - 1)];
-  const keyword2 = keywords[randomFunc(0, keywords.length - 1)];
-  
-  return `Notre histoire se déroule dans ${setting}. Le récit de "${title}" explore ${conflict}, dans un univers où ${keyword1} et ${keyword2} jouent un rôle central. Cette bande dessinée de 48 pages propose une narration visuelle captivante qui emmènera le lecteur dans un voyage émotionnel à travers des paysages imaginaires et des situations intenses. L'intrigue se développe progressivement, révélant couche après couche la complexité des personnages et les enjeux de leur monde. Chaque page est conçue pour maintenir l'intérêt du lecteur tout en construisant un univers cohérent et immersif.`;
-}
+         const titleMatch = text.match(/TITRE\s*:\s*(.*)/i);
+         if (titleMatch) scenario.title = titleMatch[1].trim();
 
-// Fonction pour générer un séquencier
-function generateSequencer(chapterNum, totalChapters, keywords, randomFunc) {
-  const sequences = [
-    'une poursuite haletante à travers des paysages spectaculaires',
-    'une confrontation verbale tendue révélant des vérités cachées',
-    'une découverte majeure qui remet en question les croyances établies',
-    'un moment de calme et d\'introspection avant la tempête',
-    'une bataille épique aux conséquences irréversibles'
-  ];
-  
-  const transitions = [
-    'un flashback révélateur qui éclaire les motivations d\'un personnage',
-    'un changement de point de vue qui offre une nouvelle perspective',
-    'une ellipse temporelle qui fait avancer l\'intrigue',
-    'un contraste visuel saisissant entre deux environnements',
-    'un parallélisme narratif entre deux situations simultanées'
-  ];
-  
-  let sequencerText = '';
-  const numSequences = randomFunc(3, 5);
-  
-  for (let i = 1; i <= numSequences; i++) {
-    const sequence = sequences[randomFunc(0, sequences.length - 1)];
-    const transition = transitions[randomFunc(0, transitions.length - 1)];
-    const keyword = keywords[randomFunc(0, keywords.length - 1)];
-    
-    sequencerText += `Séquence ${i}: ${sequence} mettant en valeur le thème de ${keyword}. `;
-    
-    if (i < numSequences) {
-      sequencerText += `Transition: ${transition}. `;
+         const synopsisMatch = text.match(/SYNOPSIS\s*:\s*([\s\S]*?)(?=CHAPITRE|\n\n-{3,}|$)/i);
+         if (synopsisMatch) scenario.synopsis = synopsisMatch[1].trim();
+
+         lines.forEach(line => {
+             // Chapter Title
+             const chapterMatch = line.match(/CHAPITRE\s+(\d+)\s*:\s*(.*)/i);
+             if (chapterMatch) {
+                 currentChapter = {
+                     chapterNumber: parseInt(chapterMatch[1]),
+                     title: chapterMatch[2].trim(),
+                     pages: []
+                 };
+                 scenario.chapters.push(currentChapter);
+                 currentPage = null; // Reset page when new chapter starts
+                 return; // Move to next line
+             }
+
+             if (!currentChapter) return; // Skip lines before the first chapter definition
+
+             // Page Number
+             const pageMatch = line.match(/PAGE\s+(\d+)\s*:/i);
+             if (pageMatch) {
+                 currentPage = {
+                     pageNumber: parseInt(pageMatch[1]),
+                     panels: []
+                 };
+                 currentChapter.pages.push(currentPage);
+                 return; // Move to next line
+             }
+
+             if (!currentPage) return; // Skip lines before the first page definition in a chapter
+
+             // Panel (Case) Details - This regex is complex and might need refinement
+             // It tries to capture Panel #, Description, optional Dialogue, optional Thoughts
+             const panelMatch = line.match(/Case\s+(\d+)\s*:\s*(.*?)(?:Dialogue:\s*"(.*?)")?(?:Pensées:\s*\((.*?)\))?$/i);
+              if (panelMatch) {
+                  currentPage.panels.push({
+                      panelNumber: parseInt(panelMatch[1]),
+                      description: panelMatch[2].trim().replace(/Dialogue:.*|Pensées:.*/i, '').trim(), // Clean up description
+                      dialogue: panelMatch[3] ? panelMatch[3].trim() : null,
+                      thoughts: panelMatch[4] ? panelMatch[4].trim() : null
+                  });
+              } else {
+                  // If the strict format fails, maybe it's just a description line for the last panel?
+                  // Or maybe it's part of a multi-line description. This is tricky.
+                  // For simplicity now, we only add panels if they match the format.
+                  // console.warn("Line not matching panel format:", line);
+                   // Fallback: Add line as description to the last panel if it exists
+                   if(currentPage.panels.length > 0 && line.length > 10) { // Avoid adding short lines
+                       let lastPanel = currentPage.panels[currentPage.panels.length - 1];
+                       lastPanel.description += " " + line; // Append non-matching line
+                   }
+              }
+         });
+
+         // Basic validation/cleanup
+         if(scenario.chapters.length === 0 && scenario.synopsis.length > 50) {
+             // If no chapters parsed but synopsis exists, maybe the whole text is the synopsis/story
+             scenario.chapters.push({ chapterNumber: 1, title: "Histoire Principale (Non Structurée)", pages: [], summary: scenario.synopsis });
+             scenario.synopsis = "(Synopsis non extrait séparément)";
+         }
+
+
+         return scenario;
+     }
+
+
+    /**
+     * Generates storyboard suggestions (framing, composition) for a given chapter's panels.
+     */
+    async function generateStoryboardChapter(chapterPanelData, style, tone) {
+        console.log("Generating storyboard suggestions for chapter...");
+        const generator = await getPipeline();
+        const storyboardResults = [];
+
+         // Process panels sequentially to avoid overwhelming the model (maybe batch later)
+         for (const panel of chapterPanelData) {
+             const panelDesc = panel.description || "Scène sans description";
+             const prompt = `Tâche : Suggérer des éléments de storyboard pour une case de BD.\n\n`;
+             prompt += `CONTEXTE :\n`;
+             prompt += `- Style Visuel Global : ${style}\n`;
+             prompt += `- Ton Général : ${tone}\n`;
+             prompt += `- Description du Scénario pour cette Case : ${panelDesc}\n`;
+             if (panel.dialogue) prompt += `- Dialogue : "${panel.dialogue}"\n`;
+             if (panel.thoughts) prompt += `- Pensées : (${panel.thoughts})\n`;
+             prompt += `\nINSTRUCTIONS :\n`;
+             prompt += `1. Suggère UN type de Cadrage (ex: Gros plan, Plan américain, Plan moyen, Plan large, Vue plongeante, Contre-plongée, Plan d'ensemble).\n`;
+             prompt += `2. Décris brièvement la Composition clé de l'image (ex: Personnage centré, Règle des tiers, Lignes directrices vers le sujet, Espace négatif important).\n`;
+             prompt += `3. Sois concis.\n\n`;
+             prompt += `FORMAT DE SORTIE ATTENDU (une seule ligne) :\n`;
+             prompt += `Cadrage: [Type de Cadrage] / Composition: [Description Composition]\n\n`;
+             prompt += `SUGGESTION CI-DESSOUS :\n`;
+             prompt += `-----------------------\n`;
+
+             try {
+                 const result = await generator(prompt, {
+                     max_new_tokens: 50, // Short response expected
+                     temperature: 0.6,
+                     repetition_penalty: 1.1,
+                     // do_sample: true
+                 });
+                 const suggestionText = result[0].generated_text.substring(prompt.length).trim();
+
+                 // Parse the suggestion
+                 const cadrageMatch = suggestionText.match(/Cadrage:\s*([^/]+)/i);
+                 const compositionMatch = suggestionText.match(/Composition:\s*(.*)/i);
+
+                 storyboardResults.push({
+                     pageNumber: panel.pageNumber,
+                     panelNumber: panel.panelNumber,
+                     scenarioDesc: panelDesc,
+                     framing: cadrageMatch ? cadrageMatch[1].trim() : "Non suggéré",
+                     composition: compositionMatch ? compositionMatch[1].trim() : "Non suggérée"
+                 });
+                  // Add a small delay to potentially avoid rate limits or improve stability
+                  await new Promise(resolve => setTimeout(resolve, 100));
+
+             } catch (error) {
+                  console.error(`Error generating storyboard suggestion for panel ${panel.panelNumber}:`, error);
+                  storyboardResults.push({
+                      pageNumber: panel.pageNumber,
+                      panelNumber: panel.panelNumber,
+                      scenarioDesc: panelDesc,
+                      framing: "Erreur IA",
+                      composition: "Erreur IA"
+                  });
+             }
+         }
+         console.log("Storyboard suggestions generated:", storyboardResults);
+         return storyboardResults;
     }
-  }
-  
-  return sequencerText;
-}
 
-// Fonction pour générer un découpage de page
-function generatePageBreakdown(chapterNum, totalChapters, keywords, randomFunc) {
-  const layouts = [
-    'une grille classique de 6 cases régulières',
-    'une composition dynamique avec une case dominante et plusieurs cases secondaires',
-    'une double page spectaculaire avec une illustration panoramique',
-    'une mise en page expérimentale jouant avec la forme et la taille des cases',
-    'une séquence de cases en cascade créant un effet de mouvement'
-  ];
-  
-  const visualElements = [
-    'des jeux d\'ombre et de lumière créant une atmosphère mystérieuse',
-    'des couleurs vives contrastant avec des zones monochromes',
-    'des perspectives exagérées accentuant l\'impact émotionnel',
-    'des motifs récurrents symbolisant les thèmes centraux',
-    'des transitions fluides entre les cases pour une lecture immersive'
-  ];
-  
-  const layout = layouts[randomFunc(0, layouts.length - 1)];
-  const visualElement = visualElements[randomFunc(0, visualElements.length - 1)];
-  const keyword = keywords[randomFunc(0, keywords.length - 1)];
-  
-  return `Ce chapitre utilise principalement ${layout} pour raconter l'histoire. Les pages intègrent ${visualElement}, renforçant l'impact visuel des moments clés. Les scènes liées à ${keyword} bénéficient d'un traitement visuel particulier, utilisant des compositions qui soulignent leur importance narrative. Le rythme visuel alterne entre des séquences d'action rapides avec de nombreuses cases et des moments plus contemplatifs utilisant des cases plus grandes. Les transitions entre les scènes sont soigneusement planifiées pour maintenir la fluidité narrative tout en créant des moments de surprise et de révélation.`;
-}
 
-// Fonction pour générer une conclusion
-function generateConclusion(keywords, title, randomFunc) {
-  const themes = [
-    'la rédemption à travers le sacrifice',
-    'la transformation personnelle face à l\'adversité',
-    'l\'acceptation de vérités difficiles mais libératrices',
-    'la force de la communauté et de la solidarité',
-    'l\'équilibre retrouvé entre des forces opposées'
-  ];
-  
-  const impacts = [
-    'une résolution émotionnellement satisfaisante tout en laissant certaines questions ouvertes',
-    'un dénouement qui transforme la perception initiale de l\'histoire',
-    'une conclusion qui résonne avec les thèmes contemporains de notre société',
-    'un final qui invite à la réflexion sur les choix et leurs conséquences',
-    'une fin qui boucle élégamment les arcs narratifs tout en ouvrant de nouvelles possibilités'
-  ];
-  
-  const theme = themes[randomFunc(0, themes.length - 1)];
-  const impact = impacts[randomFunc(0, impacts.length - 1)];
-  const keyword1 = keywords[randomFunc(0, keywords.length - 1)];
-  const keyword2 = keywords[randomFunc(0, keywords.length - 1)];
-  
-  return `"${title}" explore en profondeur ${theme}, offrant ${impact}. Les thèmes de ${keyword1} et ${keyword2} sont résolus de manière cohérente avec le développement des personnages et l'évolution de l'intrigue. Cette bande dessinée ne se contente pas de divertir, elle invite le lecteur à réfléchir sur des questions universelles à travers le prisme d'un univers unique et captivant. La narration visuelle et textuelle se complètent parfaitement pour créer une expérience immersive qui résonne bien après la dernière page. Les personnages terminent leur voyage transformés, reflétant les thèmes centraux de l'histoire et offrant au lecteur des perspectives nouvelles sur des questions fondamentales.`;
-}
+    /**
+     * Generates Midjourney prompts for a given chapter's storyboard panels.
+     */
+    async function generatePromptsForChapter(storyboardChapterData, style, tone) {
+        console.log("Generating Midjourney prompts for chapter...");
+        const generator = await getPipeline();
+        const promptResults = [];
 
-// Fonction pour générer une description détaillée de page
-function getDetailedPageDescription(pageNum, numPanels, keywords, randomFunc) {
-  const layouts = [
-    'disposition classique avec une grille régulière',
-    'cases asymétriques créant un rythme visuel dynamique',
-    'grande case centrale entourée de cases plus petites',
-    'cases superposées suggérant la simultanéité des actions',
-    'mise en page expérimentale brisant les conventions'
-  ];
-  
-  const moods = [
-    'atmosphère tendue soulignée par des ombres prononcées',
-    'ambiance mystérieuse avec un éclairage tamisé et des couleurs froides',
-    'scène d\'action vibrante aux couleurs éclatantes',
-    'moment émotionnel intime avec des tons pastel et doux',
-    'séquence onirique aux couleurs surréalistes et aux formes fluides'
-  ];
-  
-  const layout = layouts[randomFunc(0, layouts.length - 1)];
-  const mood = moods[randomFunc(0, moods.length - 1)];
-  const keyword = keywords[randomFunc(0, keywords.length - 1)];
-  
-  return `Page avec ${numPanels} cases en ${layout}. ${mood} mettant en valeur le thème "${keyword}". Cette page développe un moment clé de l'intrigue, utilisant des angles de vue variés pour maximiser l'impact émotionnel. La progression des cases guide naturellement l'œil du lecteur à travers la séquence narrative, créant un rythme qui soutient efficacement le contenu dramatique. Les expressions faciales des personnages sont particulièrement travaillées pour communiquer leurs émotions sans recourir excessivement aux dialogues.`;
-}
+        // Map style and tone to potential Midjourney keywords (simple example)
+        const styleKeywords = getStyleKeywords(style);
+        const toneKeywords = getToneKeywords(tone);
 
-// Fonction pour générer une composition de page
-function getPageComposition(pageNum, numPanels, keywords, randomFunc) {
-  const compositions = [
-    'une composition en diagonale créant un sentiment de dynamisme',
-    'un arrangement symétrique reflétant l\'équilibre ou le conflit',
-    'une structure en spirale guidant l\'œil vers le centre de la page',
-    'un contraste entre zones denses et espaces vides pour rythmer la lecture',
-    'une composition en couches superposant plusieurs niveaux de narration'
-  ];
-  
-  const techniques = [
-    'des variations dans l\'épaisseur des traits pour hiérarchiser l\'information',
-    'un jeu sur la profondeur de champ mettant en valeur certains éléments',
-    'des motifs récurrents créant une cohérence visuelle',
-    'des transitions fluides entre les cases pour une lecture immersive',
-    'des ruptures intentionnelles dans le style graphique pour marquer des changements narratifs'
-  ];
-  
-  const composition = compositions[randomFunc(0, compositions.length - 1)];
-  const technique = techniques[randomFunc(0, techniques.length - 1)];
-  
-  return `Cette page utilise ${composition}, combinée avec ${technique}. L'équilibre entre texte et image est soigneusement calibré pour maintenir la fluidité narrative tout en donnant suffisamment d'espace aux éléments visuels. Les cases sont conçues pour créer un rythme qui correspond au contenu émotionnel de la scène, accélérant dans les moments d'action et ralentissant pour les moments de contemplation ou de révélation.`;
-}
+        for (const panel of storyboardChapterData) {
+             const baseDesc = panel.scenarioDesc || "comic panel";
+             const framing = panel.framing || "medium shot"; // Default if not specified
+             const composition = panel.composition || "";
 
-// Fonction pour générer une description de scène
-function getSceneDescription(panelNum, keywords, randomFunc) {
-  const scenes = [
-    'un moment de confrontation intense entre les protagonistes',
-    'une découverte majeure qui change le cours de l\'histoire',
-    'un instant de calme contemplatif révélant la beauté du monde',
-    'une scène d\'action spectaculaire aux enjeux élevés',
-    'un échange émotionnel intime entre personnages'
-  ];
-  
-  const visualElements = [
-    'un éclairage dramatique créant des ombres expressives',
-    'une palette de couleurs symbolique reflétant l\'état émotionnel des personnages',
-    'des détails d\'arrière-plan enrichissant l\'univers',
-    'des expressions faciales minutieusement travaillées',
-    'une composition guidant l\'œil vers l\'élément narratif central'
-  ];
-  
-  const scene = scenes[randomFunc(0, scenes.length - 1)];
-  const visualElement = visualElements[randomFunc(0, visualElements.length - 1)];
-  const keyword = keywords[randomFunc(0, keywords.length - 1)];
-  
-  return `Cette case représente ${scene}, avec ${visualElement}. Le thème de ${keyword} est subtilement intégré dans la composition. L'angle de vue est choisi pour maximiser l'impact émotionnel et narratif de ce moment clé. Les expressions des personnages et leur langage corporel communiquent clairement leurs intentions et leurs émotions, complétant les dialogues sans les répéter.`;
-}
+             // Construct prompt for the LLM to generate the Midjourney prompt
+             const prompt = `Tâche : Générer un prompt optimisé pour Midjourney v6 pour une case de bande dessinée.\n\n`;
+             prompt += `CONTEXTE DE LA CASE :\n`;
+             prompt += `- Description Scénario : ${baseDesc}\n`;
+             prompt += `- Cadrage : ${framing}\n`;
+             prompt += `- Composition : ${composition}\n`;
+             prompt += `- Style Visuel Global : ${style} (${styleKeywords})\n`;
+             prompt += `- Ton Général : ${tone} (${toneKeywords})\n`;
+             prompt += `\nINSTRUCTIONS :\n`;
+             prompt += `1. Crée un prompt en ANGLAIS pour Midjourney (/imagine prompt: ...).\n`;
+             prompt += `2. Combine la description, le cadrage, la composition, le style et le ton.\n`;
+             prompt += `3. Utilise des mots-clés descriptifs et évocateurs en ANGLAIS.\n`;
+             prompt += `4. Inclus les mots-clés de style : ${styleKeywords}.\n`;
+             prompt += `5. Inclus des mots-clés de ton/ambiance : ${toneKeywords}.\n`;
+             prompt += `6. Ajoute des termes qualitatifs comme "detailed illustration", "cinematic", "high quality".\n`;
+             prompt += `7. Ajoute le paramètre d'aspect ratio '--ar 3:2' (ou adapte si pertinent).\n`;
+             prompt += `8. Sois créatif mais fidèle au contexte fourni.\n\n`;
+             prompt += `FORMAT DE SORTIE ATTENDU (une seule ligne) :\n`;
+             prompt += `/imagine prompt: [Prompt Midjourney en anglais ici] --ar 3:2 --v 6\n\n`;
+             prompt += `PROMPT MIDJOURNEY CI-DESSOUS :\n`;
+             prompt += `-----------------------------\n`;
 
-// Fonction pour générer un prompt Midjourney détaillé en anglais
-function generateDetailedMidjourneyPrompt(panelNum, englishKeywords, randomFunc) {
-  const styles = [
-    'detailed manga style with fine and precise lines',
-    'vibrant American comics style with high contrast colors',
-    'European clear line style with flat and elegant colors',
-    'realistic style with rich textures and volumetric rendering',
-    'watercolor style with diffuse colors and soft contours'
-  ];
-  
-  const shots = [
-    'wide shot showing the complete environment and characters',
-    'close-up on the face capturing the intense emotion of the moment',
-    'medium shot framing the characters from waist to shoulders',
-    'aerial view offering a unique perspective on the scene',
-    'dramatic low angle shot accentuating the power of the subject'
-  ];
-  
-  const lightings = [
-    'dramatic lighting with strong contrast between shadow and light',
-    'soft and diffuse light creating a serene atmosphere',
-    'high contrast with areas of pure light and deep shadow',
-    'chiaroscuro inspired by classical masters',
-    'natural twilight light with golden and purple hues'
-  ];
-  
-  const style = styles[randomFunc(0, styles.length - 1)];
-  const shot = shots[randomFunc(0, shots.length - 1)];
-  const lighting = lightings[randomFunc(0, lightings.length - 1)];
-  const keyword1 = englishKeywords[randomFunc(0, englishKeywords.length - 1)];
-  const keyword2 = englishKeywords[randomFunc(0, englishKeywords.length - 1)];
-  const keyword3 = englishKeywords[randomFunc(0, englishKeywords.length - 1)];
-  
-  return `${keyword1}, ${keyword2}, ${keyword3}, ${shot}, ${lighting}, ${style}, detailed illustration, high quality, vibrant colors, dynamic composition, emotive facial expressions, rich background details, correct perspective, precise anatomy, clear visual storytelling`;
-}
 
-// Mettre à jour le gestionnaire d'événements pour le bouton de génération de scénario
-document.addEventListener('DOMContentLoaded', function() {
-  const generateScenarioBtn = document.getElementById('generate-scenario');
-  if (generateScenarioBtn) {
-    generateScenarioBtn.addEventListener('click', function() {
-      const keywords = document.getElementById('keywords').value;
-      if (!keywords) {
-        alert('Veuillez entrer des mots-clés pour générer un scénario.');
-        return;
-      }
-      
-      // Générer l'histoire
-      generateStory(keywords);
-    });
-  }
-  
-  // Ajouter des styles pour le spinner de chargement
-  const style = document.createElement('style');
-  style.textContent = `
-    .loading-spinner {
-      width: 40px;
-      height: 40px;
-      margin: 20px auto;
-      border: 4px solid rgba(0, 0, 0, 0.1);
-      border-radius: 50%;
-      border-top: 4px solid #2196F3;
-      animation: spin 1s linear infinite;
+             try {
+                 const result = await generator(prompt, {
+                     max_new_tokens: 150, // Midjourney prompts can be long
+                     temperature: 0.7,
+                     repetition_penalty: 1.1,
+                      // do_sample: true
+                 });
+                 let mjPrompt = result[0].generated_text.substring(prompt.length).trim();
+
+                 // Basic cleanup - ensure it starts correctly and has aspect ratio
+                 if (!mjPrompt.toLowerCase().startsWith('/imagine prompt:')) {
+                     mjPrompt = `/imagine prompt: ${mjPrompt}`;
+                 }
+                  if (!mjPrompt.includes('--ar')) {
+                      mjPrompt += ' --ar 3:2'; // Add aspect ratio if missing
+                  }
+                   if (!mjPrompt.includes('--v')) {
+                       mjPrompt += ' --v 6'; // Add version if missing
+                   }
+
+                 promptResults.push({
+                     pageNumber: panel.pageNumber,
+                     panelNumber: panel.panelNumber,
+                     description: baseDesc, // Keep original description for reference
+                     prompt: mjPrompt
+                 });
+                  await new Promise(resolve => setTimeout(resolve, 100));
+
+             } catch (error) {
+                  console.error(`Error generating Midjourney prompt for panel ${panel.panelNumber}:`, error);
+                  promptResults.push({
+                      pageNumber: panel.pageNumber,
+                      panelNumber: panel.panelNumber,
+                      description: baseDesc,
+                      prompt: `/imagine prompt: Error generating prompt for: ${baseDesc}, ${framing}, ${styleKeywords} --ar 3:2 --v 6`
+                  });
+             }
+        }
+        console.log("Midjourney prompts generated:", promptResults);
+        return promptResults;
     }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  `;
-  document.head.appendChild(style);
-});
+
+    // --- Helper Functions ---
+     function getStyleKeywords(style) {
+         const mapping = {
+             "Manga": "manga style, anime art, detailed line art, dynamic panels",
+             "Franco-Belge": "franco-belgian comic style, ligne claire, clear line art, Herge Tintin style",
+             "Comics US": "american comic book style, superhero art, dynamic action poses, bold colors, ink outlines",
+             "Réaliste": "realistic digital painting, detailed illustration, cinematic lighting, volumetric light",
+             "Cartoon": "cartoon style, animation cel, fun characters, simple background",
+             "Aquarelle": "watercolor illustration style, soft edges, vibrant washes, wet-on-wet technique",
+             // Add more mappings
+         };
+         return mapping[style] || style; // Return style name itself if no specific keywords
+     }
+
+     function getToneKeywords(tone) {
+          const mapping = {
+             "Épique": "epic scale, dramatic lighting, heroic poses, vast landscape",
+             "Sérieux": "serious mood, realistic expressions, grounded setting, muted colors",
+             "Léger / Humoristique": "lighthearted, funny expressions, bright colors, comedic timing",
+             "Sombre / Mature": "dark atmosphere, gritty texture, noir lighting, intense emotion, shadow",
+             "Mystérieux": "mysterious fog, hidden details, suspenseful composition, silhouette",
+             "Poétique": "poetic atmosphere, soft focus, symbolic imagery, ethereal light",
+              // Add more mappings
+          };
+          return mapping[tone] || tone;
+     }
+
+     // --- Modification/Regeneration Placeholders ---
+     // These would require more complex logic to take existing data and the modification
+     // request, craft a new prompt for the AI, and parse the result.
+
+     async function modifyScenario(currentScenarioData, modificationRequest, genre, style, tone) {
+         console.warn("modifyScenario function is not fully implemented.");
+         // 1. Create a prompt telling the AI to modify `currentScenarioData` based on `modificationRequest`.
+         // 2. Call the AI.
+         // 3. Parse the result.
+         // 4. Return the modified structured data.
+         alert("La modification de scénario n'est pas implémentée dans cette démo.");
+         return currentScenarioData; // Return original data for now
+     }
+
+      async function modifyStoryboardChapter(currentStoryboardData, modificationRequest, style, tone) {
+         console.warn("modifyStoryboardChapter function is not fully implemented.");
+         alert("La modification de storyboard n'est pas implémentée dans cette démo.");
+         return currentStoryboardData;
+     }
+
+
+    // Expose functions to the global scope (or module exports if using modules)
+    window.generateStory = generateStory;
+    window.generateStoryboardChapter = generateStoryboardChapter;
+    window.generatePromptsForChapter = generatePromptsForChapter;
+    window.modifyScenario = modifyScenario; // Expose placeholders
+    window.modifyStoryboardChapter = modifyStoryboardChapter;
+
+})(); // Immediately invoke the function expression
