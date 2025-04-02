@@ -13,444 +13,119 @@
             --light-color: #f4f4f4;
             --danger-color: #dc3545;
             --success-color: #28a745;
+            --disabled-color: #ccc;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            background-color: #f8f9fa;
-            color: #333;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 1rem 0;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        header .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
-
-        .logo i {
-            margin-right: 10px;
-            font-size: 2rem;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-
-        nav ul li {
-            margin-left: 20px;
-        }
-
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        nav ul li a:hover {
-            color: var(--secondary-color);
-        }
-
-        .hero {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #64b5f6 100%);
-            color: white;
-            padding: 4rem 0;
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 800px;
-            margin: 0 auto 2rem;
-        }
-
-        .btn {
-            display: inline-block;
-            background: var(--secondary-color);
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 5px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .btn:hover {
-            background: #e68a00;
-            transform: translateY(-2px);
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-        }
-
-        .btn-primary:hover {
-            background: #0b7dda;
-        }
-
-        .features {
-            padding: 4rem 0;
-            background-color: white;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .section-title h2 {
-            font-size: 2rem;
-            color: var(--dark-color);
-            margin-bottom: 1rem;
-        }
-
-        .section-title p {
-            color: #666;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .feature-card {
-            background: white;
-            border-radius: 8px;
-            padding: 2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            text-align: center;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        .feature-card i {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
-        }
-
-        .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--dark-color);
-        }
-
-        .feature-card p {
-            color: #666;
-        }
-
-        .how-it-works {
-            padding: 4rem 0;
-            background-color: #f8f9fa;
-        }
-
-        .steps {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .step {
-            flex: 1;
-            min-width: 250px;
-            max-width: 350px;
-            text-align: center;
-            position: relative;
-        }
-
-        .step-number {
-            width: 50px;
-            height: 50px;
-            background-color: var(--primary-color);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin: 0 auto 1.5rem;
-        }
-
-        .step h3 {
-            margin-bottom: 1rem;
-            color: var(--dark-color);
-        }
-
-        .step p {
-            color: #666;
-        }
-
-        .app {
-            padding: 4rem 0;
-            background-color: white;
-        }
-
-        .tabs {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 1rem;
-        }
-
-        .tab-btn {
-            background: none;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            margin: 0 0.5rem;
-            font-size: 1rem;
-            cursor: pointer;
-            border-radius: 5px 5px 0 0;
-            transition: background 0.3s, color 0.3s;
-            font-weight: 500;
-        }
-
-        .tab-btn.active {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .tab-content {
-            display: none;
-            padding: 2rem;
-            background: white;
-            border-radius: 0 0 8px 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .input-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .input-group input,
-        .input-group textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-
-        .input-group textarea {
-            height: 150px;
-            resize: vertical;
-        }
-
-        footer {
-            background-color: var(--dark-color);
-            color: white;
-            padding: 2rem 0;
-            text-align: center;
-        }
-
-        footer p {
-            margin-bottom: 1rem;
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .social-links a {
-            color: white;
-            font-size: 1.5rem;
-            transition: color 0.3s;
-        }
-
-        .social-links a:hover {
-            color: var(--secondary-color);
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .footer-links a {
-            color: #ddd;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: var(--secondary-color);
-        }
-
-        @media (max-width: 768px) {
-            header .container {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            nav ul {
-                margin-top: 1rem;
-            }
-
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .hero p {
-                font-size: 1rem;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .steps {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .step {
-                margin-bottom: 2rem;
-            }
-
-            .tabs {
-                flex-wrap: wrap;
-            }
-
-            .tab-btn {
-                margin-bottom: 0.5rem;
-            }
-        }
+        /* ... (keep all existing CSS styles) ... */
 
         /* Styles spécifiques pour l'application */
-        .scenario-section, .scenario-chapter {
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            border-left: 4px solid var(--primary-color);
-        }
+        .scenario-section, .scenario-chapter { /* Keep existing */ }
+        .scenario-chapter h4 { /* Keep existing */ }
+        .storyboard-page { /* Keep existing */ }
+        .prompt-item { /* Keep existing */ }
+        .prompt-item pre { /* Keep existing */ }
+        .session-controls { /* Keep existing */ }
+        .session-controls button { /* Keep existing */ }
 
-        .scenario-chapter h4 {
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
+        #loading-indicator { /* Keep existing */ }
+        .spinner { /* Keep existing */ }
+        @keyframes spin { /* Keep existing */ }
 
-        .storyboard-page {
-            margin-bottom: 30px;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            border-left: 4px solid var(--secondary-color);
-        }
-
-        .prompt-item {
-            margin-bottom: 30px;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            border-left: 4px solid var(--success-color);
-        }
-
-        .prompt-item pre {
-            background-color: #333;
-            color: white;
-            padding: 15px;
-            border-radius: 5px;
-            overflow-x: auto;
-            margin-top: 10px;
-        }
-
-        .session-controls {
-            display: flex;
+        /* New Styles */
+        .app-controls {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+            display: none; /* Hidden by default */
             gap: 10px;
-            margin-bottom: 20px;
         }
-
-        .session-controls button {
+        .app-controls button {
+            margin-right: 10px;
+        }
+        .modification-area {
+            margin-top: 1rem;
+            display: none; /* Hidden by default */
+        }
+        .modification-area textarea {
+            width: 100%;
+            min-height: 80px;
+            margin-bottom: 0.5rem;
+        }
+        .tab-btn.disabled {
+            color: var(--disabled-color);
+            cursor: not-allowed;
+            background: #eee;
+        }
+         .chapter-selector {
+            margin-bottom: 1.5rem;
+        }
+        .storyboard-panel-display {
+            border: 1px solid #eee;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        .storyboard-panel-display h5 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+         .storyboard-panel-details p {
+            margin-bottom: 5px;
+         }
+         .storyboard-visual-placeholder {
+             border: 1px dashed #ccc;
+             min-height: 100px;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             color: #aaa;
+             font-style: italic;
+             margin-bottom: 10px;
+             background-color: #f0f0f0;
+         }
+         .progress-indicator {
+             display: flex;
+             justify-content: space-around;
+             margin-bottom: 2rem;
+             padding: 1rem;
+             background-color: #e9ecef;
+             border-radius: 5px;
+         }
+         .progress-step {
+             text-align: center;
+             color: #adb5bd;
+         }
+         .progress-step.active {
+             color: var(--primary-color);
+             font-weight: bold;
+         }
+         .progress-step.completed {
+             color: var(--success-color);
+             font-weight: bold;
+         }
+         .progress-step .icon {
+             display: block;
+             font-size: 1.5rem;
+             margin-bottom: 0.5rem;
+         }
+         .input-group-inline {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+         }
+         .input-group-inline .input-group {
             flex: 1;
-        }
-        
-        #loading-indicator {
-            display: none;
-            text-align: center;
-            margin: 20px 0;
-        }
-        
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border-left-color: var(--primary-color);
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+            min-width: 200px;
+            margin-bottom: 0;
+         }
+
     </style>
 </head>
 <body>
     <header>
+        <!-- Keep existing header -->
         <div class="container">
             <div class="logo">
                 <i class="fas fa-book-open"></i>
@@ -468,6 +143,7 @@
     </header>
 
     <section class="hero">
+         <!-- Keep existing hero -->
         <div class="container">
             <h1>Créez des bandes dessinées incroyables avec l'IA</h1>
             <p>Transformez vos idées en scénarios complets, storyboards détaillés et prompts optimisés pour Midjourney en quelques clics.</p>
@@ -476,47 +152,49 @@
     </section>
 
     <section class="features" id="features">
+         <!-- Keep existing features, maybe update text slightly -->
         <div class="container">
             <div class="section-title">
                 <h2>Fonctionnalités</h2>
-                <p>Découvrez les outils puissants qui vous aideront à créer des bandes dessinées professionnelles sans effort.</p>
+                <p>Découvrez les outils puissants qui vous aideront à créer des bandes dessinées professionnelles sans effort, étape par étape.</p>
             </div>
             <div class="features-grid">
+                 <div class="feature-card">
+                    <i class="fas fa-lightbulb"></i>
+                    <h3>Idée Initiale & Options</h3>
+                    <p>Définissez votre idée, choisissez le genre, le style visuel et le ton pour guider l'IA.</p>
+                </div>
                 <div class="feature-card">
                     <i class="fas fa-brain"></i>
-                    <h3>Génération de scénarios</h3>
-                    <p>Créez des scénarios complets et détaillés à partir de simples mots-clés grâce à notre IA avancée. Obtenez une histoire structurée avec introduction, développement et conclusion.</p>
+                    <h3>Génération de Scénario Structuré</h3>
+                    <p>Obtenez un scénario détaillé (page/case) avec descriptions et dialogues. Validez ou demandez des modifications.</p>
                 </div>
                 <div class="feature-card">
                     <i class="fas fa-pencil-alt"></i>
-                    <h3>Storyboard automatique</h3>
-                    <p>Transformez votre scénario en storyboard détaillé avec des descriptions de pages et de cases. Notre système vous aide à visualiser votre histoire avant même de commencer à dessiner.</p>
+                    <h3>Storyboard Assisté</h3>
+                    <p>Visualisez votre histoire avec des suggestions de cadrage et de composition pour chaque case. Approuvez chapitre par chapitre.</p>
                 </div>
                 <div class="feature-card">
                     <i class="fas fa-image"></i>
-                    <h3>Prompts Midjourney</h3>
-                    <p>Générez des prompts optimisés pour Midjourney afin de créer des illustrations professionnelles pour chaque case de votre BD. Obtenez des résultats cohérents et de haute qualité.</p>
+                    <h3>Prompts Midjourney Optimisés</h3>
+                    <p>Générez des prompts en anglais prêts à l'emploi pour Midjourney, basés sur votre storyboard et style.</p>
+                </div>
+                 <div class="feature-card">
+                    <i class="fas fa-tasks"></i>
+                    <h3>Workflow Guidé</h3>
+                    <p>Suivez un processus étape par étape avec des validations pour garder le contrôle créatif total.</p>
                 </div>
                 <div class="feature-card">
                     <i class="fas fa-save"></i>
-                    <h3>Sauvegarde de sessions</h3>
-                    <p>Sauvegardez votre travail à tout moment et reprenez-le plus tard. Gérez plusieurs projets simultanément et organisez vos idées créatives sans perdre votre progression.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-language"></i>
-                    <h3>Support multilingue</h3>
-                    <p>Créez des scénarios en français et obtenez des prompts en anglais pour une utilisation optimale avec Midjourney. Notre système gère automatiquement les traductions nécessaires.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-share-alt"></i>
-                    <h3>Exportation facile</h3>
-                    <p>Exportez votre travail dans différents formats pour le partager ou l'utiliser avec d'autres outils. Intégrez facilement vos créations dans votre flux de travail créatif.</p>
+                    <h3>Sauvegarde de Sessions</h3>
+                    <p>Sauvegardez votre progression à tout moment et reprenez votre projet de BD plus tard.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <section class="how-it-works" id="how-it-works">
+         <!-- Keep existing how-it-works, update steps -->
         <div class="container">
             <div class="section-title">
                 <h2>Comment ça marche</h2>
@@ -525,23 +203,23 @@
             <div class="steps">
                 <div class="step">
                     <div class="step-number">1</div>
-                    <h3>Entrez vos mots-clés</h3>
-                    <p>Commencez par saisir quelques mots-clés ou une brève description de l'histoire que vous souhaitez créer.</p>
+                    <h3>Décrivez votre idée</h3>
+                    <p>Entrez des mots-clés ou une description. Choisissez le genre, le style visuel et le ton.</p>
                 </div>
                 <div class="step">
                     <div class="step-number">2</div>
-                    <h3>Générez votre scénario</h3>
-                    <p>Notre IA transforme vos mots-clés en un scénario complet avec une structure narrative cohérente et des personnages intéressants.</p>
+                    <h3>Générez & Validez le Scénario</h3>
+                    <p>L'IA crée un scénario structuré. Lisez-le, demandez des modifications si besoin, puis approuvez.</p>
                 </div>
                 <div class="step">
                     <div class="step-number">3</div>
-                    <h3>Visualisez le storyboard</h3>
-                    <p>Explorez le storyboard généré automatiquement qui décompose votre histoire en pages et en cases avec des descriptions détaillées.</p>
+                    <h3>Approuvez le Storyboard</h3>
+                    <p>Pour chaque chapitre, visualisez le storyboard avec suggestions de cadrage/composition. Approuvez.</p>
                 </div>
                 <div class="step">
                     <div class="step-number">4</div>
-                    <h3>Utilisez les prompts</h3>
-                    <p>Copiez les prompts optimisés pour Midjourney et créez des illustrations professionnelles pour chaque case de votre BD.</p>
+                    <h3>Obtenez les Prompts</h3>
+                    <p>Recevez les prompts Midjourney optimisés pour chaque case du chapitre approuvé. Copiez et créez !</p>
                 </div>
             </div>
         </div>
@@ -553,57 +231,170 @@
                 <h2>Créez votre BD maintenant</h2>
                 <p>Utilisez notre application pour transformer vos idées en bandes dessinées complètes.</p>
             </div>
-            
+
             <div class="session-controls">
                 <button class="btn" id="new-session">Nouvelle session</button>
                 <button class="btn" id="save-session">Sauvegarder la session</button>
                 <button class="btn" id="load-session">Charger une session</button>
             </div>
 
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="home">Accueil</button>
-                <button class="tab-btn" data-tab="scenario">Scénario</button>
-                <button class="tab-btn" data-tab="storyboard">Storyboard</button>
-                <button class="tab-btn" data-tab="prompts">Prompts</button>
+            <!-- Progress Indicator -->
+             <div class="progress-indicator">
+                <div class="progress-step active" id="step-idea">
+                    <span class="icon"><i class="fas fa-lightbulb"></i></span> Idée
+                </div>
+                <div class="progress-step" id="step-scenario">
+                    <span class="icon"><i class="fas fa-file-alt"></i></span> Scénario
+                </div>
+                <div class="progress-step" id="step-storyboard">
+                     <span class="icon"><i class="fas fa-border-all"></i></span> Storyboard
+                </div>
+                <div class="progress-step" id="step-prompts">
+                    <span class="icon"><i class="fas fa-magic"></i></span> Prompts
+                </div>
             </div>
 
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="home">1. Idée & Options</button>
+                <button class="tab-btn disabled" data-tab="scenario">2. Scénario</button>
+                <button class="tab-btn disabled" data-tab="storyboard">3. Storyboard</button>
+                <button class="tab-btn disabled" data-tab="prompts">4. Prompts</button>
+            </div>
+
+            <!-- Tab 1: Home / Idea Input -->
             <div class="tab-content active" id="home-content">
-                <h3>Bienvenue dans BD Creator</h3>
-                <p>Pour commencer, entrez quelques mots-clés qui décrivent l'histoire que vous souhaitez créer. Notre IA générera un scénario complet, un storyboard détaillé et des prompts optimisés pour Midjourney.</p>
-                
+                <h3>Entrez les détails de votre projet</h3>
+                <p>Commencez par décrire votre idée et choisissez les options pour guider l'IA.</p>
+
                 <div class="input-group">
-                    <label for="keywords">Mots-clés (séparés par des virgules)</label>
-                    <input type="text" id="keywords" placeholder="Ex: aventure spatiale, robots, amitié">
+                    <label for="keywords">Idée initiale (mots-clés, phrase, ou courte histoire)</label>
+                    <textarea id="keywords" placeholder="Ex: Aventure spatiale avec des chats pirates cherchant une planète de thon légendaire." rows="3"></textarea>
                 </div>
-                
-                <button class="btn btn-primary" id="generate-scenario">Générer un scénario</button>
-                
+
+                <div class="input-group-inline">
+                     <div class="input-group">
+                        <label for="genre">Genre</label>
+                        <select id="genre">
+                            <option value="Fantastique">Fantastique</option>
+                            <option value="Science-Fiction">Science-Fiction</option>
+                            <option value="Policier">Policier</option>
+                            <option value="Humour">Humour</option>
+                            <option value="Drame">Drame</option>
+                            <option value="Aventure">Aventure</option>
+                            <option value="Slice of Life">Slice of Life</option>
+                            <option value="Horreur">Horreur</option>
+                            <!-- Add more genres -->
+                        </select>
+                    </div>
+
+                     <div class="input-group">
+                        <label for="style">Style Visuel Cible</label>
+                        <select id="style">
+                            <option value="Manga">Manga</option>
+                            <option value="Franco-Belge">Franco-Belge (Ligne Claire)</option>
+                            <option value="Comics US">Comics US (Super-héros)</option>
+                            <option value="Réaliste">Réaliste / Peinture Numérique</option>
+                            <option value="Cartoon">Cartoon / Animation</option>
+                            <option value="Aquarelle">Aquarelle</option>
+                             <!-- Add more styles -->
+                        </select>
+                    </div>
+
+                     <div class="input-group">
+                        <label for="tone">Ton</label>
+                        <select id="tone">
+                            <option value="Épique">Épique</option>
+                            <option value="Sérieux">Sérieux</option>
+                            <option value="Léger / Humoristique">Léger / Humoristique</option>
+                            <option value="Sombre / Mature">Sombre / Mature</option>
+                            <option value="Mystérieux">Mystérieux</option>
+                            <option value="Poétique">Poétique</option>
+                            <!-- Add more tones -->
+                        </select>
+                    </div>
+                </div>
+
+                 <div class="input-group">
+                    <label for="details">Détails Optionnels (Personnages principaux, Univers, Éléments clés)</label>
+                    <textarea id="details" placeholder="Ex: Capitaine Moustache (chat roux borgne), Second Patte-de-Velours (chat noir agile). Vaisseau: Le Sardine Volante. Cherchent la planète Catlantic." rows="4"></textarea>
+                </div>
+
+                <button class="btn btn-primary" id="generate-scenario">Générer le Scénario</button>
+
                 <div id="loading-indicator">
                     <div class="spinner"></div>
-                    <p>Génération en cours... Cela peut prendre quelques instants.</p>
+                    <p>Génération en cours... L'IA travaille, cela peut prendre plusieurs minutes.</p>
                 </div>
             </div>
 
+            <!-- Tab 2: Scenario -->
             <div class="tab-content" id="scenario-content">
-                <h3>Votre scénario</h3>
-                <p>Générez d'abord un scénario depuis l'onglet Accueil.</p>
+                <h3>Votre Scénario</h3>
+                <div id="scenario-output">
+                    <p>Générez d'abord un scénario depuis l'onglet "Idée & Options".</p>
+                    <!-- Scenario content will be loaded here -->
+                </div>
+
+                <div class="app-controls" id="scenario-controls">
+                    <button class="btn btn-success" id="approve-scenario">Approuver le Scénario</button>
+                    <button class="btn btn-primary" id="modify-scenario-request">Demander Modifications</button>
+                    <button class="btn btn-danger" id="regenerate-scenario">Régénérer Scénario</button>
+                </div>
+                <div class="modification-area" id="scenario-modification-area">
+                    <label for="scenario-modification-input">Décrivez les modifications souhaitées :</label>
+                    <textarea id="scenario-modification-input"></textarea>
+                    <button class="btn btn-primary" id="submit-scenario-modification">Soumettre Modification</button>
+                </div>
             </div>
 
+            <!-- Tab 3: Storyboard -->
             <div class="tab-content" id="storyboard-content">
-                <h3>Votre storyboard</h3>
-                <p>Générez d'abord un scénario pour voir le storyboard correspondant.</p>
+                <h3>Votre Storyboard</h3>
+                 <div class="chapter-selector">
+                     <label for="storyboard-chapter-select">Choisir le chapitre :</label>
+                     <select id="storyboard-chapter-select" disabled>
+                         <option>Approuvez d'abord le scénario</option>
+                     </select>
+                 </div>
+                <div id="storyboard-output">
+                    <p>Approuvez d'abord le scénario pour générer le storyboard.</p>
+                    <!-- Storyboard content for the selected chapter will be loaded here -->
+                </div>
+
+                 <div class="app-controls" id="storyboard-controls">
+                    <button class="btn btn-success" id="approve-storyboard-chapter">Approuver Storyboard Chapitre</button>
+                    <button class="btn btn-primary" id="modify-storyboard-request">Demander Modifications Chapitre</button>
+                    <button class="btn btn-danger" id="regenerate-storyboard-chapter">Régénérer Storyboard Chapitre</button>
+                </div>
+                 <div class="modification-area" id="storyboard-modification-area">
+                    <label for="storyboard-modification-input">Décrivez les modifications souhaitées pour ce chapitre :</label>
+                    <textarea id="storyboard-modification-input"></textarea>
+                    <button class="btn btn-primary" id="submit-storyboard-modification">Soumettre Modification</button>
+                </div>
             </div>
 
+            <!-- Tab 4: Prompts -->
             <div class="tab-content" id="prompts-content">
-                <h3>Vos prompts Midjourney</h3>
-                <p>Générez d'abord un scénario pour voir les prompts correspondants.</p>
+                <h3>Vos Prompts Midjourney</h3>
+                 <div class="chapter-selector">
+                     <label for="prompts-chapter-select">Choisir le chapitre :</label>
+                     <select id="prompts-chapter-select" disabled>
+                         <option>Approuvez d'abord le storyboard</option>
+                     </select>
+                 </div>
+                <div id="prompts-output">
+                    <p>Approuvez d'abord le storyboard d'un chapitre pour générer les prompts.</p>
+                    <!-- Prompts for the selected chapter will be loaded here -->
+                </div>
+                 <!-- Add export/copy all button maybe -->
             </div>
         </div>
     </section>
 
     <footer>
+         <!-- Keep existing footer -->
         <div class="container">
-            <p>&copy; 2025 BD Creator. Tous droits réservés.</p>
+            <p>© 2025 BD Creator. Tous droits réservés.</p>
             <div class="social-links">
                 <a href="#"><i class="fab fa-facebook"></i></a>
                 <a href="#"><i class="fab fa-twitter"></i></a>
@@ -620,562 +411,606 @@
         </div>
     </footer>
 
+    <!-- Load Transformers.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.0"></script>
+    <!-- Load your custom story generator logic -->
+    <script src="story_generator.js"></script>
+    <!-- Inline script for UI interactions and workflow management -->
     <script>
-        // Simulation de génération d'histoire en français
-        // Dans un environnement de production, ceci serait remplacé par l'appel à l'API Transformers.js
-        
         document.addEventListener('DOMContentLoaded', function() {
-            // Gestion des onglets
+            // --- DOM Elements ---
             const tabBtns = document.querySelectorAll('.tab-btn');
             const tabContents = document.querySelectorAll('.tab-content');
-            
-            tabBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const tabId = this.getAttribute('data-tab');
-                    
-                    tabBtns.forEach(btn => btn.classList.remove('active'));
-                    tabContents.forEach(content => content.classList.remove('active'));
-                    
-                    this.classList.add('active');
-                    document.getElementById(`${tabId}-content`).classList.add('active');
-                });
-            });
-            
-            // Gestion des sessions
-            const newSessionBtn = document.getElementById('new-session');
-            const saveSessionBtn = document.getElementById('save-session');
-            const loadSessionBtn = document.getElementById('load-session');
-            
-            newSessionBtn.addEventListener('click', function() {
-                if (confirm('Êtes-vous sûr de vouloir créer une nouvelle session ? Toutes les données non sauvegardées seront perdues.')) {
-                    document.getElementById('keywords').value = '';
-                    document.getElementById('scenario-content').innerHTML = '<h3>Votre scénario</h3><p>Générez d\'abord un scénario depuis l\'onglet Accueil.</p>';
-                    document.getElementById('storyboard-content').innerHTML = '<h3>Votre storyboard</h3><p>Générez d\'abord un scénario pour voir le storyboard correspondant.</p>';
-                    document.getElementById('prompts-content').innerHTML = '<h3>Vos prompts Midjourney</h3><p>Générez d\'abord un scénario pour voir les prompts correspondants.</p>';
-                    
-                    document.querySelector('[data-tab="home"]').click();
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const keywordsInput = document.getElementById('keywords');
+            const genreSelect = document.getElementById('genre');
+            const styleSelect = document.getElementById('style');
+            const toneSelect = document.getElementById('tone');
+            const detailsInput = document.getElementById('details');
+            const generateScenarioBtn = document.getElementById('generate-scenario');
+
+            const scenarioOutput = document.getElementById('scenario-output');
+            const scenarioControls = document.getElementById('scenario-controls');
+            const approveScenarioBtn = document.getElementById('approve-scenario');
+            const modifyScenarioRequestBtn = document.getElementById('modify-scenario-request');
+            const regenerateScenarioBtn = document.getElementById('regenerate-scenario');
+            const scenarioModificationArea = document.getElementById('scenario-modification-area');
+            const scenarioModificationInput = document.getElementById('scenario-modification-input');
+            const submitScenarioModificationBtn = document.getElementById('submit-scenario-modification');
+
+            const storyboardChapterSelect = document.getElementById('storyboard-chapter-select');
+            const storyboardOutput = document.getElementById('storyboard-output');
+            const storyboardControls = document.getElementById('storyboard-controls');
+            const approveStoryboardChapterBtn = document.getElementById('approve-storyboard-chapter');
+            // ... (add buttons for storyboard modification/regeneration)
+
+            const promptsChapterSelect = document.getElementById('prompts-chapter-select');
+            const promptsOutput = document.getElementById('prompts-output');
+
+            const progressSteps = {
+                idea: document.getElementById('step-idea'),
+                scenario: document.getElementById('step-scenario'),
+                storyboard: document.getElementById('step-storyboard'),
+                prompts: document.getElementById('step-prompts'),
+            };
+
+            const tabs = {
+                home: document.querySelector('[data-tab="home"]'),
+                scenario: document.querySelector('[data-tab="scenario"]'),
+                storyboard: document.querySelector('[data-tab="storyboard"]'),
+                prompts: document.querySelector('[data-tab="prompts"]'),
+            }
+
+            // --- Application State ---
+            let appState = {
+                currentStep: 'idea', // idea, scenario_generated, scenario_approved, storyboard_chapter_approved, prompts_generated
+                scenarioData: null, // Will hold the structured scenario object
+                storyboardData: {}, // Keyed by chapter index
+                promptsData: {},    // Keyed by chapter index
+                approvedChapters: [], // List of approved chapter indices for storyboard/prompts
+                keywords: '',
+                genre: '',
+                style: '',
+                tone: '',
+                details: '',
+                activeTab: 'home'
+            };
+
+            // --- Functions ---
+
+            function updateUI() {
+                // Update Progress Indicator
+                Object.values(progressSteps).forEach(step => step.classList.remove('active', 'completed'));
+                if (appState.currentStep === 'idea') {
+                    progressSteps.idea.classList.add('active');
+                } else {
+                     progressSteps.idea.classList.add('completed');
                 }
-            });
-            
-            saveSessionBtn.addEventListener('click', function() {
-                const sessionData = {
-                    keywords: document.getElementById('keywords').value,
-                    scenario: document.getElementById('scenario-content').innerHTML,
-                    storyboard: document.getElementById('storyboard-content').innerHTML,
-                    prompts: document.getElementById('prompts-content').innerHTML
-                };
-                
-                const sessionName = prompt('Donnez un nom à cette session:');
-                if (sessionName) {
-                    localStorage.setItem(`bdcreator_session_${sessionName}`, JSON.stringify(sessionData));
-                    alert(`Session "${sessionName}" sauvegardée avec succès!`);
+                if (appState.currentStep.startsWith('scenario')) {
+                     progressSteps.scenario.classList.add('active');
+                } else if (appState.currentStep !== 'idea') {
+                    progressSteps.scenario.classList.add('completed');
                 }
-            });
-            
-            loadSessionBtn.addEventListener('click', function() {
-                const sessions = [];
-                for (let i = 0; i < localStorage.length; i++) {
-                    const key = localStorage.key(i);
-                    if (key.startsWith('bdcreator_session_')) {
-                        sessions.push(key.replace('bdcreator_session_', ''));
+                 if (appState.currentStep.startsWith('storyboard')) {
+                     progressSteps.storyboard.classList.add('active');
+                 } else if (!appState.currentStep.startsWith('idea') && !appState.currentStep.startsWith('scenario')) {
+                     progressSteps.storyboard.classList.add('completed');
+                 }
+                 if (appState.currentStep.startsWith('prompts')) {
+                     progressSteps.prompts.classList.add('active');
+                 } else if (appState.currentStep === 'completed') { // Assuming a final state
+                    progressSteps.prompts.classList.add('completed');
+                 }
+
+
+                // Update Tabs Enabled/Disabled State & Active Tab
+                tabBtns.forEach(btn => {
+                    const tab = btn.getAttribute('data-tab');
+                    btn.classList.remove('active');
+                    btn.classList.add('disabled'); // Disable all first
+
+                    if (tab === 'home') btn.classList.remove('disabled'); // Home always enabled
+                    if (appState.currentStep !== 'idea' && tab === 'scenario') btn.classList.remove('disabled');
+                    if (appState.currentStep.includes('approved') || appState.currentStep.startsWith('storyboard') || appState.currentStep.startsWith('prompts') && tab === 'storyboard') btn.classList.remove('disabled');
+                    // Enable prompts tab only if at least one storyboard chapter is approved
+                    if ((appState.currentStep.includes('storyboard_chapter_approved') || appState.currentStep.startsWith('prompts')) && appState.approvedChapters.length > 0 && tab === 'prompts') {
+                         btn.classList.remove('disabled');
                     }
+
+                    if (tab === appState.activeTab) {
+                        btn.classList.add('active');
+                    }
+                });
+                 tabContents.forEach(content => content.classList.remove('active'));
+                 document.getElementById(`${appState.activeTab}-content`).classList.add('active');
+
+
+                // Update Scenario Tab Content & Controls
+                if (appState.scenarioData) {
+                    displayScenario(appState.scenarioData);
+                    scenarioControls.style.display = appState.currentStep === 'scenario_generated' ? 'flex' : 'none';
+                     scenarioModificationArea.style.display = 'none'; // Hide modification area by default
+                } else {
+                    scenarioOutput.innerHTML = '<p>Générez d\'abord un scénario depuis l\'onglet "Idée & Options".</p>';
+                    scenarioControls.style.display = 'none';
                 }
-                
-                if (sessions.length === 0) {
-                    alert('Aucune session sauvegardée trouvée.');
+
+
+                 // Update Storyboard Tab
+                 updateChapterSelect(storyboardChapterSelect, 'storyboard');
+                 if (appState.currentStep.startsWith('storyboard') || appState.currentStep.startsWith('prompts') || appState.currentStep === 'scenario_approved') {
+                      storyboardChapterSelect.disabled = false;
+                      const selectedChapterIndex = parseInt(storyboardChapterSelect.value);
+                      if (!isNaN(selectedChapterIndex) && appState.storyboardData[selectedChapterIndex]) {
+                          displayStoryboardChapter(selectedChapterIndex);
+                           storyboardControls.style.display = !appState.approvedChapters.includes(selectedChapterIndex) ? 'flex' : 'none';
+                      } else if (!isNaN(selectedChapterIndex)) {
+                          storyboardOutput.innerHTML = `<p>Storyboard pour le chapitre ${selectedChapterIndex + 1} pas encore généré ou approuvé.</p><button class='btn btn-primary generate-storyboard-btn' data-chapter='${selectedChapterIndex}'>Générer Storyboard Chapitre ${selectedChapterIndex + 1}</button>`;
+                          storyboardControls.style.display = 'none';
+                           // Add listener for dynamically created button
+                           document.querySelector('.generate-storyboard-btn')?.addEventListener('click', handleGenerateStoryboardChapter);
+                      } else {
+                           storyboardOutput.innerHTML = '<p>Sélectionnez un chapitre pour voir ou générer le storyboard.</p>';
+                           storyboardControls.style.display = 'none';
+                      }
+                 } else {
+                     storyboardOutput.innerHTML = '<p>Approuvez d\'abord le scénario pour générer le storyboard.</p>';
+                     storyboardChapterSelect.disabled = true;
+                      storyboardControls.style.display = 'none';
+                 }
+
+
+                // Update Prompts Tab
+                 updateChapterSelect(promptsChapterSelect, 'prompts');
+                 if (appState.approvedChapters.length > 0 && (appState.currentStep.startsWith('prompts') || appState.currentStep.includes('storyboard_chapter_approved'))) {
+                     promptsChapterSelect.disabled = false;
+                     const selectedChapterIndex = parseInt(promptsChapterSelect.value);
+                      if (!isNaN(selectedChapterIndex) && appState.promptsData[selectedChapterIndex]) {
+                          displayPromptsChapter(selectedChapterIndex);
+                      } else if (!isNaN(selectedChapterIndex) && appState.approvedChapters.includes(selectedChapterIndex)) {
+                           promptsOutput.innerHTML = `<p>Prompts pour le chapitre ${selectedChapterIndex + 1} pas encore générés.</p><button class='btn btn-primary generate-prompts-btn' data-chapter='${selectedChapterIndex}'>Générer Prompts Chapitre ${selectedChapterIndex + 1}</button>`;
+                           // Add listener for dynamically created button
+                           document.querySelector('.generate-prompts-btn')?.addEventListener('click', handleGeneratePromptsChapter);
+                      } else if (!isNaN(selectedChapterIndex)) {
+                           promptsOutput.innerHTML = '<p>Approuvez d\'abord le storyboard de ce chapitre pour générer les prompts.</p>';
+                      } else {
+                           promptsOutput.innerHTML = '<p>Sélectionnez un chapitre dont le storyboard est approuvé.</p>';
+                      }
+                 } else {
+                     promptsOutput.innerHTML = '<p>Approuvez d\'abord le storyboard d\'un chapitre pour générer les prompts.</p>';
+                     promptsChapterSelect.disabled = true;
+                 }
+
+
+                // Hide loading indicator
+                loadingIndicator.style.display = 'none';
+            }
+
+            function displayScenario(scenario) {
+                 // Check if scenario is the expected structured object
+                 if (!scenario || typeof scenario !== 'object' || !scenario.title || !Array.isArray(scenario.chapters)) {
+                     scenarioOutput.innerHTML = '<p class="text-danger">Erreur : Le format du scénario généré est incorrect.</p>';
+                     console.error("Invalid scenario structure:", scenario);
+                     return;
+                 }
+
+                let html = `<h3>${scenario.title}</h3>`;
+                if(scenario.synopsis) {
+                     html += `<div class="scenario-section"><h4>Synopsis</h4><p>${scenario.synopsis.replace(/\n/g, '<br>')}</p></div>`;
+                }
+
+                 scenario.chapters.forEach((chapter, index) => {
+                     html += `<div class="scenario-chapter"><h4>Chapitre ${index + 1}: ${chapter.title || ''}</h4>`;
+                     if (chapter.summary) {
+                          html += `<p><strong>Résumé :</strong> ${chapter.summary.replace(/\n/g, '<br>')}</p>`;
+                     }
+                     if (Array.isArray(chapter.pages)) {
+                          chapter.pages.forEach(page => {
+                               html += `<div class="scenario-page" style="margin-left: 20px; border-left: 2px solid #eee; padding-left: 15px; margin-top:10px;"><h5>Page ${page.pageNumber}</h5>`;
+                               if(Array.isArray(page.panels)) {
+                                    page.panels.forEach(panel => {
+                                         html += `<div class="scenario-panel" style="margin-left: 20px; margin-bottom: 5px;"><strong>Case ${panel.panelNumber}:</strong> `;
+                                         html += `<em>${panel.description || 'Pas de description.'}</em>`;
+                                         if(panel.dialogue) {
+                                              html += ` Dialogue: "${panel.dialogue}"`;
+                                         }
+                                         html += `</div>`;
+                                    });
+                               }
+                               html += `</div>`; // Close scenario-page
+                          });
+                     } else {
+                          html += `<p><em>(Détail des pages/cases non disponible dans ce format)</em></p>`;
+                     }
+                     html += `</div>`; // Close scenario-chapter
+                 });
+                scenarioOutput.innerHTML = html;
+            }
+
+             function updateChapterSelect(selectElement, type) {
+                 selectElement.innerHTML = ''; // Clear existing options
+                 if (!appState.scenarioData || !Array.isArray(appState.scenarioData.chapters)) {
+                     const defaultOption = document.createElement('option');
+                      if (type === 'storyboard') defaultOption.textContent = 'Générez d\'abord le scénario';
+                      else defaultOption.textContent = 'Approuvez d\'abord le storyboard';
+                     selectElement.appendChild(defaultOption);
+                     selectElement.disabled = true;
+                     return;
+                 }
+
+                 if (type === 'prompts' && appState.approvedChapters.length === 0) {
+                     const defaultOption = document.createElement('option');
+                     defaultOption.textContent = 'Approuvez d\'abord un storyboard';
+                     selectElement.appendChild(defaultOption);
+                     selectElement.disabled = true;
+                     return;
+                 }
+
+                 appState.scenarioData.chapters.forEach((chapter, index) => {
+                     // Only add chapter to prompts select if its storyboard is approved
+                     if (type === 'prompts' && !appState.approvedChapters.includes(index)) {
+                         return;
+                     }
+
+                     const option = document.createElement('option');
+                     option.value = index;
+                     option.textContent = `Chapitre ${index + 1}: ${chapter.title || `Chapitre ${index + 1}`}`;
+                      if (appState.approvedChapters.includes(index)) {
+                          option.textContent += " (Storyboard Approuvé)";
+                      }
+                     selectElement.appendChild(option);
+                 });
+
+                 selectElement.disabled = selectElement.options.length === 0;
+             }
+
+             function displayStoryboardChapter(chapterIndex) {
+                const chapterData = appState.storyboardData[chapterIndex];
+                 if (!chapterData) {
+                     storyboardOutput.innerHTML = `<p>Erreur: Données du storyboard non trouvées pour le chapitre ${chapterIndex + 1}.</p>`;
+                     return;
+                 }
+
+                 let html = `<h4>Storyboard - Chapitre ${chapterIndex + 1}</h4>`;
+                 chapterData.forEach(panel => {
+                     html += `
+                        <div class="storyboard-panel-display">
+                            <h5>Page ${panel.pageNumber} / Case ${panel.panelNumber}</h5>
+                             <div class="storyboard-visual-placeholder">
+                                 (Visualisation: ${panel.framing || 'Non défini'} - ${panel.composition || 'Non défini'})
+                             </div>
+                            <div class="storyboard-panel-details">
+                                <p><strong>Description Scénario:</strong> ${panel.scenarioDesc || 'N/A'}</p>
+                                <p><strong>Cadrage Suggéré:</strong> ${panel.framing || 'N/A'}</p>
+                                <p><strong>Composition Suggérée:</strong> ${panel.composition || 'N/A'}</p>
+                             </div>
+                         </div>
+                     `;
+                 });
+                 storyboardOutput.innerHTML = html;
+             }
+
+             function displayPromptsChapter(chapterIndex) {
+                 const chapterPrompts = appState.promptsData[chapterIndex];
+                 if (!chapterPrompts || !Array.isArray(chapterPrompts)) {
+                     promptsOutput.innerHTML = `<p>Erreur: Données des prompts non trouvées pour le chapitre ${chapterIndex + 1}.</p>`;
+                     return;
+                 }
+
+                 let html = `<h4>Prompts Midjourney - Chapitre ${chapterIndex + 1}</h4>`;
+                 chapterPrompts.forEach((promptData, index) => {
+                     html += `
+                        <div class="prompt-item">
+                            <h5>Page ${promptData.pageNumber} / Case ${promptData.panelNumber}</h5>
+                            <p><strong>Description:</strong> ${promptData.description || 'N/A'}</p>
+                             <pre>${promptData.prompt || 'Erreur: Prompt non généré.'}</pre>
+                            <button class="btn btn-sm btn-secondary copy-prompt-btn" data-prompt="${escape(promptData.prompt || '')}">Copier</button>
+                         </div>
+                     `;
+                 });
+                 promptsOutput.innerHTML = html;
+
+                 // Add listeners for copy buttons
+                 document.querySelectorAll('.copy-prompt-btn').forEach(btn => {
+                     btn.addEventListener('click', function() {
+                         const promptText = unescape(this.getAttribute('data-prompt'));
+                         navigator.clipboard.writeText(promptText).then(() => {
+                             alert('Prompt copié dans le presse-papiers !');
+                         }).catch(err => {
+                             console.error('Erreur de copie:', err);
+                             alert('Erreur lors de la copie du prompt.');
+                         });
+                     });
+                 });
+             }
+
+            async function handleGenerateScenario() {
+                appState.keywords = keywordsInput.value.trim();
+                appState.genre = genreSelect.value;
+                appState.style = styleSelect.value;
+                appState.tone = toneSelect.value;
+                appState.details = detailsInput.value.trim();
+
+                if (!appState.keywords) {
+                    alert('Veuillez entrer une idée initiale (mots-clés, phrase...).');
                     return;
                 }
-                
-                const sessionName = prompt(`Choisissez une session à charger (${sessions.join(', ')}):`, sessions[0]);
-                if (sessionName && sessions.includes(sessionName)) {
-                    const sessionData = JSON.parse(localStorage.getItem(`bdcreator_session_${sessionName}`));
-                    
-                    document.getElementById('keywords').value = sessionData.keywords;
-                    document.getElementById('scenario-content').innerHTML = sessionData.scenario;
-                    document.getElementById('storyboard-content').innerHTML = sessionData.storyboard;
-                    document.getElementById('prompts-content').innerHTML = sessionData.prompts;
-                    
-                    alert(`Session "${sessionName}" chargée avec succès!`);
+
+                loadingIndicator.style.display = 'block';
+                generateScenarioBtn.disabled = true;
+
+                try {
+                    // Call the actual generation function from story_generator.js
+                    appState.scenarioData = await generateStory(appState.keywords, appState.genre, appState.style, appState.tone, appState.details);
+                    appState.currentStep = 'scenario_generated';
+                    appState.activeTab = 'scenario'; // Switch to scenario tab
+                    // Reset storyboard and prompts if scenario is regenerated
+                    appState.storyboardData = {};
+                    appState.promptsData = {};
+                    appState.approvedChapters = [];
+                } catch (error) {
+                    console.error("Scenario generation error:", error);
+                    scenarioOutput.innerHTML = `<p class="text-danger">Erreur lors de la génération du scénario : ${error.message}. Essayez de simplifier l'idée ou vérifiez la console.</p>`;
+                    appState.currentStep = 'idea'; // Revert state on error
+                } finally {
+                    loadingIndicator.style.display = 'none';
+                    generateScenarioBtn.disabled = false;
+                    updateUI(); // Update UI based on new state
+                }
+            }
+
+            function handleApproveScenario() {
+                if (!appState.scenarioData) return;
+                appState.currentStep = 'scenario_approved';
+                appState.activeTab = 'storyboard'; // Move to storyboard tab
+                updateUI();
+                 // Automatically select the first chapter for storyboard generation
+                 if (storyboardChapterSelect.options.length > 0) {
+                     storyboardChapterSelect.selectedIndex = 0;
+                     storyboardChapterSelect.dispatchEvent(new Event('change')); // Trigger change event
+                 }
+            }
+
+            function handleModifyScenarioRequest() {
+                 scenarioModificationArea.style.display = 'block';
+                 scenarioControls.style.display = 'none'; // Hide main controls when modifying
+            }
+
+            async function handleSubmitScenarioModification() {
+                 const modificationRequest = scenarioModificationInput.value.trim();
+                 if (!modificationRequest) {
+                     alert("Veuillez décrire les modifications souhaitées.");
+                     return;
+                 }
+                 alert("Fonctionnalité de modification non implémentée dans cette version.\nDans une version complète, cela enverrait une nouvelle requête à l'IA avec le scénario actuel et la demande de modification.");
+                  // In a full implementation:
+                  // loadingIndicator.style.display = 'block';
+                  // try {
+                  //    appState.scenarioData = await modifyScenario(appState.scenarioData, modificationRequest, appState.genre, ...);
+                  //    appState.currentStep = 'scenario_generated'; // Back to needing approval
+                  // } catch (error) { ... } finally { ... }
+                  // scenarioModificationArea.style.display = 'none';
+                  // updateUI();
+            }
+
+             async function handleGenerateStoryboardChapter(event) {
+                 const targetButton = event.target;
+                 const chapterIndex = parseInt(targetButton.getAttribute('data-chapter'));
+                 if (isNaN(chapterIndex) || !appState.scenarioData || !appState.scenarioData.chapters[chapterIndex]) {
+                     alert("Erreur: Impossible de trouver les données du scénario pour ce chapitre.");
+                     return;
+                 }
+
+                 loadingIndicator.style.display = 'block';
+                 targetButton.disabled = true;
+
+                 try {
+                     const scenarioChapter = appState.scenarioData.chapters[chapterIndex];
+                     // Need to extract relevant page/panel data for the chapter
+                     const chapterPanelData = [];
+                      scenarioChapter.pages?.forEach(page => {
+                          page.panels?.forEach(panel => {
+                              chapterPanelData.push({
+                                   pageNumber: page.pageNumber,
+                                   panelNumber: panel.panelNumber,
+                                   description: panel.description,
+                                   dialogue: panel.dialogue
+                              });
+                          });
+                      });
+
+                     appState.storyboardData[chapterIndex] = await generateStoryboardChapter(chapterPanelData, appState.style, appState.tone);
+                     appState.currentStep = 'storyboard_chapter_generated'; // Or keep as scenario_approved? Decide state flow.
+                     displayStoryboardChapter(chapterIndex); // Update display immediately
+                 } catch (error) {
+                      console.error(`Storyboard generation error for chapter ${chapterIndex + 1}:`, error);
+                     storyboardOutput.innerHTML = `<p class="text-danger">Erreur lors de la génération du storyboard pour le chapitre ${chapterIndex + 1}: ${error.message}.</p>`;
+                 } finally {
+                      loadingIndicator.style.display = 'none';
+                      targetButton.disabled = false; // Re-enable button or hide it depending on state logic
+                      updateUI();
+                 }
+             }
+
+
+            function handleApproveStoryboardChapter() {
+                const selectedChapterIndex = parseInt(storyboardChapterSelect.value);
+                 if (isNaN(selectedChapterIndex) || !appState.storyboardData[selectedChapterIndex]) {
+                      alert("Veuillez sélectionner un chapitre avec un storyboard généré.");
+                      return;
+                 }
+
+                 if (!appState.approvedChapters.includes(selectedChapterIndex)) {
+                     appState.approvedChapters.push(selectedChapterIndex);
+                 }
+                 appState.currentStep = 'storyboard_chapter_approved'; // Or a state indicating how many are approved
+                 appState.activeTab = 'prompts';
+                 updateUI();
+                  // Automatically select the newly approved chapter in the prompts tab
+                  if (promptsChapterSelect.options.length > 0) {
+                      // Find the option corresponding to the approved chapter
+                      const optionToSelect = Array.from(promptsChapterSelect.options).find(opt => parseInt(opt.value) === selectedChapterIndex);
+                      if(optionToSelect) {
+                           promptsChapterSelect.value = selectedChapterIndex;
+                           promptsChapterSelect.dispatchEvent(new Event('change'));
+                      } else {
+                           // If it's the first approved chapter, refresh the select and select it
+                           updateChapterSelect(promptsChapterSelect, 'prompts');
+                           promptsChapterSelect.value = selectedChapterIndex;
+                           promptsChapterSelect.dispatchEvent(new Event('change'));
+                      }
+                  }
+            }
+
+             async function handleGeneratePromptsChapter(event) {
+                 const targetButton = event.target;
+                 const chapterIndex = parseInt(targetButton.getAttribute('data-chapter'));
+                  if (isNaN(chapterIndex) || !appState.storyboardData[chapterIndex]) {
+                     alert("Erreur: Impossible de trouver les données du storyboard pour ce chapitre.");
+                     return;
+                 }
+
+                 loadingIndicator.style.display = 'block';
+                 targetButton.disabled = true;
+
+                 try {
+                     appState.promptsData[chapterIndex] = await generatePromptsForChapter(appState.storyboardData[chapterIndex], appState.style, appState.tone);
+                     appState.currentStep = 'prompts_generated'; // Or track per chapter
+                      displayPromptsChapter(chapterIndex); // Update display
+                 } catch (error) {
+                      console.error(`Prompts generation error for chapter ${chapterIndex + 1}:`, error);
+                     promptsOutput.innerHTML = `<p class="text-danger">Erreur lors de la génération des prompts pour le chapitre ${chapterIndex + 1}: ${error.message}.</p>`;
+                 } finally {
+                      loadingIndicator.style.display = 'none';
+                      targetButton.disabled = false; // Or hide
+                      updateUI();
+                 }
+             }
+
+
+            // --- Event Listeners ---
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (this.classList.contains('disabled')) return; // Prevent clicking disabled tabs
+                    const tabId = this.getAttribute('data-tab');
+                    appState.activeTab = tabId;
+                    updateUI(); // Use updateUI to manage active classes
+                });
+            });
+
+            generateScenarioBtn.addEventListener('click', handleGenerateScenario);
+            approveScenarioBtn.addEventListener('click', handleApproveScenario);
+            modifyScenarioRequestBtn.addEventListener('click', handleModifyScenarioRequest);
+            submitScenarioModificationBtn.addEventListener('click', handleSubmitScenarioModification);
+             // TODO: Add listener for regenerateScenarioBtn
+
+             storyboardChapterSelect.addEventListener('change', function() {
+                  updateUI(); // Refresh storyboard display on chapter change
+             });
+            approveStoryboardChapterBtn.addEventListener('click', handleApproveStoryboardChapter);
+             // TODO: Add listeners for storyboard modification/regeneration
+
+             promptsChapterSelect.addEventListener('change', function() {
+                  updateUI(); // Refresh prompts display on chapter change
+             });
+
+             // Session Management Listeners (Adapted)
+             document.getElementById('new-session').addEventListener('click', function() {
+                 if (confirm('Êtes-vous sûr de vouloir créer une nouvelle session ? Toutes les données non sauvegardées seront perdues.')) {
+                      // Reset state to initial
+                      appState = {
+                          currentStep: 'idea', scenarioData: null, storyboardData: {}, promptsData: {}, approvedChapters: [],
+                          keywords: '', genre: '', style: '', tone: '', details: '', activeTab: 'home'
+                      };
+                      // Clear inputs
+                      keywordsInput.value = '';
+                      genreSelect.selectedIndex = 0;
+                      styleSelect.selectedIndex = 0;
+                      toneSelect.selectedIndex = 0;
+                      detailsInput.value = '';
+                      // Reset outputs
+                      scenarioOutput.innerHTML = '<p>Générez d\'abord un scénario...</p>';
+                      storyboardOutput.innerHTML = '<p>Approuvez d\'abord le scénario...</p>';
+                      promptsOutput.innerHTML = '<p>Approuvez d\'abord le storyboard...</p>';
+                      updateUI();
+                 }
+             });
+
+            document.getElementById('save-session').addEventListener('click', function() {
+                 // Include appState in session data
+                const sessionData = {
+                    inputs: {
+                        keywords: keywordsInput.value,
+                        genre: genreSelect.value,
+                        style: styleSelect.value,
+                        tone: toneSelect.value,
+                        details: detailsInput.value
+                    },
+                    state: appState // Save the entire state object
+                };
+
+                const sessionName = prompt('Donnez un nom à cette session:');
+                if (sessionName) {
+                    try {
+                         localStorage.setItem(`bdcreator_session_${sessionName}`, JSON.stringify(sessionData));
+                         alert(`Session "${sessionName}" sauvegardée avec succès!`);
+                    } catch (e) {
+                         alert(`Erreur lors de la sauvegarde: ${e.message}. L'espace de stockage est peut-être plein.`);
+                         console.error("Local storage save error:", e);
+                    }
                 }
             });
-            
+
+             document.getElementById('load-session').addEventListener('click', function() {
+                 const sessions = [];
+                 for (let i = 0; i < localStorage.length; i++) {
+                     const key = localStorage.key(i);
+                     if (key.startsWith('bdcreator_session_')) {
+                         sessions.push(key.replace('bdcreator_session_', ''));
+                     }
+                 }
+
+                 if (sessions.length === 0) {
+                     alert('Aucune session sauvegardée trouvée.');
+                     return;
+                 }
+
+                 const sessionName = prompt(`Choisissez une session à charger (${sessions.join(', ')}):`, sessions[0]);
+                 if (sessionName && sessions.includes(sessionName)) {
+                     try {
+                          const sessionData = JSON.parse(localStorage.getItem(`bdcreator_session_${sessionName}`));
+
+                          // Restore inputs
+                          keywordsInput.value = sessionData.inputs.keywords || '';
+                          genreSelect.value = sessionData.inputs.genre || 'Fantastique';
+                          styleSelect.value = sessionData.inputs.style || 'Manga';
+                          toneSelect.value = sessionData.inputs.tone || 'Épique';
+                          detailsInput.value = sessionData.inputs.details || '';
+
+                          // Restore state
+                          appState = sessionData.state;
+
+                          alert(`Session "${sessionName}" chargée avec succès!`);
+                          updateUI(); // Update UI with loaded state
+                     } catch (e) {
+                          alert(`Erreur lors du chargement de la session "${sessionName}": ${e.message}`);
+                          console.error("Load session error:", e);
+                     }
+                 }
+             });
+
+
             // Correction du lien "Create my website"
             document.getElementById('create-website-btn').addEventListener('click', function(e) {
                 e.preventDefault();
-                alert('Cette fonctionnalité sera bientôt disponible!');
+                alert('Cette fonctionnalité de création de site externe n\'est pas incluse dans BD Creator.');
             });
-            
-            // Génération de scénario
-            document.getElementById('generate-scenario').addEventListener('click', function() {
-                const keywords = document.getElementById('keywords').value.trim();
-                if (!keywords) {
-                    alert('Veuillez entrer des mots-clés pour générer un scénario.');
-                    return;
-                }
-                
-                // Afficher l'indicateur de chargement
-                document.getElementById('loading-indicator').style.display = 'block';
-                
-                // Simuler un délai de traitement
-                setTimeout(() => {
-                    // Générer le contenu
-                    const content = generateStory(keywords);
-                    
-                    // Mettre à jour les onglets avec le contenu généré
-                    document.getElementById('scenario-content').innerHTML = content.scenario;
-                    document.getElementById('storyboard-content').innerHTML = content.storyboard;
-                    document.getElementById('prompts-content').innerHTML = content.prompts;
-                    
-                    // Masquer l'indicateur de chargement
-                    document.getElementById('loading-indicator').style.display = 'none';
-                    
-                    // Passer à l'onglet Scénario
-                    document.querySelector('[data-tab="scenario"]').click();
-                }, 2000);
-            });
-            
-            // Fonction de génération d'histoire
-            function generateStory(keywords) {
-                // Créer un facteur d'aléatoire basé sur l'horodatage et un nombre aléatoire
-                const randomSeed = Date.now() + Math.floor(Math.random() * 1000000);
-                
-                // Extraire les mots-clés
-                const keywordsList = keywords.split(',').map(k => k.trim());
-                
-                // Générer un titre aléatoire
-                const titles = [
-                    `Les Chroniques de ${getRandomElement(keywordsList, randomSeed)}`,
-                    `Le Secret de ${getRandomElement(keywordsList, randomSeed)}`,
-                    `${getRandomElement(keywordsList, randomSeed)} : Une Aventure Extraordinaire`,
-                    `La Quête de ${getRandomElement(keywordsList, randomSeed)}`,
-                    `${getRandomElement(keywordsList, randomSeed)} et le Mystère de ${getRandomElement(keywordsList, randomSeed)}`,
-                    `L'Odyssée de ${getRandomElement(keywordsList, randomSeed)}`,
-                    `Le Monde de ${getRandomElement(keywordsList, randomSeed)}`
-                ];
-                
-                const title = getRandomElement(titles, randomSeed);
-                
-                // Générer des personnages
-                const characterTypes = [
-                    'un héros courageux', 'une héroïne intrépide', 'un scientifique brillant', 
-                    'une détective perspicace', 'un enfant curieux', 'une artiste talentueuse',
-                    'un voyageur du temps', 'une guerrière redoutable', 'un magicien puissant',
-                    'une exploratrice audacieuse', 'un robot sensible', 'une créature mystérieuse'
-                ];
-                
-                const mainCharacter = getRandomElement(characterTypes, randomSeed);
-                const secondaryCharacter = getRandomElement(characterTypes, randomSeed + 1);
-                
-                // Générer des lieux
-                const locations = [
-                    'une cité futuriste', 'un village médiéval', 'une forêt enchantée',
-                    'une planète lointaine', 'un laboratoire secret', 'une école de magie',
-                    'un monde parallèle', 'une métropole grouillante', 'un désert infini',
-                    'une île mystérieuse', 'un vaisseau spatial', 'un royaume oublié'
-                ];
-                
-                const mainLocation = getRandomElement(locations, randomSeed + 2);
-                
-                // Générer des thèmes
-                const themes = [
-                    'l\'amitié', 'la trahison', 'la rédemption', 'la découverte de soi',
-                    'le courage face à l\'adversité', 'la lutte contre l\'injustice',
-                    'la préservation de la nature', 'l\'exploration de l\'inconnu',
-                    'la réconciliation', 'le pouvoir de l\'imagination', 'la famille',
-                    'le dépassement de soi'
-                ];
-                
-                const mainTheme = getRandomElement(themes, randomSeed + 3);
-                const secondaryTheme = getRandomElement(themes, randomSeed + 4);
-                
-                // Générer l'introduction
-                const introduction = `
-                <div class="scenario-section">
-                    <h3>Introduction</h3>
-                    <p>Dans ${mainLocation} où ${getRandomElement(keywordsList, randomSeed)} et ${getRandomElement(keywordsList, randomSeed + 5)} se côtoient, nous suivons l'histoire de ${mainCharacter} qui va vivre une aventure extraordinaire. Cette histoire explore les thèmes de ${mainTheme} et ${secondaryTheme}, tout en nous plongeant dans un univers où l'imagination n'a pas de limites.</p>
-                    
-                    <p>Notre récit commence par une journée qui semblait ordinaire, mais qui allait changer à jamais le destin de notre protagoniste. Un événement inattendu lié à ${getRandomElement(keywordsList, randomSeed + 6)} bouleverse sa vie paisible, le forçant à quitter sa zone de confort pour se lancer dans une quête périlleuse.</p>
-                </div>`;
-                
-                // Générer l'idée principale
-                const mainIdea = `
-                <div class="scenario-section">
-                    <h3>Développement de l'idée principale</h3>
-                    <p>${title} raconte l'histoire de ${mainCharacter} qui vit dans ${mainLocation}. Un jour, un événement extraordinaire impliquant ${getRandomElement(keywordsList, randomSeed + 7)} vient perturber sa vie quotidienne. Notre protagoniste découvre qu'il possède un lien spécial avec ${getRandomElement(keywordsList, randomSeed + 8)}, ce qui le place au centre d'un conflit plus grand que lui.</p>
-                    
-                    <p>Accompagné de ${secondaryCharacter}, il devra surmonter de nombreux obstacles, affronter ses peurs les plus profondes et découvrir la vérité sur ${getRandomElement(keywordsList, randomSeed + 9)}. Au cours de son voyage, il explorera des lieux fascinants, rencontrera des personnages hauts en couleur et apprendra d'importantes leçons sur ${mainTheme}.</p>
-                    
-                    <p>Cette histoire explore comment les choix que nous faisons définissent qui nous sommes, et comment le courage peut naître dans les moments les plus inattendus. Elle nous rappelle que même dans les situations les plus désespérées, l'espoir et la persévérance peuvent triompher.</p>
-                </div>`;
-                
-                // Générer le synopsis
-                const synopsis = `
-                <div class="scenario-section">
-                    <h3>Synopsis</h3>
-                    <p>Dans un monde où ${getRandomElement(keywordsList, randomSeed + 10)} est omniprésent, ${mainCharacter} mène une existence tranquille jusqu'au jour où un mystérieux artefact lié à ${getRandomElement(keywordsList, randomSeed + 11)} entre en sa possession. Cet objet attire l'attention de forces obscures qui convoitent son pouvoir pour des raisons néfastes.</p>
-                    
-                    <p>Contraint de fuir, notre héros rencontre ${secondaryCharacter} qui détient des connaissances cruciales sur l'artefact et son histoire. Ensemble, ils entreprennent un périple à travers ${mainLocation} et au-delà, poursuivis par un antagoniste redoutable déterminé à s'emparer de l'artefact à tout prix.</p>
-                    
-                    <p>Au fil de leur voyage, ils découvrent que l'artefact est en réalité une clé permettant d'accéder à un pouvoir ancien lié à ${getRandomElement(keywordsList, randomSeed + 12)}. Ils comprennent également que leur rencontre n'est pas due au hasard, mais fait partie d'une prophétie ancienne qui prédit que seule leur alliance peut sauver le monde d'une catastrophe imminente.</p>
-                    
-                    <p>Après de nombreuses épreuves qui mettent à l'épreuve leur courage et leur amitié, ils parviennent à déjouer les plans du villain et à utiliser l'artefact pour restaurer l'équilibre. Cependant, cette victoire a un prix, et notre héros doit faire un choix déchirant qui changera à jamais le cours de sa vie.</p>
-                </div>`;
-                
-                // Générer les chapitres
-                const chapters = [];
-                const numChapters = 3 + (randomSeed % 3); // Entre 3 et 5 chapitres
-                
-                for (let i = 1; i <= numChapters; i++) {
-                    const chapterEvents = [
-                        `la découverte d'un secret lié à ${getRandomElement(keywordsList, randomSeed + i * 10)}`,
-                        `une confrontation avec un adversaire qui maîtrise ${getRandomElement(keywordsList, randomSeed + i * 10 + 1)}`,
-                        `l'exploration d'un lieu mystérieux où ${getRandomElement(keywordsList, randomSeed + i * 10 + 2)} règne en maître`,
-                        `une alliance inattendue avec un personnage lié à ${getRandomElement(keywordsList, randomSeed + i * 10 + 3)}`,
-                        `la résolution d'une énigme ancienne concernant ${getRandomElement(keywordsList, randomSeed + i * 10 + 4)}`,
-                        `un sacrifice nécessaire pour protéger ${getRandomElement(keywordsList, randomSeed + i * 10 + 5)}`
-                    ];
-                    
-                    const chapterLocations = [
-                        `un temple abandonné`, `une cité souterraine`, `une forteresse imprenable`,
-                        `un marché grouillant de vie`, `un palais somptueux`, `une bibliothèque ancienne`,
-                        `un laboratoire secret`, `une arène de combat`, `un navire volant`,
-                        `une prison de haute sécurité`, `un jardin enchanté`, `une tour qui touche les nuages`
-                    ];
-                    
-                    const chapterEvent = getRandomElement(chapterEvents, randomSeed + i * 20);
-                    const chapterLocation = getRandomElement(chapterLocations, randomSeed + i * 20 + 5);
-                    
-                    const chapter = `
-                    <div class="scenario-chapter">
-                        <h4>Chapitre ${i}: ${getRandomChapterTitle(keywordsList, randomSeed + i * 30)}</h4>
-                        
-                        <p><strong>Synopsis:</strong> Ce chapitre se concentre sur ${chapterEvent}. Nos héros se retrouvent dans ${chapterLocation} où ils doivent faire face à de nouveaux défis et découvrir des indices cruciaux pour leur quête.</p>
-                        
-                        <p><strong>Séquencier:</strong> Le chapitre commence par l'arrivée des protagonistes à ${chapterLocation}, où ils sont immédiatement confrontés à un obstacle inattendu. Après avoir surmonté cette première difficulté, ils explorent les lieux et découvrent des informations importantes. Une rencontre avec un personnage mystérieux leur révèle de nouvelles perspectives sur leur quête. Le chapitre culmine avec ${chapterEvent}, qui change leur compréhension de la situation et les pousse à prendre une décision importante pour la suite de leur aventure.</p>
-                        
-                        <p><strong>Découpage:</strong> Ce chapitre se déroule sur 6 pages, avec une moyenne de 5 cases par page. Les moments clés incluent l'arrivée spectaculaire à ${chapterLocation} (page 1), la découverte d'indices cachés (page 3), une confrontation tendue avec un adversaire ou un allié potentiel (page 4-5), et une révélation surprenante qui conclut le chapitre (page 6).</p>
-                        
-                        <p><strong>Dialogues clés:</strong></p>
-                        <ul>
-                            <li>"Je n'aurais jamais cru que ${getRandomElement(keywordsList, randomSeed + i * 40)} puisse être lié à tout ceci..."</li>
-                            <li>"La prophétie parlait de ${getRandomElement(keywordsList, randomSeed + i * 40 + 1)}, mais pas de ce que nous venons de découvrir!"</li>
-                            <li>"Si nous ne trouvons pas ${getRandomElement(keywordsList, randomSeed + i * 40 + 2)} avant le prochain cycle, tout sera perdu."</li>
-                            <li>"Je commence à croire que notre rencontre n'était pas un hasard, mais plutôt le début d'une histoire écrite bien avant notre naissance."</li>
-                        </ul>
-                    </div>`;
-                    
-                    chapters.push(chapter);
-                }
-                
-                // Générer la conclusion
-                const conclusion = `
-                <div class="scenario-section">
-                    <h3>Conclusion</h3>
-                    <p>Au terme de cette aventure extraordinaire, notre héros a non seulement accompli sa quête initiale, mais a également découvert des vérités profondes sur lui-même et sur le monde qui l'entoure. La confrontation finale avec l'antagoniste révèle que le véritable enjeu n'était pas tant l'artefact lui-même, mais ce qu'il représente: le pouvoir de ${getRandomElement(keywordsList, randomSeed + 100)}.</p>
-                    
-                    <p>Après un combat épique où toutes les forces en présence donnent leur maximum, notre héros parvient à triompher grâce à sa compréhension nouvellement acquise de ${getRandomElement(keywordsList, randomSeed + 101)} et à l'aide précieuse de ses alliés. L'équilibre est restauré, mais le monde ne sera plus jamais le même.</p>
-                    
-                    <p>Dans les dernières pages, nous voyons notre protagoniste contemplant l'horizon, transformé par son voyage. Il a appris que ${mainTheme} et ${secondaryTheme} sont des forces qui peuvent changer le monde, et que chaque individu a le pouvoir de faire une différence. L'histoire se termine sur une note d'espoir, suggérant que de nouvelles aventures attendent nos héros, mais qu'ils sont désormais prêts à y faire face ensemble.</p>
-                    
-                    <p>Cette conclusion rappelle au lecteur que les véritables trésors ne sont pas les objets que nous cherchons, mais les leçons que nous apprenons et les liens que nous tissons en chemin. ${title} est ainsi une célébration de l'esprit humain et de sa capacité à surmonter les obstacles les plus insurmontables.</p>
-                </div>`;
-                
-                // Assembler le scénario complet
-                const fullScenario = `
-                <h3>${title}</h3>
-                ${introduction}
-                ${mainIdea}
-                ${synopsis}
-                ${chapters.join('')}
-                ${conclusion}`;
-                
-                // Générer le storyboard
-                const storyboard = generateStoryboard(title, keywordsList, randomSeed);
-                
-                // Générer les prompts Midjourney
-                const prompts = generatePrompts(title, keywordsList, randomSeed);
-                
-                return {
-                    scenario: fullScenario,
-                    storyboard: storyboard,
-                    prompts: prompts
-                };
-            }
-            
-            // Fonction pour générer un titre de chapitre aléatoire
-            function getRandomChapterTitle(keywords, seed) {
-                const titles = [
-                    `La Découverte de ${getRandomElement(keywords, seed)}`,
-                    `Le Secret de ${getRandomElement(keywords, seed + 1)}`,
-                    `La Confrontation`,
-                    `L'Alliance Inattendue`,
-                    `La Trahison`,
-                    `La Révélation`,
-                    `Le Voyage vers ${getRandomElement(keywords, seed + 2)}`,
-                    `L'Épreuve du ${getRandomElement(keywords, seed + 3)}`,
-                    `La Prophétie Accomplie`,
-                    `Le Choix Impossible`,
-                    `La Dernière Chance`,
-                    `L'Héritage de ${getRandomElement(keywords, seed + 4)}`
-                ];
-                
-                return getRandomElement(titles, seed);
-            }
-            
-            // Fonction pour générer le storyboard
-            function generateStoryboard(title, keywords, seed) {
-                let storyboard = `<h3>Storyboard pour "${title}"</h3>`;
-                
-                // Générer 6-8 pages
-                const numPages = 6 + (seed % 3); // Entre 6 et 8 pages
-                
-                for (let i = 1; i <= numPages; i++) {
-                    const numCases = 3 + (seed % 5); // Entre 3 et 7 cases par page
-                    
-                    storyboard += `
-                    <div class="storyboard-page">
-                        <h4>Page ${i}</h4>
-                        <p><strong>Description générale:</strong> ${getRandomPageDescription(keywords, seed + i * 100)}</p>
-                        <p><strong>Ambiance:</strong> ${getRandomAmbiance(seed + i * 100 + 50)}</p>
-                        <p><strong>Cases:</strong></p>
-                        <ol>`;
-                    
-                    for (let j = 1; j <= numCases; j++) {
-                        storyboard += `
-                            <li>
-                                <p><strong>Case ${j}:</strong> ${getRandomCaseDescription(keywords, seed + i * 1000 + j * 10)}</p>
-                                <p><strong>Personnages:</strong> ${getRandomCharacterDescription(seed + i * 1000 + j * 10 + 5)}</p>
-                                <p><strong>Dialogue:</strong> "${getRandomDialogue(keywords, seed + i * 1000 + j * 10 + 7)}"</p>
-                            </li>`;
-                    }
-                    
-                    storyboard += `
-                        </ol>
-                    </div>`;
-                }
-                
-                return storyboard;
-            }
-            
-            // Fonction pour générer les prompts Midjourney
-            function generatePrompts(title, keywords, seed) {
-                let promptsHTML = `<h3>Prompts Midjourney pour "${title}"</h3>`;
-                
-                // Générer 5-8 prompts
-                const numPrompts = 5 + (seed % 4); // Entre 5 et 8 prompts
-                
-                for (let i = 1; i <= numPrompts; i++) {
-                    const promptScene = getRandomPromptScene(keywords, seed + i * 200);
-                    const promptStyle = getRandomPromptStyle(seed + i * 200 + 50);
-                    const promptMood = getRandomPromptMood(seed + i * 200 + 100);
-                    
-                    // Générer le prompt en anglais
-                    const englishPrompt = `${promptScene}, ${promptStyle}, ${promptMood}, detailed, high quality, 4k`;
-                    
-                    promptsHTML += `
-                    <div class="prompt-item">
-                        <h4>Prompt ${i}: ${getRandomElement(keywords, seed + i * 300)}</h4>
-                        <p><strong>Description en français:</strong> Une illustration montrant ${promptScene}, avec un style ${promptStyle} et une ambiance ${promptMood}.</p>
-                        <p><strong>Prompt Midjourney (en anglais):</strong></p>
-                        <pre>${englishPrompt}</pre>
-                    </div>`;
-                }
-                
-                return promptsHTML;
-            }
-            
-            // Fonctions utilitaires pour la génération aléatoire
-            function getRandomElement(array, seed) {
-                const index = Math.abs(Math.sin(seed) * 10000) % array.length;
-                return array[Math.floor(index)];
-            }
-            
-            function getRandomPageDescription(keywords, seed) {
-                const descriptions = [
-                    `Cette page introduit le décor principal et présente ${getRandomElement(keywords, seed)} dans son environnement naturel.`,
-                    `Un moment de tension où les personnages découvrent un indice crucial lié à ${getRandomElement(keywords, seed + 1)}.`,
-                    `Une scène d'action intense où les protagonistes affrontent des adversaires utilisant ${getRandomElement(keywords, seed + 2)}.`,
-                    `Un moment émotionnel où les personnages réfléchissent sur leur quête et leur lien avec ${getRandomElement(keywords, seed + 3)}.`,
-                    `Une révélation surprenante concernant l'origine de ${getRandomElement(keywords, seed + 4)} qui change tout.`,
-                    `Une scène de transition montrant le voyage des héros vers un nouveau lieu où ${getRandomElement(keywords, seed + 5)} est omniprésent.`,
-                    `Un flashback révélant l'histoire ancienne de ${getRandomElement(keywords, seed + 6)} et son importance dans l'intrigue.`,
-                    `La préparation d'un plan audacieux impliquant l'utilisation de ${getRandomElement(keywords, seed + 7)} de manière inattendue.`
-                ];
-                
-                return getRandomElement(descriptions, seed);
-            }
-            
-            function getRandomAmbiance(seed) {
-                const ambiances = [
-                    'mystérieuse et inquiétante', 'lumineuse et pleine d\'espoir',
-                    'tendue et oppressante', 'mélancolique et nostalgique',
-                    'dynamique et énergique', 'sereine et contemplative',
-                    'chaotique et désordonnée', 'majestueuse et impressionnante',
-                    'intime et émotionnelle', 'étrange et surréaliste'
-                ];
-                
-                return getRandomElement(ambiances, seed);
-            }
-            
-            function getRandomCaseDescription(keywords, seed) {
-                const descriptions = [
-                    `Gros plan sur un personnage réagissant à la découverte de ${getRandomElement(keywords, seed)}.`,
-                    `Vue d'ensemble d'un paysage où ${getRandomElement(keywords, seed + 1)} domine l'horizon.`,
-                    `Séquence d'action montrant l'utilisation spectaculaire de ${getRandomElement(keywords, seed + 2)}.`,
-                    `Moment intime entre deux personnages discutant de l'importance de ${getRandomElement(keywords, seed + 3)}.`,
-                    `Plan détaillé d'un artefact ou objet lié à ${getRandomElement(keywords, seed + 4)}.`,
-                    `Confrontation entre le protagoniste et un adversaire, avec ${getRandomElement(keywords, seed + 5)} au centre du conflit.`,
-                    `Scène de révélation où un secret concernant ${getRandomElement(keywords, seed + 6)} est dévoilé.`,
-                    `Moment de transformation où un personnage établit une connexion avec ${getRandomElement(keywords, seed + 7)}.`
-                ];
-                
-                return getRandomElement(descriptions, seed);
-            }
-            
-            function getRandomCharacterDescription(seed) {
-                const descriptions = [
-                    'Le protagoniste affiche une expression déterminée, prêt à affronter le danger.',
-                    'Le personnage secondaire semble inquiet, ses yeux scrutant les environs avec méfiance.',
-                    'L\'antagoniste arbore un sourire malveillant, savourant sa position de force.',
-                    'Un nouveau personnage mystérieux observe la scène depuis les ombres.',
-                    'Le mentor du héros montre une expression sage et bienveillante.',
-                    'Le protagoniste est blessé mais résolu, refusant d\'abandonner malgré l\'adversité.',
-                    'Deux personnages se font face, leurs expressions révélant une tension palpable.',
-                    'Un groupe de personnages collabore, chacun apportant ses compétences uniques.',
-                    'Le personnage principal est en pleine réflexion, son regard perdu dans le vide.',
-                    'Un personnage secondaire révèle sa vraie nature, surprenant tous ceux autour de lui.'
-                ];
-                
-                return getRandomElement(descriptions, seed);
-            }
-            
-            function getRandomDialogue(keywords, seed) {
-                const dialogues = [
-                    `Je n'aurais jamais cru que ${getRandomElement(keywords, seed)} puisse être aussi puissant.`,
-                    `Si nous ne trouvons pas ${getRandomElement(keywords, seed + 1)} avant le coucher du soleil, tout sera perdu.`,
-                    `Tu ne comprends pas l'importance de ${getRandomElement(keywords, seed + 2)}, n'est-ce pas?`,
-                    `J'ai consacré ma vie à étudier ${getRandomElement(keywords, seed + 3)}, et maintenant tout prend sens.`,
-                    `Nous devons protéger ${getRandomElement(keywords, seed + 4)} à tout prix, l'avenir en dépend.`,
-                    `La prophétie parlait de ${getRandomElement(keywords, seed + 5)}, mais pas de ce que nous venons de découvrir!`,
-                    `Je commence à croire que ${getRandomElement(keywords, seed + 6)} n'est qu'une partie d'un mystère bien plus grand.`,
-                    `Ensemble, nous pouvons utiliser ${getRandomElement(keywords, seed + 7)} pour changer le cours de l'histoire.`
-                ];
-                
-                return getRandomElement(dialogues, seed);
-            }
-            
-            function getRandomPromptScene(keywords, seed) {
-                // En anglais pour Midjourney
-                const scenes = [
-                    `a hero discovering ${translateToEnglish(getRandomElement(keywords, seed))} in a mysterious temple`,
-                    `a battle scene with ${translateToEnglish(getRandomElement(keywords, seed + 1))} in the background`,
-                    `a character using ${translateToEnglish(getRandomElement(keywords, seed + 2))} powers`,
-                    `a majestic landscape with ${translateToEnglish(getRandomElement(keywords, seed + 3))} as the focal point`,
-                    `two characters discussing the importance of ${translateToEnglish(getRandomElement(keywords, seed + 4))}`,
-                    `a close-up of an ancient artifact related to ${translateToEnglish(getRandomElement(keywords, seed + 5))}`,
-                    `a character transforming due to the influence of ${translateToEnglish(getRandomElement(keywords, seed + 6))}`,
-                    `a dramatic confrontation between good and evil with ${translateToEnglish(getRandomElement(keywords, seed + 7))} at stake`
-                ];
-                
-                return getRandomElement(scenes, seed);
-            }
-            
-            function getRandomPromptStyle(seed) {
-                // En anglais pour Midjourney
-                const styles = [
-                    'comic book style', 'manga art', 'realistic digital painting',
-                    'watercolor illustration', 'cinematic rendering', 'concept art',
-                    'fantasy illustration', 'sci-fi art', 'steampunk aesthetic',
-                    'noir comic style', 'vibrant cartoon', 'detailed line art'
-                ];
-                
-                return getRandomElement(styles, seed);
-            }
-            
-            function getRandomPromptMood(seed) {
-                // En anglais pour Midjourney
-                const moods = [
-                    'dramatic lighting', 'mysterious atmosphere', 'epic scene',
-                    'emotional moment', 'tense standoff', 'serene environment',
-                    'dynamic action', 'heroic pose', 'ominous setting',
-                    'hopeful dawn', 'magical aura', 'dystopian world'
-                ];
-                
-                return getRandomElement(moods, seed);
-            }
-            
-            // Fonction simple de traduction (simulation)
-            function translateToEnglish(word) {
-                // Dans un environnement réel, on utiliserait une API de traduction
-                // Ici, on simule une traduction basique
-                const translations = {
-                    'aventure': 'adventure',
-                    'spatiale': 'space',
-                    'robots': 'robots',
-                    'amitié': 'friendship',
-                    'magie': 'magic',
-                    'dragon': 'dragon',
-                    'futur': 'future',
-                    'mystère': 'mystery',
-                    'voyage': 'journey',
-                    'temps': 'time',
-                    'héros': 'hero',
-                    'bataille': 'battle',
-                    'amour': 'love',
-                    'science': 'science',
-                    'fiction': 'fiction',
-                    'fantastique': 'fantasy',
-                    'médiéval': 'medieval',
-                    'moderne': 'modern',
-                    'apocalypse': 'apocalypse',
-                    'nature': 'nature',
-                    'technologie': 'technology',
-                    'histoire': 'story',
-                    'aventurier': 'adventurer',
-                    'explorateur': 'explorer',
-                    'guerrier': 'warrior',
-                    'magicien': 'wizard',
-                    'princesse': 'princess',
-                    'roi': 'king',
-                    'reine': 'queen',
-                    'chevalier': 'knight',
-                    'monstre': 'monster',
-                    'créature': 'creature',
-                    'alien': 'alien',
-                    'extraterrestre': 'extraterrestrial',
-                    'vaisseau': 'spaceship',
-                    'épée': 'sword',
-                    'bouclier': 'shield',
-                    'arme': 'weapon',
-                    'pouvoir': 'power',
-                    'forêt': 'forest',
-                    'montagne': 'mountain',
-                    'océan': 'ocean',
-                    'désert': 'desert',
-                    'ville': 'city',
-                    'château': 'castle',
-                    'planète': 'planet',
-                    'galaxie': 'galaxy',
-                    'univers': 'universe',
-                    'dimension': 'dimension',
-                    'portail': 'portal',
-                    'quête': 'quest',
-                    'mission': 'mission',
-                    'destin': 'destiny',
-                    'prophétie': 'prophecy',
-                    'légende': 'legend',
-                    'mythe': 'myth',
-                    'ancien': 'ancient',
-                    'futuriste': 'futuristic',
-                    'cyberpunk': 'cyberpunk',
-                    'steampunk': 'steampunk',
-                    'post-apocalyptique': 'post-apocalyptic'
-                };
-                
-                // Si la traduction existe, la retourner, sinon retourner le mot original
-                return translations[word.toLowerCase()] || word;
-            }
+
+            // --- Initial UI Setup ---
+            updateUI();
+
         });
     </script>
+
 </body>
 </html>
