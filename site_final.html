@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BD Creator - Créez des bandes dessinées avec l'IA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2196F3;
+            --secondary-color: #FF9800;
+            --dark-color: #333;
+            --light-color: #f4f4f4;
+            --danger-color: #dc3545;
+            --success-color: #28a745;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: var(--secondary-color);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #64b5f6 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background: #e68a00;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background: #0b7dda;
+        }
+
+        .features {
+            padding: 4rem 0;
+            background-color: white;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+        }
+
+        .section-title p {
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+
+        .feature-card p {
+            color: #666;
+        }
+
+        .how-it-works {
+            padding: 4rem 0;
+            background-color: #f8f9fa;
+        }
+
+        .steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            flex: 1;
+            min-width: 250px;
+            max-width: 350px;
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 1.5rem;
+        }
+
+        .step h3 {
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+
+        .step p {
+            color: #666;
+        }
+
+        .app {
+            padding: 4rem 0;
+            background-color: white;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 1rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            margin: 0 0.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            transition: background 0.3s, color 0.3s;
+            font-weight: 500;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 2rem;
+            background: white;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .input-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        footer p {
+            margin-bottom: 1rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        @media (max-width: 768px) {
+            header .container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav ul {
+                margin-top: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .step {
+                margin-bottom: 2rem;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab-btn {
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        /* Styles spécifiques pour l'application */
+        .scenario-section, .scenario-chapter {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .scenario-chapter h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .storyboard-page {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .prompt-item {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .prompt-item pre {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+
+        .session-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .session-controls button {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-book-open"></i>
+                <span>BD Creator</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#features">Fonctionnalités</a></li>
+                    <li><a href="#how-it-works">Comment ça marche</a></li>
+                    <li><a href="#app">Créer ma BD</a></li>
+                    <li><a href="#" id="login-btn">Connexion</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Créez des bandes dessinées incroyables avec l'IA</h1>
+            <p>Transformez vos idées en scénarios complets, storyboards détaillés et prompts optimisés pour Midjourney en quelques clics.</p>
+            <a href="#app" class="btn">Commencer maintenant</a>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Fonctionnalités</h2>
+                <p>Découvrez les outils puissants qui vous aideront à créer des bandes dessinées professionnelles sans effort.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-brain"></i>
+                    <h3>Génération de scénarios</h3>
+                    <p>Créez des scénarios complets et détaillés à partir de simples mots-clés grâce à notre IA avancée. Obtenez une histoire structurée avec introduction, développement et conclusion.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-pencil-alt"></i>
+                    <h3>Storyboard automatique</h3>
+                    <p>Transformez votre scénario en storyboard détaillé avec des descriptions de pages et de cases. Notre système vous aide à visualiser votre histoire avant même de commencer à dessiner.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-image"></i>
+                    <h3>Prompts Midjourney</h3>
+                    <p>Générez des prompts optimisés pour Midjourney afin de créer des illustrations professionnelles pour chaque case de votre BD. Obtenez des résultats cohérents et de haute qualité.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-save"></i>
+                    <h3>Sauvegarde de sessions</h3>
+                    <p>Sauvegardez votre travail à tout moment et reprenez-le plus tard. Gérez plusieurs projets simultanément et organisez vos idées créatives sans perdre votre progression.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-language"></i>
+                    <h3>Support multilingue</h3>
+                    <p>Créez des scénarios en français et obtenez des prompts en anglais pour une utilisation optimale avec Midjourney. Notre système gère automatiquement les traductions nécessaires.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-share-alt"></i>
+                    <h3>Exportation facile</h3>
+                    <p>Exportez votre travail dans différents formats pour le partager ou l'utiliser avec d'autres outils. Intégrez facilement vos créations dans votre flux de travail créatif.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-title">
+                <h2>Comment ça marche</h2>
+                <p>Suivez ces étapes simples pour créer votre bande dessinée avec l'aide de l'IA.</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Entrez vos mots-clés</h3>
+                    <p>Commencez par saisir quelques mots-clés ou une brève description de l'histoire que vous souhaitez créer.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Générez votre scénario</h3>
+                    <p>Notre IA transforme vos mots-clés en un scénario complet avec une structure narrative cohérente et des personnages intéressants.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Visualisez le storyboard</h3>
+                    <p>Explorez le storyboard généré automatiquement qui décompose votre histoire en pages et en cases avec des descriptions détaillées.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Utilisez les prompts</h3>
+                    <p>Copiez les prompts optimisés pour Midjourney et créez des illustrations professionnelles pour chaque case de votre BD.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="app" id="app">
+        <div class="container">
+            <div class="section-title">
+                <h2>Créez votre BD maintenant</h2>
+                <p>Utilisez notre application pour transformer vos idées en bandes dessinées complètes.</p>
+            </div>
+            
+            <div class="session-controls">
+                <button class="btn" id="new-session">Nouvelle session</button>
+                <button class="btn" id="save-session">Sauvegarder la session</button>
+                <button class="btn" id="load-session">Charger une session</button>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="home">Accueil</button>
+                <button class="tab-btn" data-tab="scenario">Scénario</button>
+                <button class="tab-btn" data-tab="storyboard">Storyboard</button>
+                <button class="tab-btn" data-tab="prompts">Prompts</button>
+            </div>
+
+            <div class="tab-content active" id="home-content">
+                <h3>Bienvenue dans BD Creator</h3>
+                <p>Pour commencer, entrez quelques mots-clés qui décrivent l'histoire que vous souhaitez créer. Notre IA générera un scénario complet, un storyboard détaillé et des prompts optimisés pour Midjourney.</p>
+                
+                <div class="input-group">
+                    <label for="keywords">Mots-clés (séparés par des virgules)</label>
+                    <input type="text" id="keywords" placeholder="Ex: aventure spatiale, robots, amitié">
+                </div>
+                
+                <button class="btn btn-primary" id="generate-scenario">Générer un scénario</button>
+            </div>
+
+            <div class="tab-content" id="scenario-content">
+                <h3>Votre scénario</h3>
+                <p>Générez d'abord un scénario depuis l'onglet Accueil.</p>
+            </div>
+
+            <div class="tab-content" id="storyboard-content">
+                <h3>Votre storyboard</h3>
+                <p>Générez d'abord un scénario pour voir le storyboard correspondant.</p>
+            </div>
+
+            <div class="tab-content" id="prompts-content">
+                <h3>Vos prompts Midjourney</h3>
+                <p>Générez d'abord un scénario pour voir les prompts correspondants.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 BD Creator. Tous droits réservés.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+            <div class="footer-links">
+                <a href="#">À propos</a>
+                <a href="#">Confidentialité</a>
+                <a href="#">Conditions d'utilisation</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.0"></script>
+    <script src="story_generator.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion des onglets
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    tabBtns.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    document.getElementById(`${tabId}-content`).classList.add('active');
+                });
+            });
+            
+            // Gestion des sessions
+            const newSessionBtn = document.getElementById('new-session');
+            const saveSessionBtn = document.getElementById('save-session');
+            const loadSessionBtn = document.getElementById('load-session');
+            
+            newSessionBtn.addEventListener('click', function() {
+                if (confirm('Êtes-vous sûr de vouloir créer une nouvelle session ? Toutes les données non sauvegardées seront perdues.')) {
+                    document.getElementById('keywords').value = '';
+                    document.getElementById('scenario-content').innerHTML = '<h3>Votre scénario</h3><p>Générez d\'abord un scénario depuis l\'onglet Accueil.</p>';
+                    document.getElementById('storyboard-content').innerHTML = '<h3>Votre storyboard</h3><p>Générez d\'abord un scénario pour voir le storyboard correspondant.</p>';
+                    document.getElementById('prompts-content').innerHTML = '<h3>Vos prompts Midjourney</h3><p>Générez d\'abord un scénario pour voir les prompts correspondants.</p>';
+                    
+                    document.querySelector('[data-tab="home"]').click();
+                }
+            });
+            
+            saveSessionBtn.addEventListener('click', function() {
+                const sessionData = {
+                    keywords: document.getElementById('keywords').value,
+                    scenario: document.getElementById('scenario-content').innerHTML,
+                    storyboard: document.getElementById('storyboard-content').innerHTML,
+                    prompts: document.getElementById('prompts-content').innerHTML
+                };
+                
+                const sessionName = prompt('Donnez un nom à cette session:');
+                if (sessionName) {
+                    localStorage.setItem(`bdcreator_session_${sessionName}`, JSON.stringify(sessionData));
+                    alert(`Session "${sessionName}" sauvegardée avec succès!`);
+                }
+            });
+            
+            loadSessionBtn.addEventListener('click', function() {
+                const sessions = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key.startsWith('bdcreator_session_')) {
+                        sessions.push(key.replace('bdcreator_session_', ''));
+                    }
+                }
+                
+                if (sessions.length === 0) {
+                    alert('Aucune session sauvegardée trouvée.');
+                    return;
+                }
+                
+                const sessionName = prompt(`Choisissez une session à charger (${sessions.join(', ')}):`, sessions[0]);
+                if (sessionName && sessions.includes(sessionName)) {
+                    const sessionData = JSON.parse(localStorage.getItem(`bdcreator_session_${sessionName}`));
+                    
+                    document.getElementById('keywords').value = sessionData.keywords;
+                    document.getElementById('scenario-content').innerHTML = sessionData.scenario;
+                    document.getElementById('storyboard-content').innerHTML = sessionData.storyboard;
+                    document.getElementById('prompts-content').innerHTML = sessionData.prompts;
+                    
+                    alert(`Session "${sessionName}" chargée avec succès!`);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
