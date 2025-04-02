@@ -40,103 +40,62 @@
      * Generates the main scenario based on user inputs.
      * Aims for a structured output IN FRENCH.
      */
-    async function generateStory(keywords, genre, style, tone, details) {
-        console.log("Starting scenario generation...");
-        const generator = await getPipeline();
+async function generateStory(keywords, genre, style, tone, details) {
+    console.log("Starting SIMPLIFIED story generation test...");
+    const generator = await getPipeline();
 
-        // --- Construct Detailed Prompt for Scenario Structure ---
-        // Added explicit French language enforcement
-        let prompt = `Tâche : Écrire un scénario détaillé pour une bande dessinée. **IMPORTANT : La réponse COMPLÈTE doit être en FRANÇAIS.**\n\n`;
-        prompt += `INPUTS UTILISATEUR :\n`;
-        prompt += `- Idée/Mots-clés : ${keywords}\n`;
-        prompt += `- Genre : ${genre}\n`;
-        prompt += `- Style Visuel Cible (pour info) : ${style}\n`;
-        prompt += `- Ton : ${tone}\n`;
-        if (details) {
-            prompt += `- Détails Additionnels (Personnages, Univers) : ${details}\n`;
+    // --- Prompt TRÈS SIMPLIFIÉ ---
+    let prompt = `Écris une courte histoire (environ 200 mots) en FRANÇAIS sur le sujet suivant : "${keywords}".\n`;
+    prompt += `Genre : ${genre}. Ton : ${tone}.\n`;
+    prompt += `La réponse doit être uniquement en FRANÇAIS.\n\n`;
+    prompt += `HISTOIRE CI-DESSOUS :\n`;
+    prompt += `---------------------\n`;
+
+    console.log("Sending SIMPLIFIED prompt to AI:\n", prompt);
+
+    try {
+        const result = await generator(prompt, {
+            max_new_tokens: 300, // Réduit pour une histoire courte
+            temperature: 0.8,
+            top_p: 0.9,
+            repetition_penalty: 1.1
+        });
+
+        const generatedText = result[0].generated_text.substring(prompt.length).trim();
+        console.log("SIMPLIFIED Raw AI Response:", generatedText);
+
+        // --- Retourner la structure la plus basique possible ---
+        // Pas de parsing complexe ici, juste pour voir si on a du texte français
+        if (generatedText && generatedText.length > 20) {
+             return {
+                  title: "Test Histoire Simple",
+                  synopsis: "N/A",
+                  chapters: [{
+                      chapterNumber: 1,
+                      title: "Texte Brut Généré",
+                      pages: [],
+                      rawContent: generatedText // Mettre le texte brut ici
+                  }]
+             };
+        } else {
+            // Si même ça échoue ou retourne du vide/n'importe quoi
+             return {
+                 title: "Test Échoué",
+                 synopsis: "N/A",
+                 chapters: [{
+                     chapterNumber: 1,
+                     title: "L'IA n'a pas répondu correctement",
+                     pages: [],
+                     rawContent: generatedText || "Aucune réponse de l'IA."
+                 }]
+             };
         }
-        prompt += `\nINSTRUCTIONS (Suivre attentivement) :\n`;
-        prompt += `1. **Langue : ÉCRIS TOUTE LA RÉPONSE EN FRANÇAIS.**\n`;
-        prompt += `2. Crée un titre accrocheur en FRANÇAIS.\n`;
-        prompt += `3. Écris un synopsis court (2-3 paragraphes) en FRANÇAIS.\n`;
-        prompt += `4. Divise l'histoire en 3 à 5 chapitres logiques. Donne un titre à chaque chapitre en FRANÇAIS.\n`;
-        prompt += `5. Pour CHAQUE chapitre, détaille le contenu page par page (vise 5-8 pages par chapitre) en FRANÇAIS.\n`;
-        prompt += `6. Pour CHAQUE page, décris le contenu de 3 à 6 cases (panels) en FRANÇAIS.\n`;
-        prompt += `7. Pour CHAQUE case, fournis IMPÉRATIVEMENT en FRANÇAIS :\n`;
-        prompt += `   - Description visuelle concise (ce qu'on voit : décor, action, personnages).\n`;
-        prompt += `   - Dialogue (si présent, entre guillemets).\n`;
-        prompt += `   - Pensées (si présentes, entre parenthèses et en italique).\n`;
-        prompt += `8. Assure une progression narrative cohérente, respecte le genre et le ton demandés.\n`;
-        prompt += `9. Adopte un style d'écriture adapté à un scénario de BD (visuel, dynamique).\n\n`;
-        prompt += `FORMAT DE SORTIE ATTENDU (IMPORTANT - Suivre ce format EXACTEMENT) :\n`;
-        prompt += `TITRE : [Titre de la BD en Français]\n\n`;
-        prompt += `SYNOPSIS :\n[Synopsis en Français ici]\n\n`;
-        prompt += `CHAPITRE 1 : [Titre du Chapitre 1 en Français]\n`;
-        prompt += `PAGE 1 :\n`;
-        prompt += `Case 1 : [Description Visuelle Case 1 en Français]. Dialogue: "..." Pensées: (...)\n`;
-        prompt += `Case 2 : [Description Visuelle Case 2 en Français]. Dialogue: "..."\n`;
-        prompt += `...\n`;
-        prompt += `PAGE 2 :\n`;
-        prompt += `Case 1 : [Description Visuelle Case 1 en Français]. Pensées: (...)\n`;
-        prompt += `...\n`;
-        prompt += `CHAPITRE 2 : [Titre du Chapitre 2 en Français]\n`;
-        prompt += `PAGE X :\n`;
-        prompt += `Case 1 : ...\n`;
-        prompt += `...\n\n`;
-        prompt += `**RAPPEL FINAL : TOUTE LA RÉPONSE DOIT ÊTRE EN FRANÇAIS.**\n`;
-        prompt += `SCÉNARIO COMPLET CI-DESSOUS :\n`;
-        prompt += `------------------------------------\n`;
 
-
-        console.log("Sending prompt to AI:\n", prompt.substring(0, 500) + "...");
-
-        try {
-            const result = await generator(prompt, {
-                max_new_tokens: 2048,
-                temperature: 0.75, // Slightly increased temperature might help creativity/language
-                top_p: 0.9,
-                repetition_penalty: 1.15, // Slightly increased penalty
-                // no_repeat_ngram_size: 3,
-                // do_sample: true
-            });
-
-            const generatedText = result[0].generated_text.substring(prompt.length).trim();
-            console.log("Raw AI Response (start):", generatedText.substring(0, 500) + "...");
-             // Quick check if the response seems to be in Spanish or another language
-             if (!generatedText.toLowerCase().includes("chapitre") && (generatedText.toLowerCase().includes("capítulo") || generatedText.toLowerCase().includes("chapter"))) {
-                 console.warn("AI response might not be in French!");
-                  // Decide if you want to throw an error here or let parsing try
-                  // throw new Error("L'IA n'a pas répondu en français comme demandé.");
-             }
-
-
-            // --- Parse the generated text into a structured object ---
-            const structuredScenario = parseScenarioTextImproved(generatedText); // Use the improved parser
-            console.log("Parsed Scenario Structure:", structuredScenario);
-
-            // Check if parsing was successful
-            if (!structuredScenario.title || structuredScenario.title === "Titre Non Défini" || !structuredScenario.chapters || structuredScenario.chapters.length === 0 || structuredScenario.chapters[0].pages.length === 0) {
-                 console.error("Parsing failed to extract essential structure.");
-                 // Return the raw text within a basic structure for display
-                 return {
-                      title: structuredScenario.title || "Titre Non Trouvé",
-                      synopsis: structuredScenario.synopsis || "Synopsis Non Trouvé",
-                      chapters: [{
-                          chapterNumber: 1,
-                          title: "Chapitre 1 (Erreur de Structuration)",
-                          pages: [], // Indicate no pages parsed
-                          rawContent: generatedText // Provide raw content for debugging/display
-                      }]
-                 };
-            }
-
-            return structuredScenario;
-
-        } catch (error) {
-            console.error('Erreur lors de la génération du scénario par l\'IA:', error);
-            throw new Error(`AI Scenario Generation Failed: ${error.message}`);
-        }
+    } catch (error) {
+        console.error('Erreur lors de la génération simple:', error);
+        throw new Error(`AI Simple Generation Failed: ${error.message}`);
     }
+}
 
     /**
      * Improved text parser using a line-by-line approach.
