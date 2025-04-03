@@ -1,0 +1,9 @@
+# netlify.toml
+[build]
+  command = "echo 'No build command needed for static site + functions'"
+  publish = "." # Dossier racine contenant index.html
+  functions = "netlify/functions" # Dossier des fonctions
+
+[functions]
+  node_bundler = "esbuild"
+  # node_version = "18" # Décommentez si nécessaire

@@ -16,40 +16,463 @@
             --disabled-color: #ccc;
         }
 
-        /* ... (keep all existing CSS styles) ... */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: var(--secondary-color);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #64b5f6 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background: #e68a00;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background: #0b7dda;
+        }
+        .btn-primary:disabled {
+             background-color: #a0cff8;
+        }
+        .btn-success { background-color: var(--success-color); }
+        .btn-danger { background-color: var(--danger-color); }
+        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.9rem; }
+        .btn-secondary { background-color: #6c757d; }
+        .btn-secondary:hover { background-color: #5a6268; }
+
+
+        .features {
+            padding: 4rem 0;
+            background-color: white;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+        }
+
+        .section-title p {
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+
+        .feature-card p {
+            color: #666;
+        }
+
+        .how-it-works {
+            padding: 4rem 0;
+            background-color: #f8f9fa;
+        }
+
+        .steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            flex: 1;
+            min-width: 250px;
+            max-width: 350px;
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 1.5rem;
+        }
+
+        .step h3 {
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+
+        .step p {
+            color: #666;
+        }
+
+        .app {
+            padding: 4rem 0;
+            background-color: white;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 1rem;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            margin: 0 0.5rem 0.5rem 0.5rem; /* Added bottom margin for wrap */
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            transition: background 0.3s, color 0.3s;
+            font-weight: 500;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 2rem;
+            background: white;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            min-height: 200px; /* Give tabs some minimum height */
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .input-group input,
+        .input-group textarea,
+        .input-group select { /* Added select */
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: inherit; /* Ensure select uses body font */
+        }
+
+        .input-group textarea {
+            min-height: 80px; /* Use min-height */
+            resize: vertical;
+        }
+
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        footer p {
+            margin-bottom: 1rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary-color);
+        }
 
         /* Styles spécifiques pour l'application */
-        .scenario-section, .scenario-chapter { /* Keep existing */ }
-        .scenario-chapter h4 { /* Keep existing */ }
-        .storyboard-page { /* Keep existing */ }
-        .prompt-item { /* Keep existing */ }
-        .prompt-item pre { /* Keep existing */ }
-        .session-controls { /* Keep existing */ }
-        .session-controls button { /* Keep existing */ }
+         .scenario-section, .scenario-chapter, .storyboard-page, .prompt-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+         }
+         .scenario-page {
+            margin-left: 20px;
+            border-left: 2px solid #eee;
+            padding-left: 15px;
+            margin-top: 10px;
+         }
+         .scenario-panel {
+             margin-left: 20px;
+             margin-bottom: 5px;
+         }
+        .scenario-chapter h4, .storyboard-page h4, .prompt-item h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+         .scenario-page h5, .storyboard-panel-display h5 {
+             color: var(--secondary-color);
+             margin-bottom: 8px;
+         }
+         .prompt-item h5 {
+             color: var(--success-color);
+             margin-bottom: 8px;
+         }
 
-        #loading-indicator { /* Keep existing */ }
-        .spinner { /* Keep existing */ }
-        @keyframes spin { /* Keep existing */ }
+        .storyboard-page { border-left-color: var(--secondary-color); }
+        .prompt-item { border-left-color: var(--success-color); }
 
-        /* New Styles */
+        .prompt-item pre {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin-top: 10px;
+            white-space: pre-wrap; /* Wrap long lines */
+            word-break: break-all; /* Break long words/URLs */
+        }
+
+        .session-controls {
+            display: flex;
+            flex-wrap: wrap; /* Allow wrapping */
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .session-controls button {
+            flex: 1 1 auto; /* Allow buttons to shrink/grow */
+             min-width: 150px; /* Prevent buttons getting too small */
+        }
+
+        #loading-indicator {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Styles from previous version, adapted */
         .app-controls {
             margin-top: 1rem;
             padding-top: 1rem;
             border-top: 1px solid #eee;
             display: none; /* Hidden by default */
             gap: 10px;
+             flex-wrap: wrap;
         }
         .app-controls button {
             margin-right: 10px;
+             margin-bottom: 10px; /* Spacing when wrapped */
         }
         .modification-area {
             margin-top: 1rem;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f8f9fa;
             display: none; /* Hidden by default */
+        }
+        .modification-area label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
         }
         .modification-area textarea {
             width: 100%;
             min-height: 80px;
             margin-bottom: 0.5rem;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
         }
         .tab-btn.disabled {
             color: var(--disabled-color);
@@ -58,17 +481,24 @@
         }
          .chapter-selector {
             margin-bottom: 1.5rem;
-        }
+            display: flex;
+            align-items: center;
+            gap: 10px;
+         }
+         .chapter-selector label {
+             margin-bottom: 0; /* Remove default margin */
+             font-weight: 500;
+         }
+         .chapter-selector select {
+             flex-grow: 1; /* Allow select to take available space */
+             max-width: 400px; /* Limit max width */
+         }
         .storyboard-panel-display {
             border: 1px solid #eee;
             padding: 15px;
             margin-bottom: 15px;
             border-radius: 5px;
             background-color: #fafafa;
-        }
-        .storyboard-panel-display h5 {
-            margin-bottom: 10px;
-            color: var(--primary-color);
         }
          .storyboard-panel-details p {
             margin-bottom: 5px;
@@ -83,6 +513,9 @@
              font-style: italic;
              margin-bottom: 10px;
              background-color: #f0f0f0;
+             border-radius: 4px;
+             padding: 10px;
+             text-align: center;
          }
          .progress-indicator {
              display: flex;
@@ -91,10 +524,14 @@
              padding: 1rem;
              background-color: #e9ecef;
              border-radius: 5px;
+             flex-wrap: wrap; /* Allow wrapping */
+             gap: 10px; /* Add gap for wrapped items */
          }
          .progress-step {
              text-align: center;
              color: #adb5bd;
+             flex: 1; /* Distribute space */
+             min-width: 80px; /* Prevent shrinking too much */
          }
          .progress-step.active {
              color: var(--primary-color);
@@ -120,12 +557,46 @@
             min-width: 200px;
             margin-bottom: 0;
          }
+         .text-danger {
+            color: var(--danger-color);
+            font-weight: bold;
+         }
+
+
+         /* Media Queries */
+        @media (max-width: 768px) {
+            header .container {
+                flex-direction: column;
+                text-align: center;
+            }
+            nav ul {
+                margin-top: 1rem;
+                flex-wrap: wrap; /* Allow nav items to wrap */
+                justify-content: center;
+            }
+            nav ul li {
+                 margin-left: 10px; /* Reduce margin */
+                 margin-right: 10px;
+            }
+            .hero h1 { font-size: 2rem; }
+            .hero p { font-size: 1rem; }
+            .features-grid { grid-template-columns: 1fr; }
+            .steps { flex-direction: column; align-items: center; }
+            .step { margin-bottom: 2rem; max-width: 90%; }
+            .tabs { justify-content: flex-start; }
+            .tab-btn { flex-grow: 1; margin-left: 0; margin-right: 0;} /* Make tabs take full width */
+             .session-controls { justify-content: center; }
+             .input-group-inline { flex-direction: column; gap: 1rem; }
+             .chapter-selector { flex-direction: column; align-items: flex-start;}
+             .chapter-selector select { max-width: 100%; }
+             .progress-indicator { gap: 5px;}
+             .progress-step .icon { font-size: 1.2rem;}
+        }
 
     </style>
 </head>
 <body>
     <header>
-        <!-- Keep existing header -->
         <div class="container">
             <div class="logo">
                 <i class="fas fa-book-open"></i>
@@ -143,16 +614,14 @@
     </header>
 
     <section class="hero">
-         <!-- Keep existing hero -->
         <div class="container">
             <h1>Créez des bandes dessinées incroyables avec l'IA</h1>
-            <p>Transformez vos idées en scénarios complets, storyboards détaillés et prompts optimisés pour Midjourney en quelques clics.</p>
+            <p>Transformez vos idées en scénarios complets, storyboards détaillés et prompts optimisés en quelques clics grâce à l'IA côté serveur.</p>
             <a href="#app" class="btn">Commencer maintenant</a>
         </div>
     </section>
 
     <section class="features" id="features">
-         <!-- Keep existing features, maybe update text slightly -->
         <div class="container">
             <div class="section-title">
                 <h2>Fonctionnalités</h2>
@@ -165,19 +634,19 @@
                     <p>Définissez votre idée, choisissez le genre, le style visuel et le ton pour guider l'IA.</p>
                 </div>
                 <div class="feature-card">
-                    <i class="fas fa-brain"></i>
-                    <h3>Génération de Scénario Structuré</h3>
-                    <p>Obtenez un scénario détaillé (page/case) avec descriptions et dialogues. Validez ou demandez des modifications.</p>
+                    <i class="fas fa-server"></i> <!-- Changed icon -->
+                    <h3>Génération Scénario via API</h3>
+                    <p>Obtenez un scénario structuré (page/case) généré par une IA puissante côté serveur. Validez ou demandez des modifications.</p>
                 </div>
                 <div class="feature-card">
                     <i class="fas fa-pencil-alt"></i>
-                    <h3>Storyboard Assisté</h3>
+                    <h3>Storyboard Assisté (Bientôt)</h3>
                     <p>Visualisez votre histoire avec des suggestions de cadrage et de composition pour chaque case. Approuvez chapitre par chapitre.</p>
                 </div>
                 <div class="feature-card">
                     <i class="fas fa-image"></i>
-                    <h3>Prompts Midjourney Optimisés</h3>
-                    <p>Générez des prompts en anglais prêts à l'emploi pour Midjourney, basés sur votre storyboard et style.</p>
+                    <h3>Prompts Optimisés (Bientôt)</h3>
+                    <p>Générez des prompts en anglais prêts à l'emploi pour Midjourney/Dall-E, basés sur votre storyboard et style.</p>
                 </div>
                  <div class="feature-card">
                     <i class="fas fa-tasks"></i>
@@ -194,7 +663,6 @@
     </section>
 
     <section class="how-it-works" id="how-it-works">
-         <!-- Keep existing how-it-works, update steps -->
         <div class="container">
             <div class="section-title">
                 <h2>Comment ça marche</h2>
@@ -209,17 +677,17 @@
                 <div class="step">
                     <div class="step-number">2</div>
                     <h3>Générez & Validez le Scénario</h3>
-                    <p>L'IA crée un scénario structuré. Lisez-le, demandez des modifications si besoin, puis approuvez.</p>
+                    <p>L'IA côté serveur crée un scénario structuré. Lisez-le, demandez des modifications si besoin, puis approuvez.</p>
                 </div>
                 <div class="step">
                     <div class="step-number">3</div>
-                    <h3>Approuvez le Storyboard</h3>
+                    <h3>Approuvez le Storyboard (Bientôt)</h3>
                     <p>Pour chaque chapitre, visualisez le storyboard avec suggestions de cadrage/composition. Approuvez.</p>
                 </div>
                 <div class="step">
                     <div class="step-number">4</div>
-                    <h3>Obtenez les Prompts</h3>
-                    <p>Recevez les prompts Midjourney optimisés pour chaque case du chapitre approuvé. Copiez et créez !</p>
+                    <h3>Obtenez les Prompts (Bientôt)</h3>
+                    <p>Recevez les prompts optimisés pour chaque case du chapitre approuvé. Copiez et créez !</p>
                 </div>
             </div>
         </div>
@@ -283,6 +751,8 @@
                             <option value="Aventure">Aventure</option>
                             <option value="Slice of Life">Slice of Life</option>
                             <option value="Horreur">Horreur</option>
+                            <option value="Historique">Historique</option>
+                            <option value="Western">Western</option>
                             <!-- Add more genres -->
                         </select>
                     </div>
@@ -296,6 +766,8 @@
                             <option value="Réaliste">Réaliste / Peinture Numérique</option>
                             <option value="Cartoon">Cartoon / Animation</option>
                             <option value="Aquarelle">Aquarelle</option>
+                            <option value="Pixel Art">Pixel Art</option>
+                             <option value="Noir et Blanc">Noir et Blanc (Ink)</option>
                              <!-- Add more styles -->
                         </select>
                     </div>
@@ -309,6 +781,8 @@
                             <option value="Sombre / Mature">Sombre / Mature</option>
                             <option value="Mystérieux">Mystérieux</option>
                             <option value="Poétique">Poétique</option>
+                            <option value="Satirique">Satirique</option>
+                            <option value="Action">Action</option>
                             <!-- Add more tones -->
                         </select>
                     </div>
@@ -323,7 +797,7 @@
 
                 <div id="loading-indicator">
                     <div class="spinner"></div>
-                    <p>Génération en cours... L'IA travaille, cela peut prendre plusieurs minutes.</p>
+                    <p>Génération en cours via l'API...</p>
                 </div>
             </div>
 
@@ -349,7 +823,8 @@
 
             <!-- Tab 3: Storyboard -->
             <div class="tab-content" id="storyboard-content">
-                <h3>Votre Storyboard</h3>
+                <h3>Votre Storyboard (Bientôt Disponible)</h3>
+                 <!--
                  <div class="chapter-selector">
                      <label for="storyboard-chapter-select">Choisir le chapitre :</label>
                      <select id="storyboard-chapter-select" disabled>
@@ -358,9 +833,7 @@
                  </div>
                 <div id="storyboard-output">
                     <p>Approuvez d'abord le scénario pour générer le storyboard.</p>
-                    <!-- Storyboard content for the selected chapter will be loaded here -->
                 </div>
-
                  <div class="app-controls" id="storyboard-controls">
                     <button class="btn btn-success" id="approve-storyboard-chapter">Approuver Storyboard Chapitre</button>
                     <button class="btn btn-primary" id="modify-storyboard-request">Demander Modifications Chapitre</button>
@@ -371,11 +844,14 @@
                     <textarea id="storyboard-modification-input"></textarea>
                     <button class="btn btn-primary" id="submit-storyboard-modification">Soumettre Modification</button>
                 </div>
+                -->
+                 <p>La fonctionnalité de génération de storyboard sera ajoutée prochainement, une fois la génération de scénario via l'API stabilisée.</p>
             </div>
 
             <!-- Tab 4: Prompts -->
             <div class="tab-content" id="prompts-content">
-                <h3>Vos Prompts Midjourney</h3>
+                <h3>Vos Prompts Midjourney (Bientôt Disponible)</h3>
+                <!--
                  <div class="chapter-selector">
                      <label for="prompts-chapter-select">Choisir le chapitre :</label>
                      <select id="prompts-chapter-select" disabled>
@@ -384,15 +860,14 @@
                  </div>
                 <div id="prompts-output">
                     <p>Approuvez d'abord le storyboard d'un chapitre pour générer les prompts.</p>
-                    <!-- Prompts for the selected chapter will be loaded here -->
                 </div>
-                 <!-- Add export/copy all button maybe -->
+                -->
+                 <p>La fonctionnalité de génération de prompts sera ajoutée prochainement, après l'implémentation du storyboard.</p>
             </div>
         </div>
     </section>
 
     <footer>
-         <!-- Keep existing footer -->
         <div class="container">
             <p>© 2025 BD Creator. Tous droits réservés.</p>
             <div class="social-links">
@@ -411,10 +886,7 @@
         </div>
     </footer>
 
-    <!-- Load Transformers.js library -->
-    <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.0"></script>
-    <!-- Load your custom story generator logic -->
-    <script src="story_generator.js"></script>
+    <!-- No external JS libraries needed for generation anymore -->
     <!-- Inline script for UI interactions and workflow management -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -442,7 +914,7 @@
             const storyboardOutput = document.getElementById('storyboard-output');
             const storyboardControls = document.getElementById('storyboard-controls');
             const approveStoryboardChapterBtn = document.getElementById('approve-storyboard-chapter');
-            // ... (add buttons for storyboard modification/regeneration)
+            // ... (add buttons for storyboard modification/regeneration - currently commented out in HTML)
 
             const promptsChapterSelect = document.getElementById('prompts-chapter-select');
             const promptsOutput = document.getElementById('prompts-output');
@@ -465,9 +937,9 @@
             let appState = {
                 currentStep: 'idea', // idea, scenario_generated, scenario_approved, storyboard_chapter_approved, prompts_generated
                 scenarioData: null, // Will hold the structured scenario object
-                storyboardData: {}, // Keyed by chapter index
-                promptsData: {},    // Keyed by chapter index
-                approvedChapters: [], // List of approved chapter indices for storyboard/prompts
+                storyboardData: {}, // Keyed by chapter index - Not used yet
+                promptsData: {},    // Keyed by chapter index - Not used yet
+                approvedChapters: [], // List of approved chapter indices - Not used yet
                 keywords: '',
                 genre: '',
                 style: '',
@@ -476,135 +948,229 @@
                 activeTab: 'home'
             };
 
-            // --- Functions ---
+            // --- PARSER FUNCTION (Moved Inline) ---
+             /**
+             * Improved text parser using a line-by-line approach.
+             */
+             function parseScenarioTextImproved(text) {
+                 console.log("Attempting improved parsing...");
+                 const scenario = {
+                     title: "Titre Non Défini",
+                     synopsis: "",
+                     chapters: []
+                 };
+                 let currentChapter = null;
+                 let currentPage = null;
+                 let currentPanel = null;
+                 let readingSynopsis = false;
 
-            function updateUI() {
-                // Update Progress Indicator
-                Object.values(progressSteps).forEach(step => step.classList.remove('active', 'completed'));
-                if (appState.currentStep === 'idea') {
-                    progressSteps.idea.classList.add('active');
-                } else {
-                     progressSteps.idea.classList.add('completed');
-                }
-                if (appState.currentStep.startsWith('scenario')) {
-                     progressSteps.scenario.classList.add('active');
-                } else if (appState.currentStep !== 'idea') {
-                    progressSteps.scenario.classList.add('completed');
-                }
-                 if (appState.currentStep.startsWith('storyboard')) {
-                     progressSteps.storyboard.classList.add('active');
-                 } else if (!appState.currentStep.startsWith('idea') && !appState.currentStep.startsWith('scenario')) {
-                     progressSteps.storyboard.classList.add('completed');
-                 }
-                 if (appState.currentStep.startsWith('prompts')) {
-                     progressSteps.prompts.classList.add('active');
-                 } else if (appState.currentStep === 'completed') { // Assuming a final state
-                    progressSteps.prompts.classList.add('completed');
-                 }
-
-
-                // Update Tabs Enabled/Disabled State & Active Tab
-                tabBtns.forEach(btn => {
-                    const tab = btn.getAttribute('data-tab');
-                    btn.classList.remove('active');
-                    btn.classList.add('disabled'); // Disable all first
-
-                    if (tab === 'home') btn.classList.remove('disabled'); // Home always enabled
-                    if (appState.currentStep !== 'idea' && tab === 'scenario') btn.classList.remove('disabled');
-                    if (appState.currentStep.includes('approved') || appState.currentStep.startsWith('storyboard') || appState.currentStep.startsWith('prompts') && tab === 'storyboard') btn.classList.remove('disabled');
-                    // Enable prompts tab only if at least one storyboard chapter is approved
-                    if ((appState.currentStep.includes('storyboard_chapter_approved') || appState.currentStep.startsWith('prompts')) && appState.approvedChapters.length > 0 && tab === 'prompts') {
-                         btn.classList.remove('disabled');
+                 // Handle potential ```json ... ``` blocks if the API returns markdown
+                 if (text.startsWith('```json')) {
+                    text = text.substring(7, text.length - 3).trim();
+                    try {
+                        // Attempt to parse directly if it looks like JSON
+                        const jsonData = JSON.parse(text);
+                        console.log("Parsed directly from JSON block");
+                        // You might need to adapt jsonData structure to your scenario object structure here
+                        // For now, let's assume it roughly matches or fallback to line parser
+                        if (jsonData.title && Array.isArray(jsonData.chapters)) {
+                            return jsonData; // Adapt this if structure differs
+                        }
+                    } catch (e) {
+                        console.warn("Could not parse JSON block directly, falling back to line parser.", e);
+                        // Continue with line parser below
                     }
-
-                    if (tab === appState.activeTab) {
-                        btn.classList.add('active');
-                    }
-                });
-                 tabContents.forEach(content => content.classList.remove('active'));
-                 document.getElementById(`${appState.activeTab}-content`).classList.add('active');
-
-
-                // Update Scenario Tab Content & Controls
-                if (appState.scenarioData) {
-                    displayScenario(appState.scenarioData);
-                    scenarioControls.style.display = appState.currentStep === 'scenario_generated' ? 'flex' : 'none';
-                     scenarioModificationArea.style.display = 'none'; // Hide modification area by default
-                } else {
-                    scenarioOutput.innerHTML = '<p>Générez d\'abord un scénario depuis l\'onglet "Idée & Options".</p>';
-                    scenarioControls.style.display = 'none';
-                }
-
-
-                 // Update Storyboard Tab
-                 updateChapterSelect(storyboardChapterSelect, 'storyboard');
-                 if (appState.currentStep.startsWith('storyboard') || appState.currentStep.startsWith('prompts') || appState.currentStep === 'scenario_approved') {
-                      storyboardChapterSelect.disabled = false;
-                      const selectedChapterIndex = parseInt(storyboardChapterSelect.value);
-                      if (!isNaN(selectedChapterIndex) && appState.storyboardData[selectedChapterIndex]) {
-                          displayStoryboardChapter(selectedChapterIndex);
-                           storyboardControls.style.display = !appState.approvedChapters.includes(selectedChapterIndex) ? 'flex' : 'none';
-                      } else if (!isNaN(selectedChapterIndex)) {
-                          storyboardOutput.innerHTML = `<p>Storyboard pour le chapitre ${selectedChapterIndex + 1} pas encore généré ou approuvé.</p><button class='btn btn-primary generate-storyboard-btn' data-chapter='${selectedChapterIndex}'>Générer Storyboard Chapitre ${selectedChapterIndex + 1}</button>`;
-                          storyboardControls.style.display = 'none';
-                           // Add listener for dynamically created button
-                           document.querySelector('.generate-storyboard-btn')?.addEventListener('click', handleGenerateStoryboardChapter);
-                      } else {
-                           storyboardOutput.innerHTML = '<p>Sélectionnez un chapitre pour voir ou générer le storyboard.</p>';
-                           storyboardControls.style.display = 'none';
-                      }
-                 } else {
-                     storyboardOutput.innerHTML = '<p>Approuvez d\'abord le scénario pour générer le storyboard.</p>';
-                     storyboardChapterSelect.disabled = true;
-                      storyboardControls.style.display = 'none';
                  }
+                  // Handle potential ``` ... ``` blocks (generic markdown code block)
+                  else if (text.startsWith('```')) {
+                       text = text.substring(3, text.length - 3).trim();
+                  }
 
 
-                // Update Prompts Tab
-                 updateChapterSelect(promptsChapterSelect, 'prompts');
-                 if (appState.approvedChapters.length > 0 && (appState.currentStep.startsWith('prompts') || appState.currentStep.includes('storyboard_chapter_approved'))) {
-                     promptsChapterSelect.disabled = false;
-                     const selectedChapterIndex = parseInt(promptsChapterSelect.value);
-                      if (!isNaN(selectedChapterIndex) && appState.promptsData[selectedChapterIndex]) {
-                          displayPromptsChapter(selectedChapterIndex);
-                      } else if (!isNaN(selectedChapterIndex) && appState.approvedChapters.includes(selectedChapterIndex)) {
-                           promptsOutput.innerHTML = `<p>Prompts pour le chapitre ${selectedChapterIndex + 1} pas encore générés.</p><button class='btn btn-primary generate-prompts-btn' data-chapter='${selectedChapterIndex}'>Générer Prompts Chapitre ${selectedChapterIndex + 1}</button>`;
-                           // Add listener for dynamically created button
-                           document.querySelector('.generate-prompts-btn')?.addEventListener('click', handleGeneratePromptsChapter);
-                      } else if (!isNaN(selectedChapterIndex)) {
-                           promptsOutput.innerHTML = '<p>Approuvez d\'abord le storyboard de ce chapitre pour générer les prompts.</p>';
-                      } else {
-                           promptsOutput.innerHTML = '<p>Sélectionnez un chapitre dont le storyboard est approuvé.</p>';
-                      }
-                 } else {
-                     promptsOutput.innerHTML = '<p>Approuvez d\'abord le storyboard d\'un chapitre pour générer les prompts.</p>';
-                     promptsChapterSelect.disabled = true;
+                 const lines = text.split('\n');
+
+                 for (const rawLine of lines) {
+                     const line = rawLine.trim();
+                     if (line.length === 0) continue;
+
+                     // Title (Case-insensitive, check variations)
+                     if (line.toUpperCase().startsWith("TITRE :") || line.toUpperCase().startsWith("TITRE:")) {
+                         scenario.title = line.substring(line.indexOf(':') + 1).trim();
+                         readingSynopsis = false;
+                         console.log("Parsed Title:", scenario.title);
+                         continue;
+                     }
+
+                     // Synopsis Start (Case-insensitive, check variations)
+                      if (line.toUpperCase().startsWith("SYNOPSIS :") || line.toUpperCase().startsWith("SYNOPSIS:")) {
+                         scenario.synopsis = line.substring(line.indexOf(':') + 1).trim();
+                         readingSynopsis = true; // Start reading synopsis lines
+                          // Check if synopsis content is on the same line
+                         if (scenario.synopsis.length === 0) {
+                              // Content likely starts on the next line
+                         } else {
+                              // Content is on this line, might be multi-line
+                         }
+                         console.log("Parsed Synopsis Start:", scenario.synopsis);
+                         continue;
+                     }
+
+
+                     // Chapter (Case-insensitive)
+                     const chapterMatch = line.match(/CHAPITRE\s+(\d+)\s*[:\-–—]\s*(.*)/i); // Added : - – — as separators
+                     if (chapterMatch) {
+                         currentChapter = {
+                             chapterNumber: parseInt(chapterMatch[1]),
+                             title: chapterMatch[2].trim(),
+                             pages: []
+                         };
+                         scenario.chapters.push(currentChapter);
+                         currentPage = null;
+                         currentPanel = null;
+                         readingSynopsis = false; // Stop reading synopsis
+                         console.log("Parsed Chapter:", currentChapter.title);
+                         continue;
+                     }
+
+                      // If we are potentially reading multi-line synopsis and line is not a new section
+                     if (readingSynopsis && !line.toUpperCase().startsWith("CHAPITRE")) {
+                         scenario.synopsis += (scenario.synopsis.length > 0 ? "\n" : "") + line; // Append line to synopsis
+                         continue;
+                     }
+
+
+                     // Must be inside a chapter to parse pages/panels
+                     if (!currentChapter) continue;
+
+                     // Page (Case-insensitive)
+                     const pageMatch = line.match(/PAGE\s+(\d+)\s*[:\-–—]/i); // Added : - – —
+                     if (pageMatch) {
+                         currentPage = {
+                             pageNumber: parseInt(pageMatch[1]),
+                             panels: []
+                         };
+                         // Avoid duplicate pages if model repeats headers
+                         if (!currentChapter.pages.some(p => p.pageNumber === currentPage.pageNumber)) {
+                             currentChapter.pages.push(currentPage);
+                             currentPanel = null;
+                             console.log("Parsed Page:", currentPage.pageNumber);
+                         } else {
+                              console.warn(`Duplicate page header ignored: Page ${currentPage.pageNumber}`);
+                              currentPage = currentChapter.pages.find(p => p.pageNumber === currentPage.pageNumber); // Use existing page
+                         }
+                         continue;
+                     }
+
+                     // Must be inside a page to parse panels
+                     if (!currentPage) continue;
+
+                     // Panel / Case (Case-insensitive, more flexible)
+                      // Try matching "Case X:" or "Panel X:" or just "X:" if previous line was a Page header
+                     const panelMatchSimple = line.match(/(?:Case|Panel|Case)\s*(\d+)\s*[:\-–—]\s*(.*)/i);
+                      // Basic attempt to catch just "X. Description" or "X) Description"
+                     const panelMatchAlt = line.match(/^(\d+)[.)]\s+(.*)/);
+
+                     let panelNumber = null;
+                     let panelText = null;
+
+                     if (panelMatchSimple) {
+                          panelNumber = parseInt(panelMatchSimple[1]);
+                          panelText = panelMatchSimple[2].trim();
+                     } else if (panelMatchAlt) {
+                          panelNumber = parseInt(panelMatchAlt[1]);
+                          panelText = panelMatchAlt[2].trim();
+                          // Heuristic: Only treat as new panel if number is 1 or follows previous panel number
+                          if (currentPage.panels.length > 0 && panelNumber !== currentPage.panels[currentPage.panels.length - 1].panelNumber + 1) {
+                               panelNumber = null; // Don't treat as new panel, likely part of description
+                          }
+                     }
+
+
+                     if (panelNumber !== null && panelText !== null) {
+                         // Try to extract Dialogue/Thoughts from the panelText
+                         let description = panelText;
+                         let dialogue = null;
+                         let thoughts = null;
+
+                         // More robust dialogue extraction (check different quotes)
+                         const dialogueMatch = description.match(/(?:Dialogue|Dialogues)\s*[:\-–—]?\s*["«]([^"»]+)["»]/i);
+                         if (dialogueMatch) {
+                             dialogue = dialogueMatch[1].trim();
+                             description = description.replace(dialogueMatch[0], '').trim(); // Remove dialogue part
+                         }
+
+                         // More robust thoughts extraction
+                         const thoughtsMatch = description.match(/(?:Pensées|Pensée)\s*[:\-–—]?\s*[\(]([^\)]+)[\)]/i);
+                          if (thoughtsMatch) {
+                              thoughts = thoughtsMatch[1].trim();
+                              description = description.replace(thoughtsMatch[0], '').trim(); // Remove thoughts part
+                          }
+
+                         // Remove potential empty separators left over
+                         description = description.replace(/^(?:Dialogue|Pensées)\s*[:\-–—]?\s*/i, '').trim();
+
+                         currentPanel = {
+                             panelNumber: panelNumber,
+                             description: description.trim(),
+                             dialogue: dialogue,
+                             thoughts: thoughts
+                         };
+                          // Avoid duplicate panels
+                         if (!currentPage.panels.some(p => p.panelNumber === currentPanel.panelNumber)) {
+                             currentPage.panels.push(currentPanel);
+                              // console.log(`Parsed Panel ${currentPanel.panelNumber}: Desc='${currentPanel.description.substring(0,30)}...'`);
+                         } else {
+                              console.warn(`Duplicate panel header ignored: Panel ${currentPanel.panelNumber}`);
+                              // Append description to existing panel maybe?
+                              let existingPanel = currentPage.panels.find(p => p.panelNumber === currentPanel.panelNumber);
+                              if (existingPanel && currentPanel.description) {
+                                   existingPanel.description += "\n" + currentPanel.description;
+                              }
+                         }
+                         continue; // Move to next line after processing a panel header
+                     }
+
+                     // --- Append to last panel's description ---
+                     // If the line doesn't match a new structure element AND we have a current panel,
+                     // append it to the description of the last panel.
+                     if (currentPanel && line.length > 0) {
+                           // Append non-structural lines to the description of the current panel
+                           if (currentPanel.description.length > 0) {
+                                currentPanel.description += "\n" + line;
+                           } else {
+                                currentPanel.description = line;
+                           }
+                     } else if (currentPage && line.length > 5) {
+                         // Or maybe it's context for the page before the first panel? Add as page context?
+                         // For now, log as orphan line if no current panel exists on the page
+                          // console.log(`Orphan line on page ${currentPage.pageNumber}:`, line);
+                     }
                  }
+                 console.log("Parsing finished.");
+                 return scenario;
+             }
 
 
-                // Hide loading indicator
-                loadingIndicator.style.display = 'none';
-            }
-
-            function displayScenario(scenario) {
-                 // Check if scenario is the expected structured object
+            // --- UI Update Functions (Keep existing updateUI, displayStoryboardChapter, displayPromptsChapter, updateChapterSelect) ---
+             // Adjusted displayScenario to handle parsing failures better
+             function displayScenario(scenario) {
                  if (!scenario || typeof scenario !== 'object' || !scenario.title) {
-                     scenarioOutput.innerHTML = '<p class="text-danger">Erreur : Le format du scénario généré est invalide.</p>';
-                     console.error("Invalid scenario structure:", scenario);
+                     scenarioOutput.innerHTML = '<p class="text-danger">Erreur : Le format du scénario reçu est invalide.</p>';
+                     console.error("Invalid scenario structure received:", scenario);
                      return;
                  }
 
-                let html = `<h3>${scenario.title}</h3>`; // Display title even if parsing failed below
+                let html = `<h3>${scenario.title}</h3>`;
 
                  // Check if parsing failed (indicated by rawContent in the first chapter)
                  if (scenario.chapters && scenario.chapters.length > 0 && scenario.chapters[0].rawContent) {
                       html += `<div class="scenario-section"><h4>Synopsis</h4><p>${scenario.synopsis || "Synopsis Non Trouvé"}</p></div>`;
                       html += `<div class="scenario-chapter"><h4>${scenario.chapters[0].title || "Chapitre 1"}</h4>`;
-                      html += `<p><strong>Erreur de Structuration :</strong> L'IA n'a pas suivi le format demandé. Voici le texte brut généré :</p>`;
-                      html += `<pre style="white-space: pre-wrap; background-color: #eee; padding: 10px; border-radius: 4px;">${scenario.chapters[0].rawContent}</pre>`;
+                      html += `<p class="text-danger"><strong>Erreur de Structuration :</strong> L'IA n'a pas suivi le format attendu, ou le format n'a pas pu être analysé correctement. Voici le texte brut reçu :</p>`;
+                      html += `<pre style="white-space: pre-wrap; background-color: #eee; padding: 10px; border-radius: 4px; max-height: 400px; overflow-y: auto;">${scenario.chapters[0].rawContent}</pre>`;
                       html += `</div>`;
                       scenarioOutput.innerHTML = html;
-                      console.warn("Displaying raw content due to parsing failure.");
+                      console.warn("Displaying raw content due to parsing failure detected.");
                       return; // Stop further processing
                  }
 
@@ -617,22 +1183,22 @@
                       html += "<p><em>Aucun chapitre n'a pu être extrait du scénario.</em></p>";
                  } else {
                      scenario.chapters.forEach((chapter, index) => {
-                         html += `<div class="scenario-chapter"><h4>Chapitre ${chapter.chapterNumber || (index + 1)}: ${chapter.title || ''}</h4>`;
-                         if (chapter.summary) { // If summary exists (though ideally we parse pages/panels)
-                              html += `<p><strong>Résumé :</strong> ${chapter.summary.replace(/\n/g, '<br>')}</p>`;
-                         }
+                         // Use chapterNumber if available, otherwise use index
+                         const chapterNumDisplay = chapter.chapterNumber ? `Chapitre ${chapter.chapterNumber}` : `Chapitre ${index + 1}`;
+                         html += `<div class="scenario-chapter"><h4>${chapterNumDisplay}: ${chapter.title || 'Sans titre'}</h4>`;
+
                          if (Array.isArray(chapter.pages) && chapter.pages.length > 0) {
                               chapter.pages.forEach(page => {
-                                   html += `<div class="scenario-page" style="margin-left: 20px; border-left: 2px solid #eee; padding-left: 15px; margin-top:10px;"><h5>Page ${page.pageNumber}</h5>`;
-                                   if(Array.isArray(page.panels)) {
+                                   html += `<div class="scenario-page"><h5>Page ${page.pageNumber}</h5>`;
+                                   if(Array.isArray(page.panels) && page.panels.length > 0) {
                                         page.panels.forEach(panel => {
-                                             html += `<div class="scenario-panel" style="margin-left: 20px; margin-bottom: 5px;"><strong>Case ${panel.panelNumber}:</strong> `;
-                                             html += `<em>${panel.description || 'Pas de description.'}</em>`;
+                                             html += `<div class="scenario-panel"><strong>Case ${panel.panelNumber}:</strong> `;
+                                             html += `<em>${(panel.description || 'Pas de description.').replace(/\n/g, '<br>')}</em>`; // Added line break conversion
                                              if(panel.dialogue) {
-                                                  html += ` Dialogue: "${panel.dialogue}"`;
+                                                  html += `<br>Dialogue: "${panel.dialogue}"`;
                                              }
-                                              if(panel.thoughts) { // Display thoughts if present
-                                                   html += ` Pensées: (${panel.thoughts})`;
+                                              if(panel.thoughts) {
+                                                   html += `<br>Pensées: (${panel.thoughts})`;
                                               }
                                              html += `</div>`;
                                         });
@@ -641,7 +1207,7 @@
                                    }
                                    html += `</div>`; // Close scenario-page
                               });
-                         } else if (!chapter.summary) { // Avoid showing this if summary was already displayed
+                         } else {
                               html += `<p><em>Aucune page ou case détaillée n'a pu être extraite pour ce chapitre.</em></p>`;
                          }
                          html += `</div>`; // Close scenario-chapter
@@ -649,19 +1215,19 @@
                  }
                  scenarioOutput.innerHTML = html;
             }
-
+             // ... (keep other UI functions: updateChapterSelect, displayStoryboardChapter, displayPromptsChapter) ...
              function updateChapterSelect(selectElement, type) {
                  selectElement.innerHTML = ''; // Clear existing options
-                 if (!appState.scenarioData || !Array.isArray(appState.scenarioData.chapters)) {
+                 if (!appState.scenarioData || !Array.isArray(appState.scenarioData.chapters) || (appState.scenarioData.chapters[0] && appState.scenarioData.chapters[0].rawContent)) { // Added check for rawContent
                      const defaultOption = document.createElement('option');
-                      if (type === 'storyboard') defaultOption.textContent = 'Générez d\'abord le scénario';
-                      else defaultOption.textContent = 'Approuvez d\'abord le storyboard';
+                     if (type === 'storyboard') defaultOption.textContent = 'Générez un scénario valide';
+                     else defaultOption.textContent = 'Approuvez un scénario valide';
                      selectElement.appendChild(defaultOption);
                      selectElement.disabled = true;
                      return;
                  }
-
-                 if (type === 'prompts' && appState.approvedChapters.length === 0) {
+                 // ... (rest of the function remains the same) ...
+                  if (type === 'prompts' && appState.approvedChapters.length === 0) {
                      const defaultOption = document.createElement('option');
                      defaultOption.textContent = 'Approuvez d\'abord un storyboard';
                      selectElement.appendChild(defaultOption);
@@ -670,14 +1236,14 @@
                  }
 
                  appState.scenarioData.chapters.forEach((chapter, index) => {
-                     // Only add chapter to prompts select if its storyboard is approved
                      if (type === 'prompts' && !appState.approvedChapters.includes(index)) {
                          return;
                      }
-
                      const option = document.createElement('option');
                      option.value = index;
-                     option.textContent = `Chapitre ${index + 1}: ${chapter.title || `Chapitre ${index + 1}`}`;
+                      // Use chapterNumber if available, otherwise use index
+                     const chapterNumDisplay = chapter.chapterNumber ? `Chapitre ${chapter.chapterNumber}` : `Chapitre ${index + 1}`;
+                     option.textContent = `${chapterNumDisplay}: ${chapter.title || 'Sans titre'}`;
                       if (appState.approvedChapters.includes(index)) {
                           option.textContent += " (Storyboard Approuvé)";
                       }
@@ -685,68 +1251,19 @@
                  });
 
                  selectElement.disabled = selectElement.options.length === 0;
-             }
 
+             }
              function displayStoryboardChapter(chapterIndex) {
-                const chapterData = appState.storyboardData[chapterIndex];
-                 if (!chapterData) {
-                     storyboardOutput.innerHTML = `<p>Erreur: Données du storyboard non trouvées pour le chapitre ${chapterIndex + 1}.</p>`;
-                     return;
-                 }
-
-                 let html = `<h4>Storyboard - Chapitre ${chapterIndex + 1}</h4>`;
-                 chapterData.forEach(panel => {
-                     html += `
-                        <div class="storyboard-panel-display">
-                            <h5>Page ${panel.pageNumber} / Case ${panel.panelNumber}</h5>
-                             <div class="storyboard-visual-placeholder">
-                                 (Visualisation: ${panel.framing || 'Non défini'} - ${panel.composition || 'Non défini'})
-                             </div>
-                            <div class="storyboard-panel-details">
-                                <p><strong>Description Scénario:</strong> ${panel.scenarioDesc || 'N/A'}</p>
-                                <p><strong>Cadrage Suggéré:</strong> ${panel.framing || 'N/A'}</p>
-                                <p><strong>Composition Suggérée:</strong> ${panel.composition || 'N/A'}</p>
-                             </div>
-                         </div>
-                     `;
-                 });
-                 storyboardOutput.innerHTML = html;
+                // This function will need implementation later
+                 storyboardOutput.innerHTML = `<p>Affichage du storyboard pour Chapitre ${chapterIndex + 1} (Fonctionnalité à implémenter).</p>`;
              }
-
              function displayPromptsChapter(chapterIndex) {
-                 const chapterPrompts = appState.promptsData[chapterIndex];
-                 if (!chapterPrompts || !Array.isArray(chapterPrompts)) {
-                     promptsOutput.innerHTML = `<p>Erreur: Données des prompts non trouvées pour le chapitre ${chapterIndex + 1}.</p>`;
-                     return;
-                 }
-
-                 let html = `<h4>Prompts Midjourney - Chapitre ${chapterIndex + 1}</h4>`;
-                 chapterPrompts.forEach((promptData, index) => {
-                     html += `
-                        <div class="prompt-item">
-                            <h5>Page ${promptData.pageNumber} / Case ${promptData.panelNumber}</h5>
-                            <p><strong>Description:</strong> ${promptData.description || 'N/A'}</p>
-                             <pre>${promptData.prompt || 'Erreur: Prompt non généré.'}</pre>
-                            <button class="btn btn-sm btn-secondary copy-prompt-btn" data-prompt="${escape(promptData.prompt || '')}">Copier</button>
-                         </div>
-                     `;
-                 });
-                 promptsOutput.innerHTML = html;
-
-                 // Add listeners for copy buttons
-                 document.querySelectorAll('.copy-prompt-btn').forEach(btn => {
-                     btn.addEventListener('click', function() {
-                         const promptText = unescape(this.getAttribute('data-prompt'));
-                         navigator.clipboard.writeText(promptText).then(() => {
-                             alert('Prompt copié dans le presse-papiers !');
-                         }).catch(err => {
-                             console.error('Erreur de copie:', err);
-                             alert('Erreur lors de la copie du prompt.');
-                         });
-                     });
-                 });
+                 // This function will need implementation later
+                 promptsOutput.innerHTML = `<p>Affichage des prompts pour Chapitre ${chapterIndex + 1} (Fonctionnalité à implémenter).</p>`;
              }
 
+
+            // --- Function to call the Netlify backend ---
             async function handleGenerateScenario() {
                 appState.keywords = keywordsInput.value.trim();
                 appState.genre = genreSelect.value;
@@ -761,42 +1278,97 @@
 
                 loadingIndicator.style.display = 'block';
                 generateScenarioBtn.disabled = true;
+                scenarioOutput.innerHTML = '<p>Envoi de la requête à l\'IA via le serveur...</p>';
+
+                const requestData = {
+                    keywords: appState.keywords,
+                    genre: appState.genre,
+                    style: appState.style,
+                    tone: appState.tone,
+                    details: appState.details
+                };
 
                 try {
-                    // Call the actual generation function from story_generator.js
-                    appState.scenarioData = await generateStory(appState.keywords, appState.genre, appState.style, appState.tone, appState.details);
-                    appState.currentStep = 'scenario_generated';
-                    appState.activeTab = 'scenario'; // Switch to scenario tab
-                    // Reset storyboard and prompts if scenario is regenerated
-                    appState.storyboardData = {};
-                    appState.promptsData = {};
-                    appState.approvedChapters = [];
+                    const response = await fetch('/.netlify/functions/generate-story', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', },
+                        body: JSON.stringify(requestData),
+                    });
+
+                    if (!response.ok) {
+                        let errorMsg = `Erreur HTTP: ${response.status} ${response.statusText}`;
+                        try {
+                             const errorBody = await response.json();
+                             errorMsg += ` - ${errorBody.error || 'Erreur inconnue du serveur.'} ${errorBody.details ? `(${errorBody.details})` : ''}`;
+                        } catch(e) { /* Ignore */ }
+                        throw new Error(errorMsg);
+                    }
+
+                    const result = await response.json();
+
+                    if (result.scenarioText) {
+                        console.log("Raw scenario text received from backend:", result.scenarioText.substring(0, 200) + "...");
+                        appState.scenarioData = parseScenarioTextImproved(result.scenarioText);
+                         console.log("Parsed scenario data:", appState.scenarioData);
+
+                         // Check parsing success again after parsing
+                         if (!appState.scenarioData.title || appState.scenarioData.title === "Titre Non Défini" || !appState.scenarioData.chapters || appState.scenarioData.chapters.length === 0 || (appState.scenarioData.chapters[0] && !appState.scenarioData.chapters[0].rawContent && appState.scenarioData.chapters[0].pages.length === 0) ) {
+                             console.warn("Parsing failed after receiving data from backend. Preparing raw content display object.");
+                              if (!appState.scenarioData.chapters || appState.scenarioData.chapters.length === 0) {
+                                  // If parsing totally failed, create minimal structure with raw content
+                                   appState.scenarioData = { title: appState.scenarioData.title || "Titre Non Trouvé (Parsing Échoué)", synopsis: "N/A", chapters: [{ chapterNumber: 1, title: "Erreur de Structuration (depuis API)", pages: [], rawContent: result.scenarioText }] };
+                              } else if (appState.scenarioData.chapters[0]) {
+                                   // If parsing started but failed, add raw content info to first chapter
+                                   appState.scenarioData.chapters[0].title += " (Erreur de Structuration)";
+                                   appState.scenarioData.chapters[0].rawContent = result.scenarioText; // Ensure rawContent is set
+                              }
+                         }
+
+                        appState.currentStep = 'scenario_generated';
+                        appState.activeTab = 'scenario';
+                        appState.storyboardData = {};
+                        appState.promptsData = {};
+                        appState.approvedChapters = [];
+
+                    } else if (result.error) {
+                         throw new Error(`Erreur de l'API: ${result.error} ${result.details ? `(${result.details})` : ''}`);
+                    } else {
+                         throw new Error("Réponse inattendue du serveur.");
+                    }
+
                 } catch (error) {
-                    console.error("Scenario generation error:", error);
-                    scenarioOutput.innerHTML = `<p class="text-danger">Erreur lors de la génération du scénario : ${error.message}. Essayez de simplifier l'idée ou vérifiez la console.</p>`;
-                    appState.currentStep = 'idea'; // Revert state on error
+                    console.error("Error in handleGenerateScenario fetch:", error);
+                    scenarioOutput.innerHTML = `<p class="text-danger">Erreur lors de la génération du scénario : ${error.message}. Vérifiez la console du navigateur et les logs de la fonction Netlify.</p>`;
+                    // Reset scenario data on error to avoid inconsistent state
+                    appState.scenarioData = null;
+                    appState.currentStep = 'idea';
                 } finally {
                     loadingIndicator.style.display = 'none';
                     generateScenarioBtn.disabled = false;
-                    updateUI(); // Update UI based on new state
+                    updateUI();
                 }
             }
 
+             // --- Other Event Handlers (Keep existing logic for now) ---
             function handleApproveScenario() {
-                if (!appState.scenarioData) return;
+                // Check if scenario data is valid and not showing raw content due to error
+                if (!appState.scenarioData || (appState.scenarioData.chapters && appState.scenarioData.chapters[0] && appState.scenarioData.chapters[0].rawContent)) {
+                    alert("Impossible d'approuver un scénario qui n'a pas été généré ou structuré correctement.");
+                    return;
+                }
                 appState.currentStep = 'scenario_approved';
-                appState.activeTab = 'storyboard'; // Move to storyboard tab
+                appState.activeTab = 'storyboard'; // Move to storyboard tab (which currently says 'Bientôt')
                 updateUI();
-                 // Automatically select the first chapter for storyboard generation
-                 if (storyboardChapterSelect.options.length > 0) {
-                     storyboardChapterSelect.selectedIndex = 0;
-                     storyboardChapterSelect.dispatchEvent(new Event('change')); // Trigger change event
-                 }
+                 // // Future: Automatically select the first chapter for storyboard generation
+                 // if (storyboardChapterSelect.options.length > 0) {
+                 //     storyboardChapterSelect.selectedIndex = 0;
+                 //     storyboardChapterSelect.dispatchEvent(new Event('change'));
+                 // }
             }
 
             function handleModifyScenarioRequest() {
                  scenarioModificationArea.style.display = 'block';
-                 scenarioControls.style.display = 'none'; // Hide main controls when modifying
+                 scenarioControls.style.display = 'none';
             }
 
             async function handleSubmitScenarioModification() {
@@ -805,119 +1377,45 @@
                      alert("Veuillez décrire les modifications souhaitées.");
                      return;
                  }
-                 alert("Fonctionnalité de modification non implémentée dans cette version.\nDans une version complète, cela enverrait une nouvelle requête à l'IA avec le scénario actuel et la demande de modification.");
-                  // In a full implementation:
-                  // loadingIndicator.style.display = 'block';
-                  // try {
-                  //    appState.scenarioData = await modifyScenario(appState.scenarioData, modificationRequest, appState.genre, ...);
-                  //    appState.currentStep = 'scenario_generated'; // Back to needing approval
-                  // } catch (error) { ... } finally { ... }
-                  // scenarioModificationArea.style.display = 'none';
-                  // updateUI();
+                 alert("Fonctionnalité de modification non implémentée dans cette version.\nCeci nécessiterait un autre appel à la fonction Netlify avec le scénario actuel et la demande.");
+                  // Reset UI
+                  scenarioModificationArea.style.display = 'none';
+                  updateUI(); // Show controls again
+            }
+
+            function handleRegenerateScenario() {
+                 if (confirm("Êtes-vous sûr de vouloir régénérer le scénario ? Le scénario actuel sera perdu.")) {
+                      // Simply call the generation function again with the same inputs
+                      handleGenerateScenario();
+                 }
             }
 
              async function handleGenerateStoryboardChapter(event) {
-                 const targetButton = event.target;
-                 const chapterIndex = parseInt(targetButton.getAttribute('data-chapter'));
-                 if (isNaN(chapterIndex) || !appState.scenarioData || !appState.scenarioData.chapters[chapterIndex]) {
-                     alert("Erreur: Impossible de trouver les données du scénario pour ce chapitre.");
-                     return;
-                 }
-
-                 loadingIndicator.style.display = 'block';
-                 targetButton.disabled = true;
-
-                 try {
-                     const scenarioChapter = appState.scenarioData.chapters[chapterIndex];
-                     // Need to extract relevant page/panel data for the chapter
-                     const chapterPanelData = [];
-                      scenarioChapter.pages?.forEach(page => {
-                          page.panels?.forEach(panel => {
-                              chapterPanelData.push({
-                                   pageNumber: page.pageNumber,
-                                   panelNumber: panel.panelNumber,
-                                   description: panel.description,
-                                   dialogue: panel.dialogue
-                              });
-                          });
-                      });
-
-                     appState.storyboardData[chapterIndex] = await generateStoryboardChapter(chapterPanelData, appState.style, appState.tone);
-                     appState.currentStep = 'storyboard_chapter_generated'; // Or keep as scenario_approved? Decide state flow.
-                     displayStoryboardChapter(chapterIndex); // Update display immediately
-                 } catch (error) {
-                      console.error(`Storyboard generation error for chapter ${chapterIndex + 1}:`, error);
-                     storyboardOutput.innerHTML = `<p class="text-danger">Erreur lors de la génération du storyboard pour le chapitre ${chapterIndex + 1}: ${error.message}.</p>`;
-                 } finally {
-                      loadingIndicator.style.display = 'none';
-                      targetButton.disabled = false; // Re-enable button or hide it depending on state logic
-                      updateUI();
-                 }
+                 alert("La génération de storyboard n'est pas encore implémentée.");
+                 // const targetButton = event.target;
+                 // const chapterIndex = parseInt(targetButton.getAttribute('data-chapter'));
+                 // ... (future implementation using another Netlify function) ...
              }
 
-
             function handleApproveStoryboardChapter() {
-                const selectedChapterIndex = parseInt(storyboardChapterSelect.value);
-                 if (isNaN(selectedChapterIndex) || !appState.storyboardData[selectedChapterIndex]) {
-                      alert("Veuillez sélectionner un chapitre avec un storyboard généré.");
-                      return;
-                 }
-
-                 if (!appState.approvedChapters.includes(selectedChapterIndex)) {
-                     appState.approvedChapters.push(selectedChapterIndex);
-                 }
-                 appState.currentStep = 'storyboard_chapter_approved'; // Or a state indicating how many are approved
-                 appState.activeTab = 'prompts';
-                 updateUI();
-                  // Automatically select the newly approved chapter in the prompts tab
-                  if (promptsChapterSelect.options.length > 0) {
-                      // Find the option corresponding to the approved chapter
-                      const optionToSelect = Array.from(promptsChapterSelect.options).find(opt => parseInt(opt.value) === selectedChapterIndex);
-                      if(optionToSelect) {
-                           promptsChapterSelect.value = selectedChapterIndex;
-                           promptsChapterSelect.dispatchEvent(new Event('change'));
-                      } else {
-                           // If it's the first approved chapter, refresh the select and select it
-                           updateChapterSelect(promptsChapterSelect, 'prompts');
-                           promptsChapterSelect.value = selectedChapterIndex;
-                           promptsChapterSelect.dispatchEvent(new Event('change'));
-                      }
-                  }
+                 alert("L'approbation de storyboard n'est pas encore fonctionnelle.");
+                // const selectedChapterIndex = parseInt(storyboardChapterSelect.value);
+                // ... (future implementation) ...
             }
 
              async function handleGeneratePromptsChapter(event) {
-                 const targetButton = event.target;
-                 const chapterIndex = parseInt(targetButton.getAttribute('data-chapter'));
-                  if (isNaN(chapterIndex) || !appState.storyboardData[chapterIndex]) {
-                     alert("Erreur: Impossible de trouver les données du storyboard pour ce chapitre.");
-                     return;
-                 }
-
-                 loadingIndicator.style.display = 'block';
-                 targetButton.disabled = true;
-
-                 try {
-                     appState.promptsData[chapterIndex] = await generatePromptsForChapter(appState.storyboardData[chapterIndex], appState.style, appState.tone);
-                     appState.currentStep = 'prompts_generated'; // Or track per chapter
-                      displayPromptsChapter(chapterIndex); // Update display
-                 } catch (error) {
-                      console.error(`Prompts generation error for chapter ${chapterIndex + 1}:`, error);
-                     promptsOutput.innerHTML = `<p class="text-danger">Erreur lors de la génération des prompts pour le chapitre ${chapterIndex + 1}: ${error.message}.</p>`;
-                 } finally {
-                      loadingIndicator.style.display = 'none';
-                      targetButton.disabled = false; // Or hide
-                      updateUI();
-                 }
+                 alert("La génération de prompts n'est pas encore implémentée.");
+                 // const targetButton = event.target;
+                 // const chapterIndex = parseInt(targetButton.getAttribute('data-chapter'));
+                 // ... (future implementation using another Netlify function) ...
              }
 
-
-            // --- Event Listeners ---
+            // --- Event Listeners Setup ---
             tabBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
-                    if (this.classList.contains('disabled')) return; // Prevent clicking disabled tabs
-                    const tabId = this.getAttribute('data-tab');
-                    appState.activeTab = tabId;
-                    updateUI(); // Use updateUI to manage active classes
+                    if (this.classList.contains('disabled')) return;
+                    appState.activeTab = this.getAttribute('data-tab');
+                    updateUI();
                 });
             });
 
@@ -925,33 +1423,25 @@
             approveScenarioBtn.addEventListener('click', handleApproveScenario);
             modifyScenarioRequestBtn.addEventListener('click', handleModifyScenarioRequest);
             submitScenarioModificationBtn.addEventListener('click', handleSubmitScenarioModification);
-             // TODO: Add listener for regenerateScenarioBtn
+             regenerateScenarioBtn.addEventListener('click', handleRegenerateScenario); // Added listener
 
-             storyboardChapterSelect.addEventListener('change', function() {
-                  updateUI(); // Refresh storyboard display on chapter change
-             });
-            approveStoryboardChapterBtn.addEventListener('click', handleApproveStoryboardChapter);
-             // TODO: Add listeners for storyboard modification/regeneration
+             // --- Commented out listeners for future features ---
+             // storyboardChapterSelect.addEventListener('change', function() { updateUI(); });
+             // approveStoryboardChapterBtn.addEventListener('click', handleApproveStoryboardChapter);
+             // promptsChapterSelect.addEventListener('change', function() { updateUI(); });
 
-             promptsChapterSelect.addEventListener('change', function() {
-                  updateUI(); // Refresh prompts display on chapter change
-             });
-
-             // Session Management Listeners (Adapted)
+             // --- Session Management Listeners (Keep existing) ---
              document.getElementById('new-session').addEventListener('click', function() {
                  if (confirm('Êtes-vous sûr de vouloir créer une nouvelle session ? Toutes les données non sauvegardées seront perdues.')) {
-                      // Reset state to initial
                       appState = {
                           currentStep: 'idea', scenarioData: null, storyboardData: {}, promptsData: {}, approvedChapters: [],
                           keywords: '', genre: '', style: '', tone: '', details: '', activeTab: 'home'
                       };
-                      // Clear inputs
                       keywordsInput.value = '';
                       genreSelect.selectedIndex = 0;
                       styleSelect.selectedIndex = 0;
                       toneSelect.selectedIndex = 0;
                       detailsInput.value = '';
-                      // Reset outputs
                       scenarioOutput.innerHTML = '<p>Générez d\'abord un scénario...</p>';
                       storyboardOutput.innerHTML = '<p>Approuvez d\'abord le scénario...</p>';
                       promptsOutput.innerHTML = '<p>Approuvez d\'abord le storyboard...</p>';
@@ -960,7 +1450,6 @@
              });
 
             document.getElementById('save-session').addEventListener('click', function() {
-                 // Include appState in session data
                 const sessionData = {
                     inputs: {
                         keywords: keywordsInput.value,
@@ -969,16 +1458,19 @@
                         tone: toneSelect.value,
                         details: detailsInput.value
                     },
-                    state: appState // Save the entire state object
+                    state: appState
                 };
-
                 const sessionName = prompt('Donnez un nom à cette session:');
                 if (sessionName) {
                     try {
+                         // Basic check for potentially huge data (scenario can be large)
+                         if (JSON.stringify(sessionData).length > 4 * 1024 * 1024) { // ~4MB limit warning
+                              alert("Attention : La session est très volumineuse, la sauvegarde pourrait échouer ou ralentir le navigateur.");
+                         }
                          localStorage.setItem(`bdcreator_session_${sessionName}`, JSON.stringify(sessionData));
                          alert(`Session "${sessionName}" sauvegardée avec succès!`);
                     } catch (e) {
-                         alert(`Erreur lors de la sauvegarde: ${e.message}. L'espace de stockage est peut-être plein.`);
+                         alert(`Erreur lors de la sauvegarde: ${e.message}. L'espace de stockage local est peut-être plein.`);
                          console.error("Local storage save error:", e);
                     }
                 }
@@ -986,12 +1478,19 @@
 
              document.getElementById('load-session').addEventListener('click', function() {
                  const sessions = [];
-                 for (let i = 0; i < localStorage.length; i++) {
-                     const key = localStorage.key(i);
-                     if (key.startsWith('bdcreator_session_')) {
-                         sessions.push(key.replace('bdcreator_session_', ''));
+                 try {
+                     for (let i = 0; i < localStorage.length; i++) {
+                         const key = localStorage.key(i);
+                         if (key && key.startsWith('bdcreator_session_')) {
+                             sessions.push(key.replace('bdcreator_session_', ''));
+                         }
                      }
+                 } catch(e) {
+                      alert("Erreur d'accès au stockage local.");
+                      console.error("Error accessing local storage keys:", e);
+                      return;
                  }
+
 
                  if (sessions.length === 0) {
                      alert('Aucune session sauvegardée trouvée.');
@@ -1001,7 +1500,11 @@
                  const sessionName = prompt(`Choisissez une session à charger (${sessions.join(', ')}):`, sessions[0]);
                  if (sessionName && sessions.includes(sessionName)) {
                      try {
-                          const sessionData = JSON.parse(localStorage.getItem(`bdcreator_session_${sessionName}`));
+                          const sessionString = localStorage.getItem(`bdcreator_session_${sessionName}`);
+                          if (!sessionString) throw new Error("Données de session non trouvées.");
+
+                          const sessionData = JSON.parse(sessionString);
+                          if (!sessionData || !sessionData.inputs || !sessionData.state) throw new Error("Format de session invalide.");
 
                           // Restore inputs
                           keywordsInput.value = sessionData.inputs.keywords || '';
@@ -1018,15 +1521,17 @@
                      } catch (e) {
                           alert(`Erreur lors du chargement de la session "${sessionName}": ${e.message}`);
                           console.error("Load session error:", e);
+                          // Optionally clear broken session data
+                          // localStorage.removeItem(`bdcreator_session_${sessionName}`);
                      }
                  }
              });
 
 
-            // Correction du lien "Create my website"
+            // Footer link placeholder
             document.getElementById('create-website-btn').addEventListener('click', function(e) {
                 e.preventDefault();
-                alert('Cette fonctionnalité de création de site externe n\'est pas incluse dans BD Creator.');
+                alert('Cette fonctionnalité externe n\'est pas disponible.');
             });
 
             // --- Initial UI Setup ---
