@@ -28,70 +28,66 @@ exports.handler = async (event, context) => {
         return { statusCode: 400, body: JSON.stringify({ error: "Bad request body." }) };
     }
 
-    const { keywords, genre, style, tone, details } = inputData;
+    // !! IMPORTANT: Utilisez seulement les inputs nécessaires pour le test simple !!
+    const { keywords, genre } = inputData; // On a juste besoin de ça pour le test
 
-    // 4. Basic validation (optional)
-    if (!keywords || !genre || !style || !tone) {
-        return { statusCode: 400, body: JSON.stringify({ error: "Missing required input fields." }) };
+    // 4. Basic validation (simplifiée pour le test)
+    if (!keywords || !genre ) {
+        return { statusCode: 400, body: JSON.stringify({ error: "Missing required input fields for simple test." }) };
     }
 
-    // 5. Construct the Prompt for Gemini 1.0 Pro
-    //    (Using the detailed prompt structure we developed before)
-    let prompt = `Tâche : Écrire un scénario détaillé pour une bande dessinée. **IMPORTANT : La réponse COMPLÈTE doit être en FRANÇAIS.**\n\n`;
-    prompt += `INPUTS UTILISATEUR :\n`;
+    // 5. Construct the **SIMPLE TEST PROMPT** for Gemini
+    //    (On remplace tout le prompt complexe par ceci pour tester le timeout)
+    //    ******************************************************************
+    console.log("--- USING SIMPLE PROMPT FOR TIMEOUT TEST ---"); // Log pour savoir qu'on utilise le test
+    let prompt = `Tâche : Écris juste un titre accrocheur en FRANÇAIS pour une bande dessinée.\n\n`;
+    prompt += `INPUTS UTILISATEUR (simplifié) :\n`;
     prompt += `- Idée/Mots-clés : ${keywords}\n`;
-    prompt += `- Genre : ${genre}\n`;
-    prompt += `- Style Visuel Cible (pour info) : ${style}\n`;
-    prompt += `- Ton : ${tone}\n`;
-    if (details) {
-        prompt += `- Détails Additionnels (Personnages, Univers) : ${details}\n`;
-    }
-    prompt += `\nINSTRUCTIONS (Suivre attentivement) :\n`;
-    prompt += `1. **Langue : ÉCRIS TOUTE LA RÉPONSE EN FRANÇAIS.**\n`;
-    prompt += `2. Crée un titre accrocheur en FRANÇAIS.\n`;
-    prompt += `3. Écris un synopsis court (2-3 paragraphes) en FRANÇAIS.\n`;
-    // ... (include ALL the detailed instructions from your previous prompt)
-    prompt += `FORMAT DE SORTIE ATTENDU (IMPORTANT - Suivre ce format EXACTEMENT) :\n`;
-    prompt += `TITRE : [Titre de la BD en Français]\n\n`;
-    prompt += `SYNOPSIS :\n[Synopsis en Français ici]\n\n`;
-    prompt += `CHAPITRE 1 : [Titre du Chapitre 1 en Français]\n`;
-    // ... (include the full format example)
-    prompt += `**RAPPEL FINAL : TOUTE LA RÉPONSE DOIT ÊTRE EN FRANÇAIS.**\n`;
-    prompt += `SCÉNARIO COMPLET CI-DESSOUS :\n`;
+    prompt += `- Genre : ${genre}\n\n`;
+    prompt += `FORMAT DE SORTIE ATTENDU :\n`;
+    prompt += `TITRE : [Titre de la BD en Français]\n\n`; // Demande juste le titre
+    prompt += `TITRE CI-DESSOUS :\n`;
     prompt += `------------------------------------\n`;
+    //    ******************************************************************
 
-    console.log("Sending prompt to Gemini..."); // Log on the serverless function side
+    console.log("Sending SIMPLE prompt to Gemini..."); // Log avant l'appel
 
     // 6. Initialize Google AI and Call the API
     try {
         const genAI = new GoogleGenerativeAI(apiKey);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
+        // !!! Assurez-vous d'utiliser le modèle qui ne causait PAS l'erreur 404 !!!
+        // !!!       'gemini-1.5-pro-latest' ou 'gemini-1.0-pro'        !!!
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
 
-        const result = await model.generateContent(prompt);
+        const result = await model.generateContent(prompt); // Appel avec le prompt SIMPLE
+        console.log("Received result object from Gemini (simple prompt)."); // Log après succès
         const response = await result.response;
         const text = response.text();
 
-        console.log("Received response from Gemini."); // Server log
+        console.log("Received simple response text from Gemini."); // Log
 
         // 7. Return the successful response to the frontend
         return {
             statusCode: 200,
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ scenarioText: text }), // Send the raw text back
+            // On renvoie juste le texte brut (qui devrait être très court)
+            body: JSON.stringify({ scenarioText: `--- TEST RESPONSE --- \n${text}` }),
         };
 
     } catch (error) {
-        console.error("Error calling Google AI API:", error);
-        // Check for specific Gemini errors if possible (e.g., safety blocks)
+        console.error("Error calling Google AI API (simple prompt test):", error); // Log d'erreur
+        // Check for specific Gemini errors if possible
          let errorMessage = `API call failed: ${error.message}`;
-         if (error.message.includes('SAFETY')) {
-             errorMessage = "La génération a été bloquée pour des raisons de sécurité par l'API Google.";
+         if (error.response && error.response.promptFeedback && error.response.promptFeedback.blockReason) {
+             errorMessage = `La génération a été bloquée par Google pour la raison : ${error.response.promptFeedback.blockReason}`;
          } else if (error.message.includes('API key not valid')) {
              errorMessage = "La clé API Google configurée n'est pas valide.";
+         } else if (error.status === 404) {
+              errorMessage = `API call failed: ${error.message} (Vérifiez le nom du modèle: 'gemini-1.5-pro-latest' ou 'gemini-1.0-pro'?)`;
          }
         return {
-            statusCode: 500,
-            body: JSON.stringify({ error: "Failed to generate scenario via API.", details: errorMessage }),
+            statusCode: 500, // Peut toujours être 500 ou un autre code selon l'erreur Google
+            body: JSON.stringify({ error: "Failed to generate simple test response via API.", details: errorMessage }),
         };
     }
 };
