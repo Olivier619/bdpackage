@@ -980,23 +980,28 @@
             // --- Helper Functions ---
 
             // Simple HTML Escaping
+            // --- Helper Functions ---
+
+            // Simple HTML Escaping (CORRECTED VERSION)
             function escapeHtml(unsafe) {
-                if (typeof unsafe !== 'string') return unsafe;
+                if (typeof unsafe !== 'string') return unsafe; // Ne pas échapper si ce n'est pas une chaîne
                 return unsafe
-                     .replace(/&/g, "&")
-                     .replace(/</g, "<")
-                     .replace(/>/g, ">")
-                     .replace(/"/g, """)
-                     .replace(/'/g, "'");
+                     .replace(/&/g, "&")  // Remplace & par &
+                     .replace(/</g, "<")   // Remplace < par <
+                     .replace(/>/g, ">")   // Remplace > par >
+                     .replace(/"/g, """) // Remplace " par "
+                     .replace(/'/g, "'"); // Remplace ' par ' (ou ')
              }
 
-             // Show/Hide Loading Indicator
+             // Show/Hide Loading Indicator (reste inchangé)
              function showLoadingIndicator(show) {
                  if (loadingIndicator) {
                      loadingIndicator.style.display = show ? 'block' : 'none';
                  }
              }
 
+            // --- Le reste de votre code Javascript suit ---
+            // ... (displayOutline, displayChapterDetail, updateUI, etc.) ...
             // --- *** NOUVELLE FONCTION POUR AFFICHER L'OSSATURE *** ---
             function displayOutline(outlineData) {
                  outlineDisplayArea.innerHTML = ''; // Clear previous content
