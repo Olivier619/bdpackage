@@ -831,9 +831,12 @@
                          <option>Approuvez d'abord le scénario</option>
                      </select>
                  </div>
+                -->
                 <div id="storyboard-output">
                     <p>Approuvez d'abord le scénario pour générer le storyboard.</p>
+                     <p>La fonctionnalité de génération de storyboard sera ajoutée prochainement, une fois la génération de scénario via l'API stabilisée.</p>
                 </div>
+                 <!--
                  <div class="app-controls" id="storyboard-controls">
                     <button class="btn btn-success" id="approve-storyboard-chapter">Approuver Storyboard Chapitre</button>
                     <button class="btn btn-primary" id="modify-storyboard-request">Demander Modifications Chapitre</button>
@@ -845,7 +848,6 @@
                     <button class="btn btn-primary" id="submit-storyboard-modification">Soumettre Modification</button>
                 </div>
                 -->
-                 <p>La fonctionnalité de génération de storyboard sera ajoutée prochainement, une fois la génération de scénario via l'API stabilisée.</p>
             </div>
 
             <!-- Tab 4: Prompts -->
@@ -858,11 +860,11 @@
                          <option>Approuvez d'abord le storyboard</option>
                      </select>
                  </div>
+                -->
                 <div id="prompts-output">
                     <p>Approuvez d'abord le storyboard d'un chapitre pour générer les prompts.</p>
+                     <p>La fonctionnalité de génération de prompts sera ajoutée prochainement, après l'implémentation du storyboard.</p>
                 </div>
-                -->
-                 <p>La fonctionnalité de génération de prompts sera ajoutée prochainement, après l'implémentation du storyboard.</p>
             </div>
         </div>
     </section>
@@ -910,13 +912,12 @@
             const scenarioModificationInput = document.getElementById('scenario-modification-input');
             const submitScenarioModificationBtn = document.getElementById('submit-scenario-modification');
 
-            const storyboardChapterSelect = document.getElementById('storyboard-chapter-select');
+            const storyboardChapterSelect = document.getElementById('storyboard-chapter-select'); // Still needed for updateUI logic
             const storyboardOutput = document.getElementById('storyboard-output');
-            const storyboardControls = document.getElementById('storyboard-controls');
-            const approveStoryboardChapterBtn = document.getElementById('approve-storyboard-chapter');
-            // ... (add buttons for storyboard modification/regeneration - currently commented out in HTML)
+            const storyboardControls = document.getElementById('storyboard-controls'); // Still needed for updateUI logic
+            // const approveStoryboardChapterBtn = document.getElementById('approve-storyboard-chapter'); // Commented out in HTML
 
-            const promptsChapterSelect = document.getElementById('prompts-chapter-select');
+            const promptsChapterSelect = document.getElementById('prompts-chapter-select'); // Still needed for updateUI logic
             const promptsOutput = document.getElementById('prompts-output');
 
             const progressSteps = {
@@ -945,7 +946,7 @@
                 style: '',
                 tone: '',
                 details: '',
-                activeTab: 'home'
+                activeTab: 'home' // Ensure activeTab is initialized
             };
 
             // --- PARSER FUNCTION (Moved Inline) ---
@@ -1151,7 +1152,7 @@
              }
 
 
-            // --- UI Update Functions (Keep existing updateUI, displayStoryboardChapter, displayPromptsChapter, updateChapterSelect) ---
+            // --- UI Update Functions ---
              // Adjusted displayScenario to handle parsing failures better
              function displayScenario(scenario) {
                  if (!scenario || typeof scenario !== 'object' || !scenario.title) {
@@ -1215,10 +1216,11 @@
                  }
                  scenarioOutput.innerHTML = html;
             }
-             // ... (keep other UI functions: updateChapterSelect, displayStoryboardChapter, displayPromptsChapter) ...
+             // Function definition required by updateUI, even if elements are commented out in HTML
              function updateChapterSelect(selectElement, type) {
+                 if (!selectElement) return; // Guard clause if element doesn't exist
                  selectElement.innerHTML = ''; // Clear existing options
-                 if (!appState.scenarioData || !Array.isArray(appState.scenarioData.chapters) || (appState.scenarioData.chapters[0] && appState.scenarioData.chapters[0].rawContent)) { // Added check for rawContent
+                 if (!appState.scenarioData || !Array.isArray(appState.scenarioData.chapters) || (appState.scenarioData.chapters[0] && appState.scenarioData.chapters[0].rawContent)) {
                      const defaultOption = document.createElement('option');
                      if (type === 'storyboard') defaultOption.textContent = 'Générez un scénario valide';
                      else defaultOption.textContent = 'Approuvez un scénario valide';
@@ -1226,7 +1228,6 @@
                      selectElement.disabled = true;
                      return;
                  }
-                 // ... (rest of the function remains the same) ...
                   if (type === 'prompts' && appState.approvedChapters.length === 0) {
                      const defaultOption = document.createElement('option');
                      defaultOption.textContent = 'Approuvez d\'abord un storyboard';
@@ -1241,8 +1242,7 @@
                      }
                      const option = document.createElement('option');
                      option.value = index;
-                      // Use chapterNumber if available, otherwise use index
-                     const chapterNumDisplay = chapter.chapterNumber ? `Chapitre ${chapter.chapterNumber}` : `Chapitre ${index + 1}`;
+                      const chapterNumDisplay = chapter.chapterNumber ? `Chapitre ${chapter.chapterNumber}` : `Chapitre ${index + 1}`;
                      option.textContent = `${chapterNumDisplay}: ${chapter.title || 'Sans titre'}`;
                       if (appState.approvedChapters.includes(index)) {
                           option.textContent += " (Storyboard Approuvé)";
@@ -1251,16 +1251,96 @@
                  });
 
                  selectElement.disabled = selectElement.options.length === 0;
-
              }
              function displayStoryboardChapter(chapterIndex) {
-                // This function will need implementation later
                  storyboardOutput.innerHTML = `<p>Affichage du storyboard pour Chapitre ${chapterIndex + 1} (Fonctionnalité à implémenter).</p>`;
              }
              function displayPromptsChapter(chapterIndex) {
-                 // This function will need implementation later
                  promptsOutput.innerHTML = `<p>Affichage des prompts pour Chapitre ${chapterIndex + 1} (Fonctionnalité à implémenter).</p>`;
              }
+
+
+            // --- NOUVELLE FONCTION updateUI ---
+            function updateUI() {
+                console.log("Updating UI, current step:", appState.currentStep, "active tab:", appState.activeTab);
+
+                // Update Progress Indicator
+                Object.values(progressSteps).forEach(step => step.classList.remove('active', 'completed'));
+                if (appState.currentStep === 'idea') {
+                    progressSteps.idea.classList.add('active');
+                } else if (appState.currentStep === 'scenario_generated') {
+                    progressSteps.idea.classList.add('completed');
+                    progressSteps.scenario.classList.add('active');
+                } else if (appState.currentStep === 'scenario_approved') {
+                    progressSteps.idea.classList.add('completed');
+                    progressSteps.scenario.classList.add('completed');
+                    progressSteps.storyboard.classList.add('active'); // Storyboard becomes active conceptually
+                }
+                 // Add more steps later for storyboard/prompts completion
+
+                // Update Tabs Activation/Disabling
+                tabs.scenario.classList.toggle('disabled', !appState.scenarioData);
+                // Storyboard tab enabled only when scenario is approved AND valid
+                const scenarioIsValidForNextSteps = appState.scenarioData && !(appState.scenarioData.chapters && appState.scenarioData.chapters[0] && appState.scenarioData.chapters[0].rawContent);
+                tabs.storyboard.classList.toggle('disabled', appState.currentStep !== 'scenario_approved' || !scenarioIsValidForNextSteps);
+                // Prompts tab always disabled for now (depends on storyboard approval state later)
+                tabs.prompts.classList.toggle('disabled', true);
+
+                // Update Tab Content Display
+                tabContents.forEach(content => {
+                    content.style.display = content.id === `${appState.activeTab}-content` ? 'block' : 'none';
+                });
+                tabBtns.forEach(btn => {
+                    btn.classList.toggle('active', btn.getAttribute('data-tab') === appState.activeTab);
+                });
+
+
+                // Update Scenario Tab Controls Visibility
+                 // Check if scenarioData exists AND it doesn't contain the rawContent error marker
+                 const scenarioIsValid = appState.scenarioData && !(appState.scenarioData.chapters && appState.scenarioData.chapters[0] && appState.scenarioData.chapters[0].rawContent);
+
+                 if (appState.currentStep === 'scenario_generated') {
+                      scenarioControls.style.display = 'flex'; // Use flex or block as needed
+                      scenarioModificationArea.style.display = 'none'; // Hide modification area initially
+                      // Enable/disable buttons based on validity
+                      approveScenarioBtn.disabled = !scenarioIsValid;
+                      modifyScenarioRequestBtn.disabled = !scenarioIsValid; // Or maybe allow modification even if invalid? Your choice.
+                      regenerateScenarioBtn.disabled = false; // Always allow regeneration
+                 } else {
+                      scenarioControls.style.display = 'none';
+                      scenarioModificationArea.style.display = 'none';
+                      // Ensure buttons are re-enabled if hidden then shown again (might not be necessary if state changes)
+                      approveScenarioBtn.disabled = false;
+                      modifyScenarioRequestBtn.disabled = false;
+                      regenerateScenarioBtn.disabled = false;
+                 }
+
+                // Display Scenario Data (if available)
+                if (appState.scenarioData && appState.activeTab === 'scenario') {
+                    displayScenario(appState.scenarioData);
+                } else if (!appState.scenarioData && appState.activeTab === 'scenario') {
+                     scenarioOutput.innerHTML = '<p>Générez d\'abord un scénario depuis l\'onglet "Idée & Options".</p>';
+                }
+
+                // Update Chapter Selectors (call existing functions, safe even if elements are null)
+                 updateChapterSelect(storyboardChapterSelect, 'storyboard');
+                 updateChapterSelect(promptsChapterSelect, 'prompts');
+
+                // Update Storyboard/Prompts Outputs (call existing functions)
+                if (appState.activeTab === 'storyboard') {
+                    // const selectedStoryboardChapter = parseInt(storyboardChapterSelect?.value); // Use optional chaining
+                    // if (!isNaN(selectedStoryboardChapter)) displayStoryboardChapter(selectedStoryboardChapter);
+                    storyboardOutput.innerHTML = '<p>La fonctionnalité de génération de storyboard sera ajoutée prochainement...</p>'; // Placeholder
+                }
+                 if (appState.activeTab === 'prompts') {
+                    // const selectedPromptsChapter = parseInt(promptsChapterSelect?.value); // Use optional chaining
+                    // if (!isNaN(selectedPromptsChapter)) displayPromptsChapter(selectedPromptsChapter);
+                     promptsOutput.innerHTML = '<p>La fonctionnalité de génération de prompts sera ajoutée prochainement...</p>'; // Placeholder
+                 }
+
+                console.log("UI Update finished.");
+            }
+            // --- FIN NOUVELLE FONCTION updateUI ---
 
 
             // --- Function to call the Netlify backend ---
@@ -1279,6 +1359,10 @@
                 loadingIndicator.style.display = 'block';
                 generateScenarioBtn.disabled = true;
                 scenarioOutput.innerHTML = '<p>Envoi de la requête à l\'IA via le serveur...</p>';
+                appState.scenarioData = null; // Clear previous data before new request
+                appState.currentStep = 'idea'; // Reset step while generating
+                updateUI(); // Show loading state, disable tabs etc.
+
 
                 const requestData = {
                     keywords: appState.keywords,
@@ -1312,20 +1396,25 @@
                          console.log("Parsed scenario data:", appState.scenarioData);
 
                          // Check parsing success again after parsing
-                         if (!appState.scenarioData.title || appState.scenarioData.title === "Titre Non Défini" || !appState.scenarioData.chapters || appState.scenarioData.chapters.length === 0 || (appState.scenarioData.chapters[0] && !appState.scenarioData.chapters[0].rawContent && appState.scenarioData.chapters[0].pages.length === 0) ) {
+                          const parsingFailed = !appState.scenarioData.title || appState.scenarioData.title === "Titre Non Défini" || !appState.scenarioData.chapters || appState.scenarioData.chapters.length === 0 || (appState.scenarioData.chapters[0] && !appState.scenarioData.chapters[0].rawContent && appState.scenarioData.chapters[0].pages.length === 0);
+
+                         if (parsingFailed) {
                              console.warn("Parsing failed after receiving data from backend. Preparing raw content display object.");
-                              if (!appState.scenarioData.chapters || appState.scenarioData.chapters.length === 0) {
-                                  // If parsing totally failed, create minimal structure with raw content
-                                   appState.scenarioData = { title: appState.scenarioData.title || "Titre Non Trouvé (Parsing Échoué)", synopsis: "N/A", chapters: [{ chapterNumber: 1, title: "Erreur de Structuration (depuis API)", pages: [], rawContent: result.scenarioText }] };
-                              } else if (appState.scenarioData.chapters[0]) {
-                                   // If parsing started but failed, add raw content info to first chapter
-                                   appState.scenarioData.chapters[0].title += " (Erreur de Structuration)";
-                                   appState.scenarioData.chapters[0].rawContent = result.scenarioText; // Ensure rawContent is set
-                              }
+                              // Create minimal structure with raw content for display
+                               appState.scenarioData = {
+                                   title: appState.scenarioData?.title || "Titre Non Trouvé (Parsing Échoué)",
+                                   synopsis: appState.scenarioData?.synopsis || "N/A (Parsing Échoué)",
+                                   chapters: [{
+                                        chapterNumber: 1,
+                                        title: "Erreur de Structuration (depuis API)",
+                                        pages: [],
+                                        rawContent: result.scenarioText // Store raw text here
+                                    }]
+                               };
                          }
 
                         appState.currentStep = 'scenario_generated';
-                        appState.activeTab = 'scenario';
+                        appState.activeTab = 'scenario'; // Switch to scenario tab
                         appState.storyboardData = {};
                         appState.promptsData = {};
                         appState.approvedChapters = [];
@@ -1339,17 +1428,18 @@
                 } catch (error) {
                     console.error("Error in handleGenerateScenario fetch:", error);
                     scenarioOutput.innerHTML = `<p class="text-danger">Erreur lors de la génération du scénario : ${error.message}. Vérifiez la console du navigateur et les logs de la fonction Netlify.</p>`;
-                    // Reset scenario data on error to avoid inconsistent state
-                    appState.scenarioData = null;
+                    // Keep step as 'idea' or a dedicated 'error' step if needed
                     appState.currentStep = 'idea';
+                    appState.scenarioData = null; // Ensure no broken data persists
+                     appState.activeTab = 'scenario'; // Stay on scenario tab to show the error
                 } finally {
                     loadingIndicator.style.display = 'none';
                     generateScenarioBtn.disabled = false;
-                    updateUI();
+                    updateUI(); // Update UI with result or error message
                 }
             }
 
-             // --- Other Event Handlers (Keep existing logic for now) ---
+             // --- Other Event Handlers ---
             function handleApproveScenario() {
                 // Check if scenario data is valid and not showing raw content due to error
                 if (!appState.scenarioData || (appState.scenarioData.chapters && appState.scenarioData.chapters[0] && appState.scenarioData.chapters[0].rawContent)) {
@@ -1360,9 +1450,9 @@
                 appState.activeTab = 'storyboard'; // Move to storyboard tab (which currently says 'Bientôt')
                 updateUI();
                  // // Future: Automatically select the first chapter for storyboard generation
-                 // if (storyboardChapterSelect.options.length > 0) {
+                 // if (storyboardChapterSelect && storyboardChapterSelect.options.length > 0) { // Add check for element existence
                  //     storyboardChapterSelect.selectedIndex = 0;
-                 //     storyboardChapterSelect.dispatchEvent(new Event('change'));
+                 //     // storyboardChapterSelect.dispatchEvent(new Event('change')); // Dispatch only if needed later
                  // }
             }
 
@@ -1379,13 +1469,20 @@
                  }
                  alert("Fonctionnalité de modification non implémentée dans cette version.\nCeci nécessiterait un autre appel à la fonction Netlify avec le scénario actuel et la demande.");
                   // Reset UI
+                  scenarioModificationInput.value = ''; // Clear input
                   scenarioModificationArea.style.display = 'none';
-                  updateUI(); // Show controls again
+                  updateUI(); // Show controls again based on current state
             }
 
             function handleRegenerateScenario() {
                  if (confirm("Êtes-vous sûr de vouloir régénérer le scénario ? Le scénario actuel sera perdu.")) {
-                      // Simply call the generation function again with the same inputs
+                      // Simply call the generation function again with the same inputs stored in appState
+                      // Ensure inputs are up-to-date if they could have changed
+                       keywordsInput.value = appState.keywords;
+                       genreSelect.value = appState.genre;
+                       styleSelect.value = appState.style;
+                       toneSelect.value = appState.tone;
+                       detailsInput.value = appState.details;
                       handleGenerateScenario();
                  }
             }
@@ -1426,11 +1523,11 @@
              regenerateScenarioBtn.addEventListener('click', handleRegenerateScenario); // Added listener
 
              // --- Commented out listeners for future features ---
-             // storyboardChapterSelect.addEventListener('change', function() { updateUI(); });
-             // approveStoryboardChapterBtn.addEventListener('click', handleApproveStoryboardChapter);
-             // promptsChapterSelect.addEventListener('change', function() { updateUI(); });
+             // if(storyboardChapterSelect) storyboardChapterSelect.addEventListener('change', function() { updateUI(); });
+             // if(approveStoryboardChapterBtn) approveStoryboardChapterBtn.addEventListener('click', handleApproveStoryboardChapter);
+             // if(promptsChapterSelect) promptsChapterSelect.addEventListener('change', function() { updateUI(); });
 
-             // --- Session Management Listeners (Keep existing) ---
+             // --- Session Management Listeners ---
              document.getElementById('new-session').addEventListener('click', function() {
                  if (confirm('Êtes-vous sûr de vouloir créer une nouvelle session ? Toutes les données non sauvegardées seront perdues.')) {
                       appState = {
@@ -1450,14 +1547,15 @@
              });
 
             document.getElementById('save-session').addEventListener('click', function() {
+                // Update appState inputs before saving
+                 appState.keywords = keywordsInput.value;
+                 appState.genre = genreSelect.value;
+                 appState.style = styleSelect.value;
+                 appState.tone = toneSelect.value;
+                 appState.details = detailsInput.value;
+
                 const sessionData = {
-                    inputs: {
-                        keywords: keywordsInput.value,
-                        genre: genreSelect.value,
-                        style: styleSelect.value,
-                        tone: toneSelect.value,
-                        details: detailsInput.value
-                    },
+                    // Remove inputs field, just save the whole appState
                     state: appState
                 };
                 const sessionName = prompt('Donnez un nom à cette session:');
@@ -1504,17 +1602,20 @@
                           if (!sessionString) throw new Error("Données de session non trouvées.");
 
                           const sessionData = JSON.parse(sessionString);
-                          if (!sessionData || !sessionData.inputs || !sessionData.state) throw new Error("Format de session invalide.");
+                          // Adjusting for potentially old save format
+                          const loadedState = sessionData.state || sessionData; // Use sessionData.state if exists, else assume whole object is state
 
-                          // Restore inputs
-                          keywordsInput.value = sessionData.inputs.keywords || '';
-                          genreSelect.value = sessionData.inputs.genre || 'Fantastique';
-                          styleSelect.value = sessionData.inputs.style || 'Manga';
-                          toneSelect.value = sessionData.inputs.tone || 'Épique';
-                          detailsInput.value = sessionData.inputs.details || '';
+                          if (!loadedState || typeof loadedState.currentStep === 'undefined') throw new Error("Format de session invalide.");
 
                           // Restore state
-                          appState = sessionData.state;
+                          appState = loadedState;
+
+                          // Restore inputs FROM the loaded state
+                          keywordsInput.value = appState.keywords || '';
+                          genreSelect.value = appState.genre || 'Fantastique';
+                          styleSelect.value = appState.style || 'Manga';
+                          toneSelect.value = appState.tone || 'Épique';
+                          detailsInput.value = appState.details || '';
 
                           alert(`Session "${sessionName}" chargée avec succès!`);
                           updateUI(); // Update UI with loaded state
@@ -1535,7 +1636,7 @@
             });
 
             // --- Initial UI Setup ---
-            updateUI();
+            updateUI(); // <--- APPEL INITIAL IMPORTANT
 
         });
     </script>
