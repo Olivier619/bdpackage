@@ -372,7 +372,7 @@
              padding-bottom: 20px;
              border-bottom: 1px solid #eee;
          }
-          #outline-display-area h2 {
+          #outline-display-area h4 { /* Changed from h2 */
               margin-bottom: 15px;
           }
           #outline-display-area ul {
@@ -393,19 +393,35 @@
            #outline-display-area li div { /* Target the div containing text */
                flex-grow: 1; /* Allow text to take up space */
                margin-right: 10px; /* Space before button */
+               margin-bottom: 5px; /* Add margin bottom for wrapped button */
            }
            #outline-display-area li button { /* Style the button inside the list */
                flex-shrink: 0; /* Prevent button from shrinking */
            }
 
-
+          /* Style pour la zone de détail */
           #chapter-detail-area {
               margin-top: 20px;
               padding: 15px;
               background-color: #f0f8ff; /* Light blue background */
               border-radius: 5px;
               border: 1px solid #d1e7fd;
+              display: none; /* Start hidden */
           }
+           #chapter-detail-area h4 {
+               color: var(--primary-color);
+               margin-bottom: 10px;
+           }
+            #chapter-detail-area pre { /* Style for preformatted text */
+                white-space: pre-wrap;
+                background-color: #fff;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                max-height: 500px;
+                overflow-y: auto;
+                margin-top: 10px; /* Add some space */
+            }
 
 
          .scenario-page {
@@ -966,20 +982,12 @@
             // --- Application State ---
              let appState = {
                  currentStep: 'idea', // idea, outline_generated, outline_approved (was scenario_approved), chapter_detail_generated, storyboard_generated...
-                 // scenarioData: null, // <-- RENAME this to reflect it's the outline first
                  outlineData: null, // <-- NEW: Holds the parsed outline { title: '...', chapters: [{...}, ...] }
                  chapterDetailData: {}, // Key: chapterNumber, Value: detailed scenario text/object for that chapter
-                 // storyboardData: {}, // Not used yet
-                 // promptsData: {}, // Not used yet
-                 // approvedChapters: [], // Not used yet
-                 // --- Keep input fields separate for clarity or re-read from DOM ---
                  lastInputData: null, // Store the inputs used for the last generation
                  activeTab: 'home'
              };
 
-            // --- Helper Functions ---
-
-            // Simple HTML Escaping
             // --- Helper Functions ---
 
             // Simple HTML Escaping (VRAIMENT CORRIGÉE)
@@ -989,19 +997,17 @@
                      .replace(/&/g, "&")  // Remplace & par &
                      .replace(/</g, "<")   // Remplace < par <
                      .replace(/>/g, ">")   // Remplace > par >
-                     .replace(/"/g, "&quot;") // Remplace " par "  << POINT AJOUTÉ AU DÉBUT DE CETTE LIGNE SI BESOIN (assurez-vous qu'il y est)
+                     .replace(/"/g, """) // Remplace " par "
                      .replace(/'/g, "'"); // Remplace ' par '
              }
 
              // Show/Hide Loading Indicator
              function showLoadingIndicator(show) {
-                 // ... (code inchangé) ...
+                 if (loadingIndicator) {
+                     loadingIndicator.style.display = show ? 'block' : 'none';
+                 }
              }
 
-            // --- Le reste du script ---
-
-            // --- Le reste de votre code Javascript suit ---
-            // ... (displayOutline, displayChapterDetail, updateUI, etc.) ...
             // --- *** NOUVELLE FONCTION POUR AFFICHER L'OSSATURE *** ---
             function displayOutline(outlineData) {
                  outlineDisplayArea.innerHTML = ''; // Clear previous content
@@ -1080,13 +1086,6 @@
                       // TODO: Parse the detailed scenario text if needed (using a modified parseScenarioTextImproved?)
                       // For now, just display the raw text received for the chapter
                        const preformattedText = document.createElement('pre');
-                       preformattedText.style.whiteSpace = 'pre-wrap';
-                       preformattedText.style.backgroundColor = '#fff';
-                       preformattedText.style.padding = '10px';
-                       preformattedText.style.border = '1px solid #ddd';
-                       preformattedText.style.borderRadius = '4px';
-                       preformattedText.style.maxHeight = '500px';
-                       preformattedText.style.overflowY = 'auto';
                        preformattedText.textContent = detailData.scenarioText; // Display raw text for now
                        detailContainer.appendChild(preformattedText);
 
@@ -1215,7 +1214,7 @@
                     if (!response.ok) {
                         let errorMsg = `Erreur HTTP: ${response.status} ${response.statusText}`;
                         try { const errorBody = await response.json(); errorMsg += ` - ${errorBody.error || 'Erreur serveur.'} ${errorBody.details ? `(${errorBody.details})` : ''}`; } catch (e) {}
-                        throw new Error(errorMsg);
+                        throw new Error(errorMsg); // Point-virgule est optionnel ici mais bonne pratique
                     }
 
                     const result = await response.json();
@@ -1247,26 +1246,24 @@
             }
 
             // --- *** NOUVELLE FONCTION POUR GENERER LE DETAIL D'UN CHAPITRE *** ---
+            // --- *** (Maintenant décommentée et corrigée) *** ---
             async function handleGenerateChapterDetail(event) {
                  const button = event.target;
                  const chapterNumber = button.dataset.chapterNumber;
                  const chapterTitle = button.dataset.chapterTitle;
 
-
-                 // Code précédent pour vérifier les données, préparer requestData, etc.
-                 // ... (laissez les lignes qui récupèrent chapterNumber, chapterTitle) ...
-
                  if (!chapterNumber || !appState.outlineData || !appState.lastInputData) {
-                     console.error("Missing data needed...");
-                     alert("Erreur : Données manquantes...");
+                     console.error("Missing data needed to generate chapter detail.");
+                     alert("Erreur : Impossible de lancer la génération du détail (données manquantes).");
                      return;
                  }
+
                  const chapterSummary = appState.outlineData.chapters?.find(ch => ch.chapter == chapterNumber)?.summary || '';
-                 console.log(`Requesting detail...`);
-                 chapterDetailArea.innerHTML = `<p>Génération en cours...</p>`;
+                 console.log(`Requesting detail for Chapter ${chapterNumber}: "${chapterTitle}"`);
+                 chapterDetailArea.innerHTML = `<p>Génération du détail pour Chapitre ${chapterNumber} en cours...</p>`;
                  chapterDetailArea.style.display = 'block';
-                 // button.disabled = true; // Déjà fait au-dessus
-                 // button.textContent = 'Génération...';
+                 button.disabled = true;
+                 button.textContent = 'Génération...';
 
                  const requestData = {
                      keywords: appState.lastInputData.keywords,
@@ -1288,33 +1285,37 @@
                          body: JSON.stringify(requestData),
                      });
 
-                     // ----> LIGNE 1292 MISE EN COMMENTAIRE POUR TEST <----
-                     // if (!response.ok) { ... throw new Error ... }
+                     // VÉRIFICATION DE LA RÉPONSE HTTP (maintenant actif)
+                     if (!response.ok) {
+                          let errorMsg = `Erreur HTTP: ${response.status} ${response.statusText}`;
+                          try {
+                              const errorBody = await response.json();
+                              let detailsPart = errorBody.details ? ` (${errorBody.details})` : '';
+                              errorMsg += ` - ${errorBody.error || 'Erreur serveur.'}${detailsPart}`;
+                          } catch (e) {
+                              console.warn("Impossible de parser le corps de l'erreur JSON (détail chapitre).");
+                          }
+                          throw new Error(errorMsg); // <<< Avec le point-virgule si vous voulez, mais pas obligatoire
+                     }
 
-                     // La ligne suivante est maintenant la première ligne active après le fetch
+                     // LECTURE DU CORPS JSON (maintenant actif)
                      const result = await response.json();
 
-                     // Le traitement du résultat est commenté :
-                     appState.chapterDetailData[chapterNumber] = result;
-                     appState.currentStep = 'chapter_detail_generated';
-                     displayChapterDetail(chapterNumber, result);
-
-                     console.log("--- DEBUG: Fetch call completed (result processing skipped) ---")
-
+                     // TRAITEMENT DU RÉSULTAT (maintenant actif)
+                     appState.chapterDetailData[chapterNumber] = result; // Stocker la réponse (qui devrait contenir scenarioText)
+                     appState.currentStep = 'chapter_detail_generated'; // Mettre à jour l'étape
+                     displayChapterDetail(chapterNumber, result); // Appeler la fonction pour afficher
 
                  } catch (error) {
-                      console.error(`Error during DEBUG fetch for chapter ${chapterNumber}:`, error);
-                       // appState.chapterDetailData[chapterNumber] = { error: error.message };
-                      // displayChapterDetail(chapterNumber, { error: error.message });
-                      alert(`DEBUG: Erreur lors du fetch : ${error.message}`); // Afficher l'erreur dans une alerte pour le debug
+                      console.error(`Error fetching/processing detail for chapter ${chapterNumber}:`, error);
+                       appState.chapterDetailData[chapterNumber] = { error: error.message }; // Stocker l'erreur
+                      displayChapterDetail(chapterNumber, { error: error.message }); // Afficher l'erreur
                  } finally {
-                      // button.disabled = false; // Ne pas réactiver dans ce test
-                       // button.textContent = 'Générer Détail';
-                      console.log("--- DEBUG: Finally block reached ---");
+                      button.disabled = false; // Réactiver le bouton
+                      button.textContent = 'Générer Détail'; // Remettre texte normal
                  }
 
-
-            } // Fin de handleGenerateChapterDetail (simplifiée)
+            } // Fin de handleGenerateChapterDetail (CORRIGÉE et DÉCOMMENTÉE)
             // --- Event Handlers ---
             function handleApproveOutline() { // Renamed from handleApproveScenario
                 if (!appState.outlineData || appState.outlineData.parsingError) {
@@ -1375,31 +1376,27 @@
             submitScenarioModificationBtn.addEventListener('click', handleSubmitOutlineModification); // Renamed handler call
              regenerateScenarioBtn.addEventListener('click', handleRegenerateOutline); // Renamed handler call
 
-             // --- Session Management Listeners (largely unchanged, might need slight adjustment for new state names) ---
+             // --- Session Management Listeners ---
              document.getElementById('new-session').addEventListener('click', function() {
                  if (confirm('Êtes-vous sûr de vouloir créer une nouvelle session ? Toutes les données non sauvegardées seront perdues.')) {
-                      // Reset state with new property names
                       appState = {
                           currentStep: 'idea', outlineData: null, chapterDetailData: {}, lastInputData: null, activeTab: 'home'
                       };
-                      // Reset input fields
                       keywordsInput.value = '';
                       genreSelect.selectedIndex = 0;
                       styleSelect.selectedIndex = 0;
                       toneSelect.selectedIndex = 0;
                       detailsInput.value = '';
-                      // Clear output areas explicitly
-                       if(outlineDisplayArea) outlineDisplayArea.innerHTML = '';
-                       if(chapterDetailArea) chapterDetailArea.innerHTML = '';
-                       if(scenarioOutput) scenarioOutput.innerHTML = '<p>Générez d\'abord une ossature...</p>'; // Reset initial text
-                       if(storyboardOutput) storyboardOutput.innerHTML = '<p>Approuvez d\'abord une ossature valide...</p>';
-                       if(promptsOutput) promptsOutput.innerHTML = '<p>Approuvez d\'abord le storyboard...</p>';
+                      if(outlineDisplayArea) outlineDisplayArea.innerHTML = '';
+                      if(chapterDetailArea) { chapterDetailArea.innerHTML = ''; chapterDetailArea.style.display = 'none'; }
+                      if(scenarioOutput) scenarioOutput.innerHTML = '<p>Générez d\'abord une ossature...</p>';
+                      if(storyboardOutput) storyboardOutput.innerHTML = '<p>Approuvez d\'abord une ossature valide...</p>';
+                      if(promptsOutput) promptsOutput.innerHTML = '<p>Approuvez d\'abord le storyboard...</p>';
                       updateUI();
                  }
              });
 
             document.getElementById('save-session').addEventListener('click', function() {
-                // Update lastInputData before saving state
                  appState.lastInputData = {
                      keywords: keywordsInput.value.trim(),
                      genre: genreSelect.value,
@@ -1407,15 +1404,11 @@
                      tone: toneSelect.value,
                      details: detailsInput.value.trim()
                  };
-
                 const sessionName = prompt('Donnez un nom à cette session:');
                 if (sessionName) {
                     try {
                          const sessionDataString = JSON.stringify(appState);
-                         // Basic size check
-                         if (sessionDataString.length > 4 * 1024 * 1024) {
-                              alert("Attention : La session est très volumineuse...");
-                         }
+                         if (sessionDataString.length > 4 * 1024 * 1024) { alert("Attention : La session est très volumineuse..."); }
                          localStorage.setItem(`bdcreator_session_${sessionName}`, sessionDataString);
                          alert(`Session "${sessionName}" sauvegardée avec succès!`);
                     } catch (e) {
@@ -1426,8 +1419,6 @@
             });
 
              document.getElementById('load-session').addEventListener('click', function() {
-                 // ... (session loading logic - check if it needs adjustment for new state keys like outlineData) ...
-                 // It should generally work if you saved the whole appState object previously
                  const sessions = [];
                  try {
                      for (let i = 0; i < localStorage.length; i++) {
@@ -1436,7 +1427,7 @@
                              sessions.push(key.replace('bdcreator_session_', ''));
                          }
                      }
-                 } catch(e) { /* ... error handling ... */ return; }
+                 } catch(e) { console.error("Erreur lecture sessions:", e); return; } // Catch simplifié
 
                  if (sessions.length === 0) { alert('Aucune session sauvegardée.'); return; }
 
@@ -1446,27 +1437,19 @@
                           const sessionString = localStorage.getItem(`bdcreator_session_${sessionName}`);
                           if (!sessionString) throw new Error("Données non trouvées.");
                           const loadedState = JSON.parse(sessionString);
-                          // Basic validation
                            if (!loadedState || typeof loadedState.currentStep === 'undefined') throw new Error("Format invalide.");
-
-                          // Restore state
                           appState = loadedState;
-
-                          // Restore inputs FROM the loaded state's lastInputData if available, otherwise from older format
-                           const inputsToRestore = appState.lastInputData || appState; // Fallback for older saves
+                           const inputsToRestore = appState.lastInputData || appState;
                           keywordsInput.value = inputsToRestore.keywords || '';
                           genreSelect.value = inputsToRestore.genre || 'Fantastique';
                           styleSelect.value = inputsToRestore.style || 'Manga';
                           toneSelect.value = inputsToRestore.tone || 'Épique';
                           detailsInput.value = inputsToRestore.details || '';
-
                           alert(`Session "${sessionName}" chargée!`);
-                          // CRITICAL: Explicitly clear display areas before updateUI if loading old state
                           if(outlineDisplayArea) outlineDisplayArea.innerHTML = '';
-                          if(chapterDetailArea) chapterDetailArea.innerHTML = '';
-                          if(scenarioOutput) scenarioOutput.innerHTML = ''; // Clear old stuff
-
-                          updateUI(); // Update UI with loaded state
+                          if(chapterDetailArea) { chapterDetailArea.innerHTML = ''; chapterDetailArea.style.display = 'none';}
+                          if(scenarioOutput) scenarioOutput.innerHTML = '';
+                          updateUI();
                      } catch (e) {
                           alert(`Erreur chargement session "${sessionName}": ${e.message}`);
                           console.error("Load session error:", e);
