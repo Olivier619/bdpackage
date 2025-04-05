@@ -1205,7 +1205,11 @@
                  chapterDetailArea.style.display = 'none';
 
                 try {
-                    const response = await fetch('/api/generate-story', { /* ... */ });
+                     const response = await fetch('/api/generate-story', {
+     method: 'POST',
+     headers: { 'Content-Type': 'application/json' },
+     body: JSON.stringify(appState.lastInputData) // Envoyer les données stockées
+ });
 
                     if (!response.ok) {
                         let errorMsg = `Erreur HTTP: ${response.status} ${response.statusText}`;
