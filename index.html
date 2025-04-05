@@ -1248,44 +1248,82 @@
 
             // --- *** NOUVELLE FONCTION POUR GENERER LE DETAIL D'UN CHAPITRE *** ---
             async function handleGenerateChapterDetail(event) {
-                 // ... code au début de la fonction ...
+                 const button = event.target;
+                 const chapterNumber = button.dataset.chapterNumber;
+                 const chapterTitle = button.dataset.chapterTitle;
+
+                 // --- TEMPORAIREMENT SIMPLIFIÉ ---
+                 console.log(`--- DEBUG: Attempting fetch for chapter ${chapterNumber} ---`);
+                 alert(`DEBUG: Lancement de la requête pour chapitre ${chapterNumber}. Le résultat ne sera pas traité pour l'instant.`);
+                 button.disabled = true;
+                 button.textContent = 'Debug...';
+                 // --- FIN SIMPLIFICATION ---
+
+                 /* --- DEBUT DU CODE COMMENTÉ TEMPORAIREMENT ---
+
+                 // Code précédent pour vérifier les données, préparer requestData, etc.
+                 // ... (laissez les lignes qui récupèrent chapterNumber, chapterTitle) ...
+
+                 if (!chapterNumber || !appState.outlineData || !appState.lastInputData) {
+                     console.error("Missing data needed...");
+                     alert("Erreur : Données manquantes...");
+                     return;
+                 }
+                 const chapterSummary = appState.outlineData.chapters?.find(ch => ch.chapter == chapterNumber)?.summary || '';
+                 console.log(`Requesting detail...`);
+                 chapterDetailArea.innerHTML = `<p>Génération en cours...</p>`;
+                 chapterDetailArea.style.display = 'block';
+                 // button.disabled = true; // Déjà fait au-dessus
+                 // button.textContent = 'Génération...';
+
+                 const requestData = {
+                     keywords: appState.lastInputData.keywords,
+                     genre: appState.lastInputData.genre,
+                     style: appState.lastInputData.style,
+                     tone: appState.lastInputData.tone,
+                     details: appState.lastInputData.details,
+                     globalTitle: appState.outlineData.title,
+                     totalChapters: appState.outlineData.chapters.length,
+                     chapterNumber: parseInt(chapterNumber, 10),
+                     chapterTitle: chapterTitle,
+                     chapterSummary: chapterSummary
+                 };
 
                  try {
-                      // ... appel fetch ...
                      const response = await fetch('/.netlify/functions/generate-chapter-detail', {
                          method: 'POST',
                          headers: { 'Content-Type': 'application/json' },
                          body: JSON.stringify(requestData),
                      });
 
-                     // ***** C'EST CE BLOC QU'IL FAUT CORRIGER *****
-                     if (!response.ok) {
-                         let errorMsg = `Erreur HTTP: ${response.status} ${response.statusText}`;
-                         try {
-                              const errorBody = await response.json();
-                              // Version simplifiée pour être sûr (ou vérifiez l'originale très attentivement) :
-                              let detailsPart = errorBody.details ? ` (${errorBody.details})` : '';
-                              errorMsg += ` - ${errorBody.error || 'Erreur serveur.'}${detailsPart}`;
-                         } catch (e) {
-                             console.warn("Impossible de parser le corps de l'erreur JSON (détail chapitre).");
-                         }
-                         throw new Error(errorMsg); // <<< Ajoutez le point-virgule ici
-                     }
-                     // ***** FIN DU BLOC A CORRIGER *****
+                     // Le bloc if/else qui posait problème est commenté :
+                     // if (!response.ok) { ... throw new Error ... }
 
-                     // Ligne ~993 :
-                     const result = await response.json();
+                     // La ligne qui causait l'erreur (992) est commentée :
+                     // const result = await response.json();
 
-                     // ... reste de la fonction handleGenerateChapterDetail ...
+                     // Le traitement du résultat est commenté :
+                     // appState.chapterDetailData[chapterNumber] = result;
+                     // appState.currentStep = 'chapter_detail_generated';
+                     // displayChapterDetail(chapterNumber, result);
+
+                     console.log("--- DEBUG: Fetch call completed (result processing skipped) ---")
+
 
                  } catch (error) {
-                      // ...
+                      console.error(`Error during DEBUG fetch for chapter ${chapterNumber}:`, error);
+                       // appState.chapterDetailData[chapterNumber] = { error: error.message };
+                      // displayChapterDetail(chapterNumber, { error: error.message });
+                      alert(`DEBUG: Erreur lors du fetch : ${error.message}`); // Afficher l'erreur dans une alerte pour le debug
                  } finally {
-                      // ...
+                      // button.disabled = false; // Ne pas réactiver dans ce test
+                       // button.textContent = 'Générer Détail';
+                      console.log("--- DEBUG: Finally block reached ---");
                  }
-            } // Fin de handleGenerateChapterDetail
 
+                 */ // --- FIN DU CODE COMMENTÉ TEMPORAIREMENT ---
 
+            } // Fin de handleGenerateChapterDetail (simplifiée)
             // --- Event Handlers ---
             function handleApproveOutline() { // Renamed from handleApproveScenario
                 if (!appState.outlineData || appState.outlineData.parsingError) {
