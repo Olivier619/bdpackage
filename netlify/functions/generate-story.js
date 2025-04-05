@@ -107,7 +107,7 @@ exports.handler = async (event, context) => {
     try {
         const genAI = new GoogleGenerativeAI(apiKey);
         // Gardez le modèle qui fonctionnait (pas d'erreur 404)
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" }); // Ou 1.0-pro si 1.5 timeoute encore
+        const model = genAI.getGenerativeModel({ model: "gemini-1.0-pro" }); // Ou 1.0-pro si 1.5 timeoute encore
 
         const result = await model.generateContent(prompt);
         console.log("Received result object from Gemini (simple outline).");
