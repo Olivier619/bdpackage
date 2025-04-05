@@ -1,37 +1,33 @@
-// netlify/functions/generate-chapter-detail.js
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+// api/generate-chapter-detail.js
+import { GoogleGenerativeAI } from "@google/generative-ai"; // Utiliser import
 
 // Access your API key securely from environment variables
 const apiKey = process.env.GOOGLE_API_KEY;
 
-exports.handler = async (event, context) => {
+// --- VERCEL EXPORT DEFAULT ---
+export default async function handler(request, response) {
     // 1. Check for API Key
     if (!apiKey) {
         console.error("ERROR: GOOGLE_API_KEY environment variable not set.");
-        return { statusCode: 500, body: JSON.stringify({ error: "API Key not configured." }) };
+        return response.status(500).json({ error: "API Key not configured." });
     }
 
     // 2. Ensure it's a POST request
-    if (event.httpMethod !== "POST") {
-        return { statusCode: 405, body: "Method Not Allowed" };
+    if (request.method !== "POST") {
+        response.setHeader('Allow', ['POST']);
+        return response.status(405).end('Method Not Allowed');
     }
 
-    // 3. Parse incoming data from the frontend
-    let inputData;
-    try {
-        inputData = JSON.parse(event.body);
-        console.log("Received request data for chapter detail:", inputData); // Log received data
-    } catch (error) {
-        console.error("Error parsing request body for chapter detail:", error);
-        return { statusCode: 400, body: JSON.stringify({ error: "Bad request body." }) };
-    }
+    // 3. Get incoming data from the frontend (Vercel parses JSON)
+    const inputData = request.body;
+    console.log("Received request data for chapter detail:", inputData);
 
-    // Destructure all expected data from the frontend
+    // Destructure all expected data from request.body
     const {
         keywords, genre, style, tone, details,
         globalTitle, totalChapters,
         chapterNumber, chapterTitle, chapterSummary
-    } = inputData;
+    } = inputData || {}; // Ajouter un fallback {}
 
     // 4. Basic validation for required chapter detail context
     if (
@@ -39,10 +35,11 @@ exports.handler = async (event, context) => {
         chapterNumber === undefined || chapterNumber === null || !chapterTitle
     ) {
         console.error("Missing required context fields for chapter detail generation:", { keywords, genre, style, tone, globalTitle, chapterNumber, chapterTitle });
-        return { statusCode: 400, body: JSON.stringify({ error: "Missing required context for chapter detail." }) };
+        return response.status(400).json({ error: "Missing required context for chapter detail." });
     }
 
     // 5. Construct the Prompt for Gemini to generate **ONE CHAPTER DETAIL**
+    //    (Utilise le prompt détaillé, mais demande explicitement peu de pages)
     //    ******************************************************************
     console.log(`--- CONSTRUCTING DETAIL PROMPT for Chapter ${chapterNumber} ---`);
     let prompt = `Tâche : Écrire le scénario **détaillé** pour **UN SEUL CHAPITRE** d'une bande dessinée, en suivant le format Page/Case.\n\n`;
@@ -64,30 +61,27 @@ exports.handler = async (event, context) => {
     }
     prompt += `\nINSTRUCTIONS POUR LE SCÉNARIO DÉTAILLÉ (Suivre attentivement) :\n`;
     prompt += `1.  **Langue : ÉCRIS TOUTE LA RÉPONSE EN FRANÇAIS.**\n`;
-    prompt += `2.  **Concentration : Ne détaille QUE et UNIQUEMENT le Chapitre ${chapterNumber} ("${chapterTitle}"). NE PAS inclure d'autres chapitres.**\n`;
-    prompt += `3.  **Découpage :** Découpe le contenu de ce chapitre en **Pages** (1 pages pour ce chapitre si possible, mais ajuste selon l'histoire).\n`;
-    prompt += `4.  Pour **CHAQUE page**, découpe-la en **Cases** (Panel en anglais). Vise un nombre raisonnable de cases par page (ex: 3 à 4).\n`;
-    prompt += `5.  Pour **CHAQUE case**, fournis :\n`;
-    prompt += `    *   Une **Description** visuelle claire et concise (personnages, action, décor, cadrage si pertinent).\n`;
-    prompt += `    *   Le **Dialogue** des personnages (s'il y en a), clairement indiqué (ex: PERSONNAGE: "Texte du dialogue").\n`;
-    prompt += `    *   Les **Pensées** des personnages (si pertinent), indiquées entre parenthèses (ex: (Texte de la pensée)).\n`;
+    prompt += `2.  **Concentration : Ne détaille QUE et UNIQUEMENT le Chapitre ${chapterNumber} ("${chapterTitle}").**\n`;
+    // -- MODIFICATION POUR TESTER RAPIDITÉ --
+    prompt += `3.  **Découpage :** Découpe le contenu de ce chapitre en **Pages** (vise **1 ou 2 pages MAXIMUM** pour ce chapitre. Sois concis).\n`;
+    prompt += `4.  Pour **CHAQUE page**, découpe-la en **Cases** (Panel en anglais). Vise un **faible nombre de cases** par page (ex: **2 à 4 MAXIMUM**).\n`;
+    // -- FIN MODIFICATION --
+    prompt += `5.  Pour **CHAQUE case**, fournis au minimum une **Description** visuelle. Ajoute **Dialogue** et **Pensées** seulement si c'est crucial pour l'action.\n`;
     prompt += `6.  **Clarté du Format :** Utilise une structure claire pour séparer les pages et les cases.\n`;
     prompt += `\nFORMAT DE SORTIE ATTENDU POUR CE CHAPITRE (IMPORTANT - Suivre ce format aussi précisément que possible) :\n\n`;
-    // Note: On ne redemande pas le titre du chapitre en header, on se concentre sur Pages/Cases
-    prompt += `PAGE 1\n`; // Commencer directement par la première page du chapitre
+    prompt += `PAGE 1\n`;
     prompt += `Case 1: [Description visuelle de la case 1].\n`;
     prompt += `    PERSONNAGE A: "Dialogue ici."\n`;
     prompt += `    PERSONNAGE B: "Autre dialogue."\n`;
     prompt += `    (Pensée du Personnage A ici.)\n`;
     prompt += `Case 2: [Description visuelle de la case 2].\n`;
-    prompt += `    PERSONNAGE A: "Suite du dialogue."\n`;
     prompt += `[...] (Continuer pour toutes les cases de la Page 1)\n\n`;
-    prompt += `PAGE 2\n`;
+    prompt += `PAGE 2\n`; // Exemple si 2 pages
     prompt += `Case 1: [Description visuelle de la case 1 de la page 2].\n`;
     prompt += `[...] (Continuer pour toutes les cases et toutes les pages de ce chapitre)\n\n`;
     prompt += `PAGE [Dernier numéro de page du chapitre]\n`;
     prompt += `Case [...]: [Description de la dernière case].\n`;
-    prompt += `\n**RAPPEL FINAL : Détaille UNIQUEMENT le Chapitre ${chapterNumber} en FRANÇAIS, en suivant le format Page/Case.**\n`;
+    prompt += `\n**RAPPEL FINAL : Détaille UNIQUEMENT le Chapitre ${chapterNumber} en FRANÇAIS, en suivant le format Page/Case et les instructions de longueur.**\n`;
     prompt += `SCÉNARIO DÉTAILLÉ DU CHAPITRE ${chapterNumber} CI-DESSOUS :\n`;
     prompt += `------------------------------------\n`;
     //    ******************************************************************
@@ -97,42 +91,40 @@ exports.handler = async (event, context) => {
     // 6. Initialize Google AI and Call the API
     try {
         const genAI = new GoogleGenerativeAI(apiKey);
-        // Utiliser le modèle qui fonctionne le mieux (1.0-pro semblait ok)
+        // Utiliser le modèle qui ne donne pas 404 (même s'il est lent)
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
 
         const result = await model.generateContent(prompt);
         console.log(`Received result object from Gemini (Chapter ${chapterNumber} detail).`);
-        const response = await result.response;
-        const text = response.text(); // Récupère le texte brut du scénario détaillé
+        const geminiResponse = await result.response; // Renommé
+        const text = geminiResponse.text();
 
         console.log(`Received detailed text for Chapter ${chapterNumber}. Length: ${text.length}`);
 
-        // 7. Return the successful response (raw text of the detailed chapter)
-        return {
-            statusCode: 200,
-            headers: { "Content-Type": "application/json" },
-            // Renvoie juste le texte brut du chapitre détaillé.
-            // Le frontend devra peut-être le parser s'il veut une structure plus fine.
-            body: JSON.stringify({ scenarioText: text }),
-        };
+        // 7. Return the successful response (raw text) using Vercel syntax
+        return response.status(200).json({ scenarioText: text });
 
     } catch (error) {
         // Gérer les erreurs API
         console.error(`Error calling Google AI API (Chapter ${chapterNumber} detail):`, error);
-         let errorMessage = `API call failed: ${error.message}`;
-          // ... (Copier/Coller le même bloc de gestion d'erreur détaillé que dans l'autre fonction) ...
-          if (error.response && error.response.promptFeedback && error.response.promptFeedback.blockReason) {
+        let errorMessage = `API call failed: ${error.message}`;
+        let statusCode = 500; // Default
+
+         // Adapter la gestion d'erreur si nécessaire
+         if (error.response && error.response.promptFeedback && error.response.promptFeedback.blockReason) {
              errorMessage = `La génération a été bloquée par Google pour la raison : ${error.response.promptFeedback.blockReason}`;
-         } else if (error.message.includes('API key not valid')) {
+             statusCode = 400;
+         } else if (error.message?.includes('API key not valid')) {
              errorMessage = "La clé API Google configurée n'est pas valide.";
+             statusCode = 500;
          } else if (error.status === 404) {
-              errorMessage = `API call failed: ${error.message} (Vérifiez le nom du modèle: 'gemini-1.0-pro'?)`;
-         } else {
-             errorMessage = `API call failed: ${error.message}${error.status ? ` (Status: ${error.status})` : ''}`;
+              errorMessage = `API call failed: ${error.message} (Vérifiez le nom du modèle: 'gemini-1.5-pro-latest'?)`;
+              statusCode = 404;
+         } else if (error.status) {
+             errorMessage = `API call failed: ${error.message}`;
+             statusCode = error.status;
          }
-        return {
-            statusCode: error.status || 500,
-            body: JSON.stringify({ error: `Failed to generate detail for chapter ${chapterNumber} via API.`, details: errorMessage }),
-        };
+          // Renvoyer l'erreur avec la syntaxe Vercel
+        return response.status(statusCode).json({ error: `Failed to generate detail for chapter ${chapterNumber} via API.`, details: errorMessage });
     }
-};
+}
