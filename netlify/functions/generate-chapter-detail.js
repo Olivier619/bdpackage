@@ -65,8 +65,8 @@ exports.handler = async (event, context) => {
     prompt += `\nINSTRUCTIONS POUR LE SCÉNARIO DÉTAILLÉ (Suivre attentivement) :\n`;
     prompt += `1.  **Langue : ÉCRIS TOUTE LA RÉPONSE EN FRANÇAIS.**\n`;
     prompt += `2.  **Concentration : Ne détaille QUE et UNIQUEMENT le Chapitre ${chapterNumber} ("${chapterTitle}"). NE PAS inclure d'autres chapitres.**\n`;
-    prompt += `3.  **Découpage :** Découpe le contenu de ce chapitre en **Pages** (2 pages pour ce chapitre si possible, mais ajuste selon l'histoire).\n`;
-    prompt += `4.  Pour **CHAQUE page**, découpe-la en **Cases** (Panel en anglais). Vise un nombre raisonnable de cases par page (ex: 3 à 6).\n`;
+    prompt += `3.  **Découpage :** Découpe le contenu de ce chapitre en **Pages** (1 pages pour ce chapitre si possible, mais ajuste selon l'histoire).\n`;
+    prompt += `4.  Pour **CHAQUE page**, découpe-la en **Cases** (Panel en anglais). Vise un nombre raisonnable de cases par page (ex: 3 à 4).\n`;
     prompt += `5.  Pour **CHAQUE case**, fournis :\n`;
     prompt += `    *   Une **Description** visuelle claire et concise (personnages, action, décor, cadrage si pertinent).\n`;
     prompt += `    *   Le **Dialogue** des personnages (s'il y en a), clairement indiqué (ex: PERSONNAGE: "Texte du dialogue").\n`;
