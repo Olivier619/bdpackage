@@ -1205,11 +1205,7 @@
                  chapterDetailArea.style.display = 'none';
 
                 try {
-                    const response = await fetch('/.netlify/functions/generate-story', { // Still uses the same backend function name for now
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(appState.lastInputData), // Send stored input data
-                    });
+                    const response = await fetch('/api/generate-story', { /* ... */ });
 
                     if (!response.ok) {
                         let errorMsg = `Erreur HTTP: ${response.status} ${response.statusText}`;
@@ -1279,11 +1275,7 @@
                  };
 
                  try {
-                     const response = await fetch('/.netlify/functions/generate-chapter-detail', {
-                         method: 'POST',
-                         headers: { 'Content-Type': 'application/json' },
-                         body: JSON.stringify(requestData),
-                     });
+                     const response = await fetch('/api/generate-chapter-detail', { /* ... */ });
 
                      // VÉRIFICATION DE LA RÉPONSE HTTP (maintenant actif)
                      if (!response.ok) {
