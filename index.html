@@ -1289,15 +1289,15 @@
                      });
 
                      // Le bloc if/else qui posait problème est commenté :
-                     // if (!response.ok) { ... throw new Error ... }
+                     if (!response.ok) { ... throw new Error ... }
 
                      // La ligne qui causait l'erreur (992) est commentée :
-                     // const result = await response.json();
+                     const result = await response.json();
 
                      // Le traitement du résultat est commenté :
-                     // appState.chapterDetailData[chapterNumber] = result;
-                     // appState.currentStep = 'chapter_detail_generated';
-                     // displayChapterDetail(chapterNumber, result);
+                     appState.chapterDetailData[chapterNumber] = result;
+                     appState.currentStep = 'chapter_detail_generated';
+                     displayChapterDetail(chapterNumber, result);
 
                      console.log("--- DEBUG: Fetch call completed (result processing skipped) ---")
 
