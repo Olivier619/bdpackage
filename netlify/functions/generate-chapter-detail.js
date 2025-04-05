@@ -98,7 +98,7 @@ exports.handler = async (event, context) => {
     try {
         const genAI = new GoogleGenerativeAI(apiKey);
         // Utiliser le modèle qui fonctionne le mieux (1.0-pro semblait ok)
-        const model = genAI.getGenerativeModel({ model: "gemini-1.0-pro" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
 
         const result = await model.generateContent(prompt);
         console.log(`Received result object from Gemini (Chapter ${chapterNumber} detail).`);
