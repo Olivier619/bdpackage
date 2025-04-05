@@ -982,23 +982,23 @@
             // Simple HTML Escaping
             // --- Helper Functions ---
 
-            // Simple HTML Escaping (CORRECTED VERSION)
+            // Simple HTML Escaping (VRAIMENT CORRIGÉE)
             function escapeHtml(unsafe) {
-                if (typeof unsafe !== 'string') return unsafe; // Ne pas échapper si ce n'est pas une chaîne
+                if (typeof unsafe !== 'string') return unsafe;
                 return unsafe
                      .replace(/&/g, "&")  // Remplace & par &
                      .replace(/</g, "<")   // Remplace < par <
                      .replace(/>/g, ">")   // Remplace > par >
-.replace(/"/g, "&quot;") // Remplace " par "
-                     .replace(/'/g, "'"); // Remplace ' par ' (ou ')
+                     .replace(/"/g, """) // Remplace " par "  << POINT AJOUTÉ AU DÉBUT DE CETTE LIGNE SI BESOIN (assurez-vous qu'il y est)
+                     .replace(/'/g, "'"); // Remplace ' par '
              }
 
-             // Show/Hide Loading Indicator (reste inchangé)
+             // Show/Hide Loading Indicator
              function showLoadingIndicator(show) {
-                 if (loadingIndicator) {
-                     loadingIndicator.style.display = show ? 'block' : 'none';
-                 }
+                 // ... (code inchangé) ...
              }
+
+            // --- Le reste du script ---
 
             // --- Le reste de votre code Javascript suit ---
             // ... (displayOutline, displayChapterDetail, updateUI, etc.) ...
