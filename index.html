@@ -6,6 +6,7 @@
     <title>BD Creator - Créez des bandes dessinées avec l'IA</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* --- Styles CSS (identiques à avant, y compris les styles pour #outline-display-area, #chapter-detail-area, etc.) --- */
         :root {
             --primary-color: #2196F3;
             --secondary-color: #FF9800;
@@ -15,642 +16,129 @@
             --success-color: #28a745;
             --disabled-color: #ccc;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            background-color: #f8f9fa;
-            color: #333;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 1rem 0;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        header .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
-
-        .logo i {
-            margin-right: 10px;
-            font-size: 2rem;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-
-        nav ul li {
-            margin-left: 20px;
-        }
-
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        nav ul li a:hover {
-            color: var(--secondary-color);
-        }
-
-        .hero {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #64b5f6 100%);
-            color: white;
-            padding: 4rem 0;
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 800px;
-            margin: 0 auto 2rem;
-        }
-
-        .btn {
-            display: inline-block;
-            background: var(--secondary-color);
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 5px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .btn:hover {
-            background: #e68a00;
-            transform: translateY(-2px);
-        }
-
-        .btn:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-        }
-
-        .btn-primary:hover {
-            background: #0b7dda;
-        }
-        .btn-primary:disabled {
-             background-color: #a0cff8;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; background-color: #f8f9fa; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        header { background-color: var(--primary-color); color: white; padding: 1rem 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        header .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .logo { font-size: 1.8rem; font-weight: bold; display: flex; align-items: center; margin-bottom: 0.5rem; }
+        .logo i { margin-right: 10px; font-size: 2rem; }
+        nav ul { display: flex; list-style: none; flex-wrap: wrap; justify-content: center; }
+        nav ul li { margin-left: 10px; margin-right: 10px; margin-bottom: 0.5rem; }
+        nav ul li a { color: white; text-decoration: none; font-weight: 500; transition: color 0.3s; }
+        nav ul li a:hover { color: var(--secondary-color); }
+        .hero { background: linear-gradient(135deg, var(--primary-color) 0%, #64b5f6 100%); color: white; padding: 4rem 0; text-align: center; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .hero p { font-size: 1.2rem; max-width: 800px; margin: 0 auto 2rem; }
+        .btn { display: inline-block; background: var(--secondary-color); color: white; padding: 0.8rem 1.5rem; border: none; border-radius: 5px; font-size: 1rem; cursor: pointer; transition: background 0.3s, transform 0.2s; text-decoration: none; font-weight: 500; }
+        .btn:hover { background: #e68a00; transform: translateY(-2px); }
+        .btn:disabled { background-color: #ccc; cursor: not-allowed; transform: none; }
+        .btn-primary { background: var(--primary-color); }
+        .btn-primary:hover { background: #0b7dda; }
+        .btn-primary:disabled { background-color: #a0cff8; }
         .btn-success { background-color: var(--success-color); }
         .btn-danger { background-color: var(--danger-color); }
         .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.9rem; }
         .btn-secondary { background-color: #6c757d; }
         .btn-secondary:hover { background-color: #5a6268; }
-
-
-        .features {
-            padding: 4rem 0;
-            background-color: white;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .section-title h2 {
-            font-size: 2rem;
-            color: var(--dark-color);
-            margin-bottom: 1rem;
-        }
-
-        .section-title p {
-            color: #666;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .feature-card {
-            background: white;
-            border-radius: 8px;
-            padding: 2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            text-align: center;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        .feature-card i {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
-        }
-
-        .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--dark-color);
-        }
-
-        .feature-card p {
-            color: #666;
-        }
-
-        .how-it-works {
-            padding: 4rem 0;
-            background-color: #f8f9fa;
-        }
-
-        .steps {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .step {
-            flex: 1;
-            min-width: 250px;
-            max-width: 350px;
-            text-align: center;
-            position: relative;
-        }
-
-        .step-number {
-            width: 50px;
-            height: 50px;
-            background-color: var(--primary-color);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin: 0 auto 1.5rem;
-        }
-
-        .step h3 {
-            margin-bottom: 1rem;
-            color: var(--dark-color);
-        }
-
-        .step p {
-            color: #666;
-        }
-
-        .app {
-            padding: 4rem 0;
-            background-color: white;
-        }
-
-        .tabs {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 1rem;
-            flex-wrap: wrap; /* Allow wrapping on small screens */
-        }
-
-        .tab-btn {
-            background: none;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            margin: 0 0.5rem 0.5rem 0.5rem; /* Added bottom margin for wrap */
-            font-size: 1rem;
-            cursor: pointer;
-            border-radius: 5px 5px 0 0;
-            transition: background 0.3s, color 0.3s;
-            font-weight: 500;
-        }
-
-        .tab-btn.active {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .tab-content {
-            display: none;
-            padding: 2rem;
-            background: white;
-            border-radius: 0 0 8px 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            min-height: 200px; /* Give tabs some minimum height */
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .input-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .input-group input,
-        .input-group textarea,
-        .input-group select { /* Added select */
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-            font-family: inherit; /* Ensure select uses body font */
-        }
-
-        .input-group textarea {
-            min-height: 80px; /* Use min-height */
-            resize: vertical;
-        }
-
-        footer {
-            background-color: var(--dark-color);
-            color: white;
-            padding: 2rem 0;
-            text-align: center;
-        }
-
-        footer p {
-            margin-bottom: 1rem;
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .social-links a {
-            color: white;
-            font-size: 1.5rem;
-            transition: color 0.3s;
-        }
-
-        .social-links a:hover {
-            color: var(--secondary-color);
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .footer-links a {
-            color: #ddd;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: var(--secondary-color);
-        }
-
-        /* Styles spécifiques pour l'application */
-         .scenario-section, .scenario-chapter, .storyboard-page, .prompt-item {
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            border-left: 4px solid var(--primary-color);
-         }
-         /* Style pour la zone d'affichage de l'ossature */
-         #outline-display-area {
-             margin-bottom: 25px;
-             padding-bottom: 20px;
-             border-bottom: 1px solid #eee;
-         }
-          #outline-display-area h4 { /* Changed from h2 */
-              margin-bottom: 15px;
-          }
-          #outline-display-area ul {
-              list-style: none;
-              padding-left: 0;
-          }
-           #outline-display-area li {
-              padding: 10px;
-              border: 1px solid #e0e0e0;
-              margin-bottom: 10px;
-              border-radius: 5px;
-              background-color: #fff;
-              display: flex; /* Use flexbox for layout */
-              justify-content: space-between; /* Space out info and button */
-              align-items: center; /* Align items vertically */
-              flex-wrap: wrap; /* Allow wrapping if needed */
-           }
-           #outline-display-area li div { /* Target the div containing text */
-               flex-grow: 1; /* Allow text to take up space */
-               margin-right: 10px; /* Space before button */
-               margin-bottom: 5px; /* Add margin bottom for wrapped button */
-           }
-           #outline-display-area li button { /* Style the button inside the list */
-               flex-shrink: 0; /* Prevent button from shrinking */
-           }
-
-          /* Style pour la zone de détail */
-          #chapter-detail-area {
-              margin-top: 20px;
-              padding: 15px;
-              background-color: #f0f8ff; /* Light blue background */
-              border-radius: 5px;
-              border: 1px solid #d1e7fd;
-              display: none; /* Start hidden */
-          }
-           #chapter-detail-area h4 {
-               color: var(--primary-color);
-               margin-bottom: 10px;
-           }
-            #chapter-detail-area pre { /* Style for preformatted text */
-                white-space: pre-wrap;
-                background-color: #fff;
-                padding: 10px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                max-height: 500px;
-                overflow-y: auto;
-                margin-top: 10px; /* Add some space */
-            }
-
-
-         .scenario-page {
-            margin-left: 20px;
-            border-left: 2px solid #eee;
-            padding-left: 15px;
-            margin-top: 10px;
-         }
-         .scenario-panel {
-             margin-left: 20px;
-             margin-bottom: 5px;
-         }
-        .scenario-chapter h4, .storyboard-page h4, .prompt-item h4 {
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
-         .scenario-page h5, .storyboard-panel-display h5 {
-             color: var(--secondary-color);
-             margin-bottom: 8px;
-         }
-         .prompt-item h5 {
-             color: var(--success-color);
-             margin-bottom: 8px;
-         }
-
-        .storyboard-page { border-left-color: var(--secondary-color); }
+        .features { padding: 4rem 0; background-color: white; }
+        .section-title { text-align: center; margin-bottom: 3rem; }
+        .section-title h2 { font-size: 2rem; color: var(--dark-color); margin-bottom: 1rem; }
+        .section-title p { color: #666; max-width: 800px; margin: 0 auto; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .feature-card { background: white; border-radius: 8px; padding: 2rem; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; text-align: center; }
+        .feature-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.15); }
+        .feature-card i { font-size: 3rem; color: var(--primary-color); margin-bottom: 1.5rem; }
+        .feature-card h3 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--dark-color); }
+        .feature-card p { color: #666; }
+        .how-it-works { padding: 4rem 0; background-color: #f8f9fa; }
+        .steps { display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin-top: 3rem; }
+        .step { flex: 1; min-width: 250px; max-width: 350px; text-align: center; position: relative; }
+        .step-number { width: 50px; height: 50px; background-color: var(--primary-color); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; margin: 0 auto 1.5rem; }
+        .step h3 { margin-bottom: 1rem; color: var(--dark-color); }
+        .step p { color: #666; }
+        .app { padding: 4rem 0; background-color: white; }
+        .tabs { display: flex; justify-content: center; margin-bottom: 2rem; border-bottom: 1px solid #ddd; padding-bottom: 1rem; flex-wrap: wrap; }
+        .tab-btn { background: none; border: none; padding: 0.8rem 1.5rem; margin: 0 0.5rem 0.5rem 0.5rem; font-size: 1rem; cursor: pointer; border-radius: 5px 5px 0 0; transition: background 0.3s, color 0.3s; font-weight: 500; }
+        .tab-btn.active { background-color: var(--primary-color); color: white; }
+        .tab-content { display: none; padding: 2rem; background: white; border-radius: 0 0 8px 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); min-height: 200px; }
+        .tab-content.active { display: block; }
+        .input-group { margin-bottom: 1.5rem; }
+        .input-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        .input-group input, .input-group textarea, .input-group select { width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem; font-family: inherit; }
+        .input-group textarea { min-height: 80px; resize: vertical; }
+        footer { background-color: var(--dark-color); color: white; padding: 2rem 0; text-align: center; margin-top: 4rem; }
+        footer p { margin-bottom: 1rem; }
+        .social-links { display: flex; justify-content: center; gap: 1rem; margin-bottom: 1rem; }
+        .social-links a { color: white; font-size: 1.5rem; transition: color 0.3s; }
+        .social-links a:hover { color: var(--secondary-color); }
+        .footer-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 1rem; }
+        .footer-links a { color: #ddd; text-decoration: none; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--secondary-color); }
+        /* Application Specific Styles */
+        .scenario-section, .scenario-chapter, .storyboard-page, .prompt-item { margin-bottom: 20px; padding: 15px; background-color: #f9f9f9; border-radius: 8px; border-left: 4px solid var(--primary-color); }
+        #outline-display-area { margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
+        #outline-display-area h4 { margin-bottom: 15px; color: var(--dark-color); }
+        #outline-display-area ul { list-style: none; padding-left: 0; }
+        #outline-display-area li { padding: 10px; border: 1px solid #e0e0e0; margin-bottom: 10px; border-radius: 5px; background-color: #fff; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        #outline-display-area li div { flex-grow: 1; margin-right: 10px; margin-bottom: 5px; }
+        #outline-display-area li button { flex-shrink: 0; }
+        #chapter-detail-area { margin-top: 20px; padding: 15px; background-color: #f0f8ff; border-radius: 5px; border: 1px solid #d1e7fd; display: none; }
+        #chapter-detail-area h4 { color: var(--primary-color); margin-bottom: 10px; }
+        #chapter-detail-area pre { white-space: pre-wrap; background-color: #fff; padding: 10px; border: 1px solid #ddd; border-radius: 4px; max-height: 500px; overflow-y: auto; margin-top: 10px; font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; font-size: 0.9em; }
+        .storyboard-page { margin-bottom: 20px; padding: 15px; background-color: #fffaf0; border-radius: 8px; border-left: 4px solid var(--secondary-color); }
+        .storyboard-page h5 { color: var(--secondary-color); margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .storyboard-panel-display { border: 1px solid #eee; padding: 15px; margin-bottom: 15px; border-radius: 5px; background-color: #fafafa; }
+        .storyboard-panel-display h6 { color: var(--dark-color); margin-bottom: 8px; }
+        .storyboard-panel-details p { margin-bottom: 5px; font-size: 0.95em; }
+        .storyboard-panel-details p strong { color: var(--dark-color); }
+        .storyboard-visual-placeholder { border: 1px dashed #ccc; min-height: 100px; display: flex; align-items: center; justify-content: center; color: #aaa; font-style: italic; margin-top: 10px; background-color: #f0f0f0; border-radius: 4px; padding: 10px; text-align: center; }
         .prompt-item { border-left-color: var(--success-color); }
-
-        .prompt-item pre {
-            background-color: #333;
-            color: white;
-            padding: 15px;
-            border-radius: 5px;
-            overflow-x: auto;
-            margin-top: 10px;
-            white-space: pre-wrap; /* Wrap long lines */
-            word-break: break-all; /* Break long words/URLs */
-        }
-
-        .session-controls {
-            display: flex;
-            flex-wrap: wrap; /* Allow wrapping */
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .session-controls button {
-            flex: 1 1 auto; /* Allow buttons to shrink/grow */
-             min-width: 150px; /* Prevent buttons getting too small */
-        }
-
-        #loading-indicator {
-            display: none;
-            text-align: center;
-            margin: 20px 0;
-            padding: 15px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 8px;
-        }
-
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border-left-color: var(--primary-color);
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Styles from previous version, adapted */
-        .app-controls {
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid #eee;
-            display: none; /* Hidden by default */
-            gap: 10px;
-             flex-wrap: wrap;
-        }
-        .app-controls button {
-            margin-right: 10px;
-             margin-bottom: 10px; /* Spacing when wrapped */
-        }
-        .modification-area {
-            margin-top: 1rem;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f8f9fa;
-            display: none; /* Hidden by default */
-        }
-        .modification-area label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        .modification-area textarea {
-            width: 100%;
-            min-height: 80px;
-            margin-bottom: 0.5rem;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-        .tab-btn.disabled {
-            color: var(--disabled-color);
-            cursor: not-allowed;
-            background: #eee;
-        }
-         .chapter-selector {
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-         }
-         .chapter-selector label {
-             margin-bottom: 0; /* Remove default margin */
-             font-weight: 500;
-         }
-         .chapter-selector select {
-             flex-grow: 1; /* Allow select to take available space */
-             max-width: 400px; /* Limit max width */
-         }
-        .storyboard-panel-display {
-            border: 1px solid #eee;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            background-color: #fafafa;
-        }
-         .storyboard-panel-details p {
-            margin-bottom: 5px;
-         }
-         .storyboard-visual-placeholder {
-             border: 1px dashed #ccc;
-             min-height: 100px;
-             display: flex;
-             align-items: center;
-             justify-content: center;
-             color: #aaa;
-             font-style: italic;
-             margin-bottom: 10px;
-             background-color: #f0f0f0;
-             border-radius: 4px;
-             padding: 10px;
-             text-align: center;
-         }
-         .progress-indicator {
-             display: flex;
-             justify-content: space-around;
-             margin-bottom: 2rem;
-             padding: 1rem;
-             background-color: #e9ecef;
-             border-radius: 5px;
-             flex-wrap: wrap; /* Allow wrapping */
-             gap: 10px; /* Add gap for wrapped items */
-         }
-         .progress-step {
-             text-align: center;
-             color: #adb5bd;
-             flex: 1; /* Distribute space */
-             min-width: 80px; /* Prevent shrinking too much */
-         }
-         .progress-step.active {
-             color: var(--primary-color);
-             font-weight: bold;
-         }
-         .progress-step.completed {
-             color: var(--success-color);
-             font-weight: bold;
-         }
-         .progress-step .icon {
-             display: block;
-             font-size: 1.5rem;
-             margin-bottom: 0.5rem;
-         }
-         .input-group-inline {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-         }
-         .input-group-inline .input-group {
-            flex: 1;
-            min-width: 200px;
-            margin-bottom: 0;
-         }
-         .text-danger {
-            color: var(--danger-color);
-            font-weight: bold;
-         }
-
-
-         /* Media Queries */
+        .prompt-item pre { background-color: #333; color: white; padding: 15px; border-radius: 5px; overflow-x: auto; margin-top: 10px; white-space: pre-wrap; word-break: break-all; }
+        .session-controls { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+        .session-controls button { flex: 1 1 auto; min-width: 150px; }
+        #loading-indicator, #storyboard-loading-indicator { display: none; text-align: center; margin: 20px 0; padding: 15px; background-color: rgba(255, 255, 255, 0.8); border-radius: 8px; }
+        .spinner { border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%; border-left-color: var(--primary-color); animation: spin 1s linear infinite; margin: 0 auto 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .app-controls { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee; display: none; gap: 10px; flex-wrap: wrap; }
+        .app-controls button { margin-right: 10px; margin-bottom: 10px; }
+        .modification-area { margin-top: 1rem; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background-color: #f8f9fa; display: none; }
+        .modification-area label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        .modification-area textarea { width: 100%; min-height: 80px; margin-bottom: 0.5rem; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem; }
+        .tab-btn.disabled { color: var(--disabled-color); cursor: not-allowed; background: #eee; }
+        .chapter-selector { margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .chapter-selector label { margin-bottom: 0; font-weight: 500; white-space: nowrap; }
+        .chapter-selector select { flex-grow: 1; max-width: 400px; padding: 0.6rem; }
+        .chapter-selector button { flex-shrink: 0; }
+        .progress-indicator { display: flex; justify-content: space-around; margin-bottom: 2rem; padding: 1rem; background-color: #e9ecef; border-radius: 5px; flex-wrap: wrap; gap: 10px; }
+        .progress-step { text-align: center; color: #adb5bd; flex: 1; min-width: 80px; }
+        .progress-step.active { color: var(--primary-color); font-weight: bold; }
+        .progress-step.completed { color: var(--success-color); font-weight: bold; }
+        .progress-step .icon { display: block; font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .input-group-inline { display: flex; gap: 20px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .input-group-inline .input-group { flex: 1; min-width: 200px; margin-bottom: 0; }
+        .text-danger { color: var(--danger-color); font-weight: bold; }
+        /* Media Queries */
         @media (max-width: 768px) {
-            header .container {
-                flex-direction: column;
-                text-align: center;
-            }
-            nav ul {
-                margin-top: 1rem;
-                flex-wrap: wrap; /* Allow nav items to wrap */
-                justify-content: center;
-            }
-            nav ul li {
-                 margin-left: 10px; /* Reduce margin */
-                 margin-right: 10px;
-            }
-            .hero h1 { font-size: 2rem; }
-            .hero p { font-size: 1rem; }
+             header .container { flex-direction: column; text-align: center; }
+             nav ul { margin-top: 1rem; justify-content: center; }
+             nav ul li { margin-left: 10px; margin-right: 10px; }
+            .hero h1 { font-size: 2rem; } .hero p { font-size: 1rem; }
             .features-grid { grid-template-columns: 1fr; }
             .steps { flex-direction: column; align-items: center; }
             .step { margin-bottom: 2rem; max-width: 90%; }
             .tabs { justify-content: flex-start; }
-            .tab-btn { flex-grow: 1; margin-left: 0; margin-right: 0;} /* Make tabs take full width */
-             .session-controls { justify-content: center; }
-             .input-group-inline { flex-direction: column; gap: 1rem; }
-             .chapter-selector { flex-direction: column; align-items: flex-start;}
-             .chapter-selector select { max-width: 100%; }
-             .progress-indicator { gap: 5px;}
-             .progress-step .icon { font-size: 1.2rem;}
+            .tab-btn { flex-grow: 1; margin-left: 0; margin-right: 0; }
+            .session-controls { justify-content: center; }
+            .input-group-inline { flex-direction: column; gap: 1rem; }
+            .chapter-selector { flex-direction: column; align-items: flex-start; gap: 5px;}
+            .chapter-selector select { max-width: 100%; }
+             .chapter-selector button { width: 100%; margin-top: 5px; }
+            .progress-indicator { gap: 5px; } .progress-step .icon { font-size: 1.2rem; }
+            #outline-display-area li { flex-direction: column; align-items: flex-start;}
+            #outline-display-area li div { margin-right: 0; }
+            #outline-display-area li button { width: 100%; margin-top: 10px;}
         }
-
     </style>
 </head>
 <body>
@@ -680,75 +168,31 @@
     </section>
 
     <section class="features" id="features">
-        <div class="container">
-            <div class="section-title">
-                <h2>Fonctionnalités</h2>
-                <p>Découvrez les outils puissants qui vous aideront à créer des bandes dessinées professionnelles sans effort, étape par étape.</p>
-            </div>
-            <div class="features-grid">
-                 <div class="feature-card">
-                    <i class="fas fa-lightbulb"></i>
-                    <h3>Idée Initiale & Options</h3>
-                    <p>Définissez votre idée, choisissez le genre, le style visuel et le ton pour guider l'IA.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-server"></i> <!-- Changed icon -->
-                    <h3>Génération Scénario via API</h3>
-                    <p>Obtenez un scénario structuré (page/case) généré par une IA puissante côté serveur. Validez ou demandez des modifications.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-pencil-alt"></i>
-                    <h3>Storyboard Assisté (Bientôt)</h3>
-                    <p>Visualisez votre histoire avec des suggestions de cadrage et de composition pour chaque case. Approuvez chapitre par chapitre.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-image"></i>
-                    <h3>Prompts Optimisés (Bientôt)</h3>
-                    <p>Générez des prompts en anglais prêts à l'emploi pour Midjourney/Dall-E, basés sur votre storyboard et style.</p>
-                </div>
-                 <div class="feature-card">
-                    <i class="fas fa-tasks"></i>
-                    <h3>Workflow Guidé</h3>
-                    <p>Suivez un processus étape par étape avec des validations pour garder le contrôle créatif total.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-save"></i>
-                    <h3>Sauvegarde de Sessions</h3>
-                    <p>Sauvegardez votre progression à tout moment et reprenez votre projet de BD plus tard.</p>
-                </div>
-            </div>
-        </div>
+        <!-- Contenu des fonctionnalités -->
+         <div class="container">
+             <div class="section-title"><h2>Fonctionnalités</h2><p>...</p></div>
+             <div class="features-grid">
+                 <div class="feature-card"><i class="fas fa-lightbulb"></i><h3>Idée Initiale & Options</h3><p>...</p></div>
+                 <div class="feature-card"><i class="fas fa-server"></i><h3>Génération Scénario via API</h3><p>...</p></div>
+                 <div class="feature-card"><i class="fas fa-pencil-alt"></i><h3>Storyboard Assisté</h3><p>Visualisez votre histoire avec suggestions de cadrage, composition et style pour chaque case.</p></div>
+                 <div class="feature-card"><i class="fas fa-image"></i><h3>Prompts Optimisés (Bientôt)</h3><p>Générez des prompts prêts pour Midjourney/Dall-E basés sur votre storyboard.</p></div>
+                 <div class="feature-card"><i class="fas fa-tasks"></i><h3>Workflow Guidé</h3><p>...</p></div>
+                 <div class="feature-card"><i class="fas fa-save"></i><h3>Sauvegarde de Sessions</h3><p>...</p></div>
+             </div>
+         </div>
     </section>
 
     <section class="how-it-works" id="how-it-works">
-        <div class="container">
-            <div class="section-title">
-                <h2>Comment ça marche</h2>
-                <p>Suivez ces étapes simples pour créer votre bande dessinée avec l'aide de l'IA.</p>
-            </div>
-            <div class="steps">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <h3>Décrivez votre idée</h3>
-                    <p>Entrez des mots-clés ou une description. Choisissez le genre, le style visuel et le ton.</p>
-                </div>
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <h3>Générez & Validez le Scénario</h3>
-                    <p>L'IA côté serveur crée un scénario structuré. Lisez-le, demandez des modifications si besoin, puis approuvez.</p>
-                </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <h3>Approuvez le Storyboard (Bientôt)</h3>
-                    <p>Pour chaque chapitre, visualisez le storyboard avec suggestions de cadrage/composition. Approuvez.</p>
-                </div>
-                <div class="step">
-                    <div class="step-number">4</div>
-                    <h3>Obtenez les Prompts (Bientôt)</h3>
-                    <p>Recevez les prompts optimisés pour chaque case du chapitre approuvé. Copiez et créez !</p>
-                </div>
-            </div>
-        </div>
+        <!-- Comment ça marche -->
+         <div class="container">
+             <div class="section-title"><h2>Comment ça marche</h2><p>...</p></div>
+             <div class="steps">
+                 <div class="step"><div class="step-number">1</div><h3>Décrivez votre idée</h3><p>...</p></div>
+                 <div class="step"><div class="step-number">2</div><h3>Générez & Validez l'Ossature</h3><p>L'IA crée l'ossature (titres, résumés). Générez le détail des chapitres.</p></div>
+                 <div class="step"><div class="step-number">3</div><h3>Générez le Storyboard</h3><p>Pour chaque chapitre détaillé, obtenez des suggestions visuelles (plan, angle...).</p></div>
+                 <div class="step"><div class="step-number">4</div><h3>Obtenez les Prompts (Bientôt)</h3><p>Recevez les prompts optimisés pour chaque case.</p></div>
+             </div>
+         </div>
     </section>
 
     <section class="app" id="app">
@@ -766,18 +210,10 @@
 
             <!-- Progress Indicator -->
              <div class="progress-indicator">
-                <div class="progress-step active" id="step-idea">
-                    <span class="icon"><i class="fas fa-lightbulb"></i></span> Idée
-                </div>
-                <div class="progress-step" id="step-scenario">
-                    <span class="icon"><i class="fas fa-file-alt"></i></span> Scénario
-                </div>
-                <div class="progress-step" id="step-storyboard">
-                     <span class="icon"><i class="fas fa-border-all"></i></span> Storyboard
-                </div>
-                <div class="progress-step" id="step-prompts">
-                    <span class="icon"><i class="fas fa-magic"></i></span> Prompts
-                </div>
+                <div class="progress-step active" id="step-idea"><span class="icon"><i class="fas fa-lightbulb"></i></span>Idée</div>
+                <div class="progress-step" id="step-scenario"><span class="icon"><i class="fas fa-file-alt"></i></span>Scénario</div>
+                <div class="progress-step" id="step-storyboard"><span class="icon"><i class="fas fa-border-all"></i></span>Storyboard</div>
+                <div class="progress-step" id="step-prompts"><span class="icon"><i class="fas fa-magic"></i></span>Prompts</div>
             </div>
 
             <div class="tabs">
@@ -791,146 +227,75 @@
             <div class="tab-content active" id="home-content">
                 <h3>Entrez les détails de votre projet</h3>
                 <p>Commencez par décrire votre idée et choisissez les options pour guider l'IA.</p>
-
                 <div class="input-group">
                     <label for="keywords">Idée initiale (mots-clés, phrase, ou courte histoire)</label>
                     <textarea id="keywords" placeholder="Ex: Aventure spatiale avec des chats pirates cherchant une planète de thon légendaire." rows="3"></textarea>
                 </div>
-
                 <div class="input-group-inline">
-                     <div class="input-group">
-                        <label for="genre">Genre</label>
-                        <select id="genre">
-                            <option value="Fantastique">Fantastique</option>
-                            <option value="Science-Fiction">Science-Fiction</option>
-                            <option value="Policier">Policier</option>
-                            <option value="Humour">Humour</option>
-                            <option value="Drame">Drame</option>
-                            <option value="Aventure">Aventure</option>
-                            <option value="Slice of Life">Slice of Life</option>
-                            <option value="Horreur">Horreur</option>
-                            <option value="Historique">Historique</option>
-                            <option value="Western">Western</option>
-                            <!-- Add more genres -->
-                        </select>
-                    </div>
-
-                     <div class="input-group">
-                        <label for="style">Style Visuel Cible</label>
-                        <select id="style">
-                            <option value="Manga">Manga</option>
-                            <option value="Franco-Belge">Franco-Belge (Ligne Claire)</option>
-                            <option value="Comics US">Comics US (Super-héros)</option>
-                            <option value="Réaliste">Réaliste / Peinture Numérique</option>
-                            <option value="Cartoon">Cartoon / Animation</option>
-                            <option value="Aquarelle">Aquarelle</option>
-                            <option value="Pixel Art">Pixel Art</option>
-                             <option value="Noir et Blanc">Noir et Blanc (Ink)</option>
-                             <!-- Add more styles -->
-                        </select>
-                    </div>
-
-                     <div class="input-group">
-                        <label for="tone">Ton</label>
-                        <select id="tone">
-                            <option value="Épique">Épique</option>
-                            <option value="Sérieux">Sérieux</option>
-                            <option value="Léger / Humoristique">Léger / Humoristique</option>
-                            <option value="Sombre / Mature">Sombre / Mature</option>
-                            <option value="Mystérieux">Mystérieux</option>
-                            <option value="Poétique">Poétique</option>
-                            <option value="Satirique">Satirique</option>
-                            <option value="Action">Action</option>
-                            <!-- Add more tones -->
-                        </select>
-                    </div>
+                     <div class="input-group"><label for="genre">Genre</label><select id="genre"><option value="Fantastique">Fantastique</option><option value="Science-Fiction">Science-Fiction</option><option value="Policier">Policier</option><option value="Humour">Humour</option><option value="Drame">Drame</option><option value="Aventure">Aventure</option><option value="Slice of Life">Slice of Life</option><option value="Horreur">Horreur</option><option value="Historique">Historique</option><option value="Western">Western</option></select></div>
+                     <div class="input-group"><label for="style">Style Visuel Cible</label><select id="style"><option value="Manga">Manga</option><option value="Franco-Belge">Franco-Belge (Ligne Claire)</option><option value="Comics US">Comics US (Super-héros)</option><option value="Réaliste">Réaliste / Peinture Numérique</option><option value="Cartoon">Cartoon / Animation</option><option value="Aquarelle">Aquarelle</option><option value="Pixel Art">Pixel Art</option><option value="Noir et Blanc">Noir et Blanc (Ink)</option></select></div>
+                     <div class="input-group"><label for="tone">Ton</label><select id="tone"><option value="Épique">Épique</option><option value="Sérieux">Sérieux</option><option value="Léger / Humoristique">Léger / Humoristique</option><option value="Sombre / Mature">Sombre / Mature</option><option value="Mystérieux">Mystérieux</option><option value="Poétique">Poétique</option><option value="Satirique">Satirique</option><option value="Action">Action</option></select></div>
                 </div>
-
                  <div class="input-group">
                     <label for="details">Détails Optionnels (Personnages principaux, Univers, Éléments clés)</label>
                     <textarea id="details" placeholder="Ex: Capitaine Moustache (chat roux borgne), Second Patte-de-Velours (chat noir agile). Vaisseau: Le Sardine Volante. Cherchent la planète Catlantic." rows="4"></textarea>
                 </div>
-
-                <button class="btn btn-primary" id="generate-scenario">Générer l'Ossature</button> <!-- Changed button text -->
-
-                <div id="loading-indicator">
-                    <div class="spinner"></div>
-                    <p>Génération de l'ossature en cours via l'API...</p> <!-- Changed loading text -->
-                </div>
+                <button class="btn btn-primary" id="generate-scenario">Générer l'Ossature</button>
+                <div id="loading-indicator"><div class="spinner"></div><p>Génération en cours via l'API...</p></div>
             </div>
 
             <!-- Tab 2: Scenario -->
             <div class="tab-content" id="scenario-content">
-                <!-- **** MODIFIED SECTION START **** -->
-                <h3>Votre Ossature / Scénario</h3> <!-- Changed title slightly -->
+                <h3>Votre Ossature / Scénario</h3>
                 <div id="scenario-output">
-                    <!-- This div will be populated by JavaScript -->
-                    <div id="outline-display-area">
-                        <p>L'ossature de votre scénario (titre, chapitres, résumés) s'affichera ici après la génération initiale.</p>
-                    </div>
-
-                    <hr style="margin: 20px 0;"> <!-- Optional separator -->
-
-                    <div id="chapter-detail-area">
-                        <p>Le contenu détaillé du chapitre sélectionné s'affichera ici après sa génération.</p>
-                    </div>
+                    <div id="outline-display-area"><p>L'ossature de votre scénario (titre, chapitres, résumés) s'affichera ici après la génération initiale.</p></div>
+                    <hr style="margin: 20px 0;">
+                    <div id="chapter-detail-area"><p>Le contenu détaillé du chapitre sélectionné s'affichera ici après sa génération.</p></div>
                 </div>
-                <!-- **** MODIFIED SECTION END **** -->
-
-                <!-- Controls might be adjusted later depending on workflow -->
                 <div class="app-controls" id="scenario-controls">
-                    <!-- These buttons might need to change context or be moved depending on whether outline or detail is shown -->
-                    <button class="btn btn-success" id="approve-scenario">Passer au Storyboard (Bientôt)</button> <!-- Changed text -->
-                    <button class="btn btn-primary" id="modify-scenario-request">Demander Modifications (Ossature)</button> <!-- Clarified target -->
-                    <button class="btn btn-danger" id="regenerate-scenario">Régénérer Ossature</button> <!-- Clarified target -->
+                    <button class="btn btn-success" id="approve-scenario">Passer au Storyboard</button> <!-- Texte simplifié -->
+                    <button class="btn btn-primary" id="modify-scenario-request">Demander Modifications (Ossature)</button>
+                    <button class="btn btn-danger" id="regenerate-scenario">Régénérer Ossature</button>
                 </div>
                 <div class="modification-area" id="scenario-modification-area">
-                    <label for="scenario-modification-input">Décrivez les modifications souhaitées pour l'ossature :</label> <!-- Clarified target -->
+                    <label for="scenario-modification-input">Décrivez les modifications souhaitées pour l'ossature :</label>
                     <textarea id="scenario-modification-input"></textarea>
                     <button class="btn btn-primary" id="submit-scenario-modification">Soumettre Modification</button>
                 </div>
             </div>
 
             <!-- Tab 3: Storyboard -->
-            <div class="tab-content" id="storyboard-content">
-                <h3>Votre Storyboard (Bientôt Disponible)</h3>
-                 <!-- Chapter selector might be useful here later -->
-                <div id="storyboard-output">
-                    <p>Approuvez d'abord l'ossature du scénario pour générer le storyboard.</p>
-                     <p>La fonctionnalité de génération de storyboard sera ajoutée prochainement.</p>
-                </div>
-                 <!-- Storyboard controls -->
-            </div>
+             <div class="tab-content" id="storyboard-content">
+                 <h3>Votre Storyboard</h3>
+                 <div class="chapter-selector" id="storyboard-chapter-selector-container" style="display: none;">
+                     <label for="storyboard-chapter-select">Choisir le chapitre :</label>
+                     <select id="storyboard-chapter-select"><option value="">-- Sélectionnez --</option></select>
+                     <button class="btn btn-primary btn-sm" id="generate-storyboard-btn" disabled>Générer Storyboard Chapitre</button>
+                 </div>
+                 <div id="storyboard-loading-indicator" style="display: none; margin-top: 15px;">
+                     <div class="spinner"></div>
+                     <p>Génération du storyboard pour ce chapitre...</p>
+                 </div>
+                 <div id="storyboard-output">
+                     <p>Sélectionnez un chapitre dont le détail a été généré, puis cliquez sur "Générer Storyboard Chapitre".</p>
+                 </div>
+             </div>
+
 
             <!-- Tab 4: Prompts -->
             <div class="tab-content" id="prompts-content">
                 <h3>Vos Prompts Midjourney (Bientôt Disponible)</h3>
-                <!-- Chapter selector might be useful here later -->
                 <div id="prompts-output">
-                    <p>Approuvez d'abord le storyboard d'un chapitre pour générer les prompts.</p>
-                     <p>La fonctionnalité de génération de prompts sera ajoutée prochainement.</p>
+                    <p>Générez et approuvez d'abord le storyboard d'un chapitre.</p>
+                    <p>La fonctionnalité de génération de prompts sera ajoutée prochainement.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <footer>
-        <div class="container">
-            <p>© 2025 BD Creator. Tous droits réservés.</p>
-            <div class="social-links">
-                <a href="#"><i class="fab fa-facebook"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-            </div>
-            <div class="footer-links">
-                <a href="#">À propos</a>
-                <a href="#">Confidentialité</a>
-                <a href="#">Conditions d'utilisation</a>
-                <a href="#">Contact</a>
-                <a href="#" id="create-website-btn">Créer mon site web</a>
-            </div>
-        </div>
+        <!-- Contenu du footer -->
+         <div class="container"><p>© 2025 BD Creator...</p><div class="social-links">...</div><div class="footer-links">...</div></div>
     </footer>
 
     <!-- Inline script includes all necessary JS -->
@@ -948,11 +313,9 @@
             const generateScenarioBtn = document.getElementById('generate-scenario'); // Now generates Outline
 
             // Scenario/Outline Tab Elements
-            const scenarioContent = document.getElementById('scenario-content'); // The whole tab content div
-            const scenarioOutput = document.getElementById('scenario-output'); // Container for outline AND detail
-            const outlineDisplayArea = document.getElementById('outline-display-area'); // <<< NEW
-            const chapterDetailArea = document.getElementById('chapter-detail-area'); // <<< NEW
-
+            const scenarioOutput = document.getElementById('scenario-output');
+            const outlineDisplayArea = document.getElementById('outline-display-area');
+            const chapterDetailArea = document.getElementById('chapter-detail-area');
             const scenarioControls = document.getElementById('scenario-controls');
             const approveScenarioBtn = document.getElementById('approve-scenario');
             const modifyScenarioRequestBtn = document.getElementById('modify-scenario-request');
@@ -961,10 +324,17 @@
             const scenarioModificationInput = document.getElementById('scenario-modification-input');
             const submitScenarioModificationBtn = document.getElementById('submit-scenario-modification');
 
-            // Other tab elements (keep references for UI updates)
+            // Storyboard Tab Elements
+            const storyboardChapterSelectorContainer = document.getElementById('storyboard-chapter-selector-container');
+            const storyboardChapterSelect = document.getElementById('storyboard-chapter-select');
+            const generateStoryboardBtn = document.getElementById('generate-storyboard-btn');
+            const storyboardLoadingIndicator = document.getElementById('storyboard-loading-indicator');
             const storyboardOutput = document.getElementById('storyboard-output');
+
+            // Prompts Tab Elements
             const promptsOutput = document.getElementById('prompts-output');
 
+            // Progress Indicator Steps
             const progressSteps = {
                 idea: document.getElementById('step-idea'),
                 scenario: document.getElementById('step-scenario'),
@@ -972,204 +342,285 @@
                 prompts: document.getElementById('step-prompts'),
             };
 
+            // Tab Buttons Map
             const tabs = {
                 home: document.querySelector('[data-tab="home"]'),
                 scenario: document.querySelector('[data-tab="scenario"]'),
                 storyboard: document.querySelector('[data-tab="storyboard"]'),
                 prompts: document.querySelector('[data-tab="prompts"]'),
-            }
+            };
 
             // --- Application State ---
              let appState = {
-                 currentStep: 'idea', // idea, outline_generated, outline_approved (was scenario_approved), chapter_detail_generated, storyboard_generated...
-                 outlineData: null, // <-- NEW: Holds the parsed outline { title: '...', chapters: [{...}, ...] }
-                 chapterDetailData: {}, // Key: chapterNumber, Value: detailed scenario text/object for that chapter
-                 lastInputData: null, // Store the inputs used for the last generation
+                 currentStep: 'idea', // idea, outline_generated, chapter_detail_generated, outline_approved, storyboard_generated, ...
+                 outlineData: null, // { title: '...', chapters: [{chapter: 1, title: '...', summary: '...'}, ...] }
+                 chapterDetailData: {}, // { 1: {scenarioText: '...'}, 2: {error: '...'}, ... }
+                 storyboardData: {}, // { 1: [{page:1, panel:1, ...}, ...], 2: {error: '...'}, ...}
+                 lastInputData: null, // { keywords, genre, style, tone, details }
                  activeTab: 'home'
              };
 
             // --- Helper Functions ---
 
-            // Simple HTML Escaping (VRAIMENT CORRIGÉE)
+            // Simple HTML Escaping (CORRECTED)
             function escapeHtml(unsafe) {
                 if (typeof unsafe !== 'string') return unsafe;
                 return unsafe
-                     .replace(/&/g, "&")  // Remplace & par &
-                     .replace(/</g, "<")   // Remplace < par <
-                     .replace(/>/g, ">")   // Remplace > par >
-                     .replace(/"/g, "&quot;") // Remplace " par "
-                     .replace(/'/g, "'"); // Remplace ' par '
+                     .replace(/&/g, "&")
+                     .replace(/</g, "<")
+                     .replace(/>/g, ">")
+                     .replace(/"/g, """)
+                     .replace(/'/g, "'");
              }
 
-             // Show/Hide Loading Indicator
+             // Show/Hide Generic Loading Indicator
              function showLoadingIndicator(show) {
                  if (loadingIndicator) {
                      loadingIndicator.style.display = show ? 'block' : 'none';
                  }
              }
+             // Show/Hide Storyboard Specific Loading Indicator
+             function showStoryboardLoading(show) {
+                 if (storyboardLoadingIndicator) {
+                    storyboardLoadingIndicator.style.display = show ? 'block' : 'none';
+                 }
+             }
 
-            // --- *** NOUVELLE FONCTION POUR AFFICHER L'OSSATURE *** ---
+            // --- Display Functions ---
+
             function displayOutline(outlineData) {
-                 outlineDisplayArea.innerHTML = ''; // Clear previous content
+                 outlineDisplayArea.innerHTML = '';
+                 if (!outlineData) { outlineDisplayArea.innerHTML = '<p>Aucune donnée d\'ossature à afficher.</p>'; return; }
 
-                 if (!outlineData) {
-                     outlineDisplayArea.innerHTML = '<p>Aucune donnée d\'ossature à afficher.</p>';
+                 if (outlineData.parsingError) {
+                     console.warn("Backend outline parsing failed:", outlineData.parsingError);
+                     outlineDisplayArea.innerHTML = `<h4>Erreur d'Analyse de l'Ossature</h4><p>L'IA a répondu, mais le format n'a pas pu être analysé automatiquement. Voici le texte brut :</p><pre style="white-space: pre-wrap; background-color: #eee; padding: 10px; border-radius: 4px; max-height: 300px; overflow-y: auto;">${escapeHtml(outlineData.rawText || 'N/A')}</pre>`;
+                     chapterDetailArea.innerHTML = '';
+                     chapterDetailArea.style.display = 'none';
                      return;
                  }
 
-                 // Handle Parsing Failure Case (from backend)
-                 if (outlineData.parsingError) {
-                     console.warn("Backend outline parsing failed:", outlineData.parsingError);
-                     outlineDisplayArea.innerHTML = `<h4>Erreur d'Analyse de l'Ossature</h4>
-                                                <p>L'IA a répondu, mais le format n'a pas pu être analysé automatiquement par le serveur. Voici le texte brut reçu :</p>
-                                                <pre style="white-space: pre-wrap; background-color: #eee; padding: 10px; border-radius: 4px; max-height: 300px; overflow-y: auto;">${escapeHtml(outlineData.rawText || 'Texte brut non disponible.')}</pre>`;
-                     // Hide chapter detail area when outline fails
-                      chapterDetailArea.innerHTML = '';
-                      chapterDetailArea.style.display = 'none';
-                     return; // Stop here
-                 }
-
-                 // Display Title
                  const globalTitle = outlineData.title || "Titre non défini";
-                 const titleElement = document.createElement('h4'); // Using H4 for sub-section title
+                 const titleElement = document.createElement('h4');
                  titleElement.style.marginBottom = '15px';
                  titleElement.textContent = `Titre Global : ${globalTitle}`;
                  outlineDisplayArea.appendChild(titleElement);
 
-                 // Display Chapters List
                  const chaptersArray = outlineData.chapters;
                  if (Array.isArray(chaptersArray) && chaptersArray.length > 0) {
-                     const chapterList = document.createElement('ul'); // Using UL for list semantics
-
+                     const chapterList = document.createElement('ul');
                      chaptersArray.forEach(chapter => {
                          const listItem = document.createElement('li');
-                         // Styles moved to CSS for better separation: #outline-display-area li { ... }
-
-                         // Chapter Info Div
                          const chapterInfo = document.createElement('div');
-                         chapterInfo.innerHTML = `<b>Chapitre ${chapter.chapter}: ${escapeHtml(chapter.title || '')}</b><br><small><i>${escapeHtml(chapter.summary || '...')}</i></small>`;
+                         chapterInfo.innerHTML = `<b>Chapitre ${chapter.chapter}: ${escapeHtml(chapter.title || '')}</b><br><small><i>${escapeHtml(chapter.summary || 'Résumé non fourni.')}</i></small>`;
                          listItem.appendChild(chapterInfo);
 
-                         // Generate Detail Button
                          const generateButton = document.createElement('button');
                          generateButton.textContent = `Générer Détail`;
-                         generateButton.classList.add('btn', 'btn-sm', 'btn-secondary'); // Add some styling
+                         generateButton.classList.add('btn', 'btn-sm', 'btn-secondary');
                          generateButton.dataset.chapterNumber = chapter.chapter;
                          generateButton.dataset.chapterTitle = chapter.title || '';
-                         // IMPORTANT: Link to the *new* detail generation handler
                          generateButton.onclick = handleGenerateChapterDetail;
                          listItem.appendChild(generateButton);
-
                          chapterList.appendChild(listItem);
                      });
                      outlineDisplayArea.appendChild(chapterList);
-                     // Show chapter detail area placeholder
-                      chapterDetailArea.innerHTML = '<p>Sélectionnez un chapitre ci-dessus pour générer son contenu détaillé.</p>';
-                      chapterDetailArea.style.display = 'block';
-
+                     chapterDetailArea.innerHTML = '<p>Sélectionnez un chapitre ci-dessus pour générer son contenu détaillé.</p>';
+                     chapterDetailArea.style.display = 'block';
                  } else {
-                     outlineDisplayArea.innerHTML += '<p>Aucun chapitre trouvé dans l\'ossature reçue.</p>';
-                      // Hide chapter detail area if no chapters
-                      chapterDetailArea.innerHTML = '';
-                      chapterDetailArea.style.display = 'none';
+                     outlineDisplayArea.innerHTML += '<p>Aucun chapitre trouvé dans l\'ossature.</p>';
+                     chapterDetailArea.innerHTML = '';
+                     chapterDetailArea.style.display = 'none';
                  }
              }
 
-             // --- *** NOUVELLE FONCTION POUR AFFICHER LE DETAIL D'UN CHAPITRE *** ---
              function displayChapterDetail(chapterNumber, detailData) {
-                  chapterDetailArea.innerHTML = ''; // Clear previous detail/placeholder
-
+                  chapterDetailArea.innerHTML = '';
                   const detailContainer = document.createElement('div');
                    detailContainer.innerHTML = `<h4>Détail - Chapitre ${chapterNumber}</h4>`;
 
                   if (detailData && detailData.scenarioText) {
-                      // TODO: Parse the detailed scenario text if needed (using a modified parseScenarioTextImproved?)
-                      // For now, just display the raw text received for the chapter
                        const preformattedText = document.createElement('pre');
-                       preformattedText.textContent = detailData.scenarioText; // Display raw text for now
+                       preformattedText.textContent = detailData.scenarioText;
                        detailContainer.appendChild(preformattedText);
-
-                      // Add controls for this specific chapter? (e.g., Approve Chapter Detail)
-                      const detailControls = document.createElement('div');
-                      detailControls.style.marginTop = '10px';
-                      // Add buttons as needed later
-                      // detailControls.innerHTML = `<button class="btn btn-sm btn-success">Approuver Détail Chap. ${chapterNumber}</button>`;
-                      detailContainer.appendChild(detailControls);
-
+                       // const detailControls = document.createElement('div');
+                       // detailControls.style.marginTop = '10px';
+                       // detailContainer.appendChild(detailControls);
                   } else if (detailData && detailData.error) {
-                       detailContainer.innerHTML += `<p class="text-danger">Erreur lors de la génération du détail pour Chapitre ${chapterNumber}: ${detailData.error} ${detailData.details ? `(${detailData.details})` : ''}</p>`;
-                  }
-                   else {
-                      detailContainer.innerHTML += `<p class="text-danger">Erreur inattendue lors de la réception du détail pour Chapitre ${chapterNumber}.</p>`;
+                       detailContainer.innerHTML += `<p class="text-danger">Erreur lors de la génération du détail : ${detailData.error} ${detailData.details ? `(${detailData.details})` : ''}</p>`;
+                  } else {
+                      detailContainer.innerHTML += `<p class="text-danger">Erreur inattendue lors de la réception du détail.</p>`;
                   }
                    chapterDetailArea.appendChild(detailContainer);
                    chapterDetailArea.style.display = 'block';
              }
+
+             function displayStoryboard(chapterNumber, storyboardData) {
+                storyboardOutput.innerHTML = ''; // Clear placeholder/previous
+
+                if (!storyboardData) {
+                    storyboardOutput.innerHTML = `<p class="text-danger">Aucune donnée de storyboard reçue pour le chapitre ${chapterNumber}.</p>`;
+                    return;
+                }
+                // Handle parsing error from backend
+                if (storyboardData.parsingError) {
+                     storyboardOutput.innerHTML = `<h4>Erreur d'Analyse du Storyboard (Chap. ${chapterNumber})</h4>
+                                                <p>L'IA a répondu, mais le format n'a pas pu être analysé automatiquement. Voici le texte brut reçu :</p>
+                                                <pre style="white-space: pre-wrap; background-color: #eee; padding: 10px; border-radius: 4px; max-height: 400px; overflow-y: auto;">${escapeHtml(storyboardData.rawText || 'N/A')}</pre>`;
+                     return;
+                }
+
+                // Assume storyboardData is the array of panel objects
+                let currentPage = -1;
+                let pageContainer = null;
+
+                if (Array.isArray(storyboardData) && storyboardData.length > 0) {
+                     storyboardData.forEach(panelData => {
+                          if (panelData.page !== currentPage) {
+                               currentPage = panelData.page;
+                               pageContainer = document.createElement('div');
+                               pageContainer.classList.add('storyboard-page');
+                               pageContainer.innerHTML = `<h5>Page ${currentPage}</h5>`;
+                               storyboardOutput.appendChild(pageContainer);
+                          }
+                          if(pageContainer) {
+                               const panelElement = document.createElement('div');
+                               panelElement.classList.add('storyboard-panel-display');
+                               panelElement.innerHTML = `
+                                   <h6>Case ${panelData.panel}</h6>
+                                   <div class="storyboard-panel-details">
+                                       <p><strong>Description:</strong> ${escapeHtml(panelData.description || 'N/A')}</p>
+                                       <p><strong>Type Plan:</strong> ${escapeHtml(panelData.shotType || 'N/A')}</p>
+                                       <p><strong>Angle:</strong> ${escapeHtml(panelData.angle || 'N/A')}</p>
+                                       ${panelData.notes ? `<p><i>Notes: ${escapeHtml(panelData.notes)}</i></p>` : ''}
+                                   </div>
+                                   <div class="storyboard-visual-placeholder">
+                                       [ Emplacement Visuel Case ${currentPage}-${panelData.panel} ]
+                                   </div>
+                               `;
+                               pageContainer.appendChild(panelElement);
+                          }
+                     });
+                } else if (Array.isArray(storyboardData) && storyboardData.length === 0) {
+                     storyboardOutput.innerHTML = `<p>Aucune case de storyboard n'a pu être extraite pour le chapitre ${chapterNumber}.</p>`;
+                 } else {
+                      storyboardOutput.innerHTML = `<h4>Storyboard Chapitre ${chapterNumber} (Format Inconnu)</h4><pre>${escapeHtml(JSON.stringify(storyboardData, null, 2))}</pre>`;
+                 }
+            }
 
 
              // --- UI Update Logic ---
             function updateUI() {
                 console.log("Updating UI, current step:", appState.currentStep, "active tab:", appState.activeTab);
 
-                // --- Progress Indicator ---
+                // Progress Indicator
                 Object.values(progressSteps).forEach(step => step.classList.remove('active', 'completed'));
-                if (appState.currentStep === 'idea') {
-                    progressSteps.idea.classList.add('active');
-                } else if (appState.currentStep === 'outline_generated' || appState.currentStep === 'chapter_detail_generated') {
-                    progressSteps.idea.classList.add('completed');
-                    progressSteps.scenario.classList.add('active'); // Scenario step is active while working on outline/details
-                } else if (appState.currentStep === 'outline_approved') { // Maybe rename scenario_approved to this
-                    progressSteps.idea.classList.add('completed');
-                    progressSteps.scenario.classList.add('completed');
-                    progressSteps.storyboard.classList.add('active');
+                const stepsCompleted = ['idea'];
+                if (appState.currentStep === 'outline_generated' || appState.currentStep === 'chapter_detail_generated' || appState.currentStep === 'outline_approved' || appState.currentStep === 'storyboard_generated') {
+                    stepsCompleted.push('scenario');
                 }
-                 // Add more steps later...
+                 if (appState.currentStep === 'outline_approved' || appState.currentStep === 'storyboard_generated') {
+                     stepsCompleted.push('storyboard'); // Mark storyboard step itself if approved or generated
+                 }
+                 // Add 'prompts' later
 
-                // --- Tabs Activation/Disabling ---
+                 stepsCompleted.forEach(step => {
+                    if(progressSteps[step]) progressSteps[step].classList.add('completed');
+                 });
+                 // Set active step
+                 if (appState.currentStep === 'idea') progressSteps.idea.classList.add('active');
+                 else if (appState.currentStep === 'outline_generated' || appState.currentStep === 'chapter_detail_generated') progressSteps.scenario.classList.add('active');
+                 else if (appState.currentStep === 'outline_approved' || appState.currentStep === 'storyboard_generated') progressSteps.storyboard.classList.add('active');
+                 // Add prompts later
+
+
+                // Tabs Activation/Disabling
                 const hasValidOutline = !!appState.outlineData && !appState.outlineData.parsingError;
-                tabs.scenario.classList.toggle('disabled', !appState.outlineData); // Enable Scenario tab if outline exists (even if parsing failed, to show raw text)
-                tabs.storyboard.classList.toggle('disabled', appState.currentStep !== 'outline_approved' || !hasValidOutline); // Requires valid, approved outline
-                tabs.prompts.classList.toggle('disabled', true); // For now
+                const hasGeneratedAnyDetails = Object.values(appState.chapterDetailData).some(detail => detail && !detail.error);
+                // Allow activating storyboard tab if outline is approved OR if at least one detail was successfully generated
+                const canAccessStoryboard = hasValidOutline && (appState.currentStep === 'outline_approved' || hasGeneratedAnyDetails);
 
-                // --- Tab Content Display ---
-                tabContents.forEach(content => {
-                    content.style.display = content.id === `${appState.activeTab}-content` ? 'block' : 'none';
-                });
-                tabBtns.forEach(btn => {
-                    btn.classList.toggle('active', btn.getAttribute('data-tab') === appState.activeTab);
-                });
+                tabs.scenario.classList.toggle('disabled', !appState.outlineData);
+                tabs.storyboard.classList.toggle('disabled', !canAccessStoryboard);
+                tabs.prompts.classList.toggle('disabled', true); // TODO: Enable based on storyboard state
 
-                // --- Scenario/Outline Tab Specific Updates ---
+                // Tab Content Display
+                tabContents.forEach(content => { content.style.display = content.id === `${appState.activeTab}-content` ? 'block' : 'none'; });
+                tabBtns.forEach(btn => { btn.classList.toggle('active', btn.getAttribute('data-tab') === appState.activeTab); });
+
+                // Scenario/Outline Tab Specific Updates
                 if (appState.activeTab === 'scenario') {
                     if (appState.outlineData) {
-                        displayOutline(appState.outlineData); // Display the latest outline
-                        // Show/Hide controls based on whether a valid outline exists
+                        displayOutline(appState.outlineData);
+                        // Update chapter details based on stored state
+                        const lastDetailKey = Object.keys(appState.chapterDetailData).pop(); // Show last generated detail? Or clear? Let's clear for now.
+                        if (lastDetailKey && appState.chapterDetailData[lastDetailKey]) {
+                            // displayChapterDetail(lastDetailKey, appState.chapterDetailData[lastDetailKey]); // Optionnel: réafficher le dernier détail
+                        } else if (chapterDetailArea.innerHTML !== '<p>Sélectionnez un chapitre ci-dessus pour générer son contenu détaillé.</p>') {
+                            // Reset if no details or only placeholder was there
+                             chapterDetailArea.innerHTML = '<p>Sélectionnez un chapitre ci-dessus pour générer son contenu détaillé.</p>';
+                             chapterDetailArea.style.display = 'block'; // Ensure it's visible if outline has chapters
+                        }
+
+
                         scenarioControls.style.display = 'flex';
-                        scenarioModificationArea.style.display = 'none'; // Hide mods by default
-                        approveScenarioBtn.disabled = !hasValidOutline; // Can only approve if valid outline
-                        modifyScenarioRequestBtn.disabled = !hasValidOutline; // Can only request mods if valid outline
-                        regenerateScenarioBtn.disabled = false; // Always allow regenerating outline
-                    } else {
-                        // No outline data yet
-                        outlineDisplayArea.innerHTML = '<p>Générez d\'abord une ossature depuis l\'onglet "Idée & Options".</p>';
-                        chapterDetailArea.innerHTML = '';
-                        chapterDetailArea.style.display = 'none';
-                        scenarioControls.style.display = 'none';
                         scenarioModificationArea.style.display = 'none';
+                        approveScenarioBtn.disabled = !hasValidOutline || appState.currentStep === 'outline_approved'; // Disable if already approved
+                        modifyScenarioRequestBtn.disabled = !hasValidOutline;
+                        regenerateScenarioBtn.disabled = false;
+                    } else {
+                        outlineDisplayArea.innerHTML = '<p>Générez d\'abord une ossature depuis l\'onglet "Idée & Options".</p>';
+                        chapterDetailArea.innerHTML = ''; chapterDetailArea.style.display = 'none';
+                        scenarioControls.style.display = 'none'; scenarioModificationArea.style.display = 'none';
                     }
                 } else {
-                     // Ensure scenario controls are hidden if not on the scenario tab
-                      scenarioControls.style.display = 'none';
-                      scenarioModificationArea.style.display = 'none';
+                      scenarioControls.style.display = 'none'; scenarioModificationArea.style.display = 'none';
+                }
+
+                // Storyboard Tab Specific Updates
+                const storyboardChapterSelectorContainer = document.getElementById('storyboard-chapter-selector-container'); // Re-get reference just in case
+                const storyboardChapterSelect = document.getElementById('storyboard-chapter-select');
+                const generateStoryboardBtn = document.getElementById('generate-storyboard-btn');
+
+                if (appState.activeTab === 'storyboard' && canAccessStoryboard && storyboardChapterSelectorContainer) {
+                    storyboardChapterSelectorContainer.style.display = 'flex';
+
+                    const previouslySelected = storyboardChapterSelect.value;
+                    storyboardChapterSelect.innerHTML = '<option value="">-- Sélectionnez --</option>';
+
+                    if (appState.outlineData && appState.outlineData.chapters) {
+                        appState.outlineData.chapters.forEach(chapter => {
+                            // Only list chapters for which detail exists and is not an error
+                            if (appState.chapterDetailData[chapter.chapter] && !appState.chapterDetailData[chapter.chapter].error) {
+                                const option = document.createElement('option');
+                                option.value = chapter.chapter;
+                                option.textContent = `Chapitre ${chapter.chapter}: ${escapeHtml(chapter.title || 'Sans titre')}`;
+                                storyboardChapterSelect.appendChild(option);
+                            }
+                        });
+                    }
+                    if (storyboardChapterSelect.options.length <= 1) { // Only the default option means none available
+                         storyboardChapterSelect.innerHTML = '<option value="">Générez d\'abord le détail d\'un chapitre</option>';
+                         generateStoryboardBtn.disabled = true;
+                    } else {
+                         storyboardChapterSelect.value = previouslySelected; // Try to restore selection
+                         generateStoryboardBtn.disabled = !storyboardChapterSelect.value; // Disable if "-- Sélectionnez --" is chosen
+                    }
+
+
+                } else if (storyboardChapterSelectorContainer) {
+                    storyboardChapterSelectorContainer.style.display = 'none';
+                }
+
+                // Clear storyboard output if not on the tab or not ready
+                if(appState.activeTab !== 'storyboard' && storyboardOutput.innerHTML !== '' ) {
+                    // storyboardOutput.innerHTML = ''; // Clear storyboard if navigating away? Maybe not desired.
                 }
 
 
-                // --- Other Tabs ---
-                if (appState.activeTab === 'storyboard') {
-                    storyboardOutput.innerHTML = '<p>La fonctionnalité de génération de storyboard sera ajoutée prochainement...</p>'; // Placeholder
-                }
-                 if (appState.activeTab === 'prompts') {
-                     promptsOutput.innerHTML = '<p>La fonctionnalité de génération de prompts sera ajoutée prochainement...</p>'; // Placeholder
+                // Prompts Tab
+                if (appState.activeTab === 'prompts') {
+                     promptsOutput.innerHTML = '<p>La fonctionnalité de génération de prompts sera ajoutée prochainement...</p>';
                  }
 
                 console.log("UI Update finished.");
@@ -1177,279 +628,120 @@
 
             // --- Backend Call Functions ---
 
-            // MODIFIED: Now calls backend to get the OUTLINE
-            async function handleGenerateOutline() { // Renamed from handleGenerateScenario
-                // Store inputs used for this generation
-                appState.lastInputData = {
-                    keywords: keywordsInput.value.trim(),
-                    genre: genreSelect.value,
-                    style: styleSelect.value,
-                    tone: toneSelect.value,
-                    details: detailsInput.value.trim()
-                };
+            async function handleGenerateOutline() {
+                 appState.lastInputData = { keywords: keywordsInput.value.trim(), genre: genreSelect.value, style: styleSelect.value, tone: toneSelect.value, details: detailsInput.value.trim() };
+                 if (!appState.lastInputData.keywords) { alert('Veuillez entrer une idée initiale.'); return; }
+                 showLoadingIndicator(true); generateScenarioBtn.disabled = true;
+                 appState.outlineData = null; appState.chapterDetailData = {}; appState.storyboardData = {}; // Clear all downstream data
+                 appState.activeTab = 'scenario'; updateUI();
+                 outlineDisplayArea.innerHTML = '<p>Envoi de la requête pour l\'ossature...</p>'; chapterDetailArea.style.display = 'none';
 
-                if (!appState.lastInputData.keywords) {
-                    alert('Veuillez entrer une idée initiale.');
-                    return;
-                }
-
-                showLoadingIndicator(true);
-                generateScenarioBtn.disabled = true; // Disable the button
-                // Clear previous results immediately
-                 appState.outlineData = null;
-                 appState.chapterDetailData = {}; // Clear old details
-                 // Update UI to show loading message IN the target area
-                 appState.activeTab = 'scenario'; // Switch to scenario tab to show progress
-                 updateUI(); // Initial UI update (will show loading placeholder)
-                 outlineDisplayArea.innerHTML = '<p>Envoi de la requête pour l\'ossature à l\'IA via le serveur...</p>';
-                 chapterDetailArea.style.display = 'none';
-
-                try {
-                     const response = await fetch('/api/generate-story', {
-     method: 'POST',
-     headers: { 'Content-Type': 'application/json' },
-     body: JSON.stringify(appState.lastInputData) // Envoyer les données stockées
- });
-
-                    if (!response.ok) {
-                        let errorMsg = `Erreur HTTP: ${response.status} ${response.statusText}`;
-                        try { const errorBody = await response.json(); errorMsg += ` - ${errorBody.error || 'Erreur serveur.'} ${errorBody.details ? `(${errorBody.details})` : ''}`; } catch (e) {}
-                        throw new Error(errorMsg); // Point-virgule est optionnel ici mais bonne pratique
-                    }
-
-                    const result = await response.json();
-
-                    if (result.outline) { // Expecting the 'outline' key now
-                        console.log("Outline data received from backend:", result.outline);
-                        appState.outlineData = result.outline; // Store the parsed outline object
-                        appState.currentStep = 'outline_generated';
-                        // Keep activeTab as 'scenario' - updateUI will handle display
-
-                    } else if (result.error) {
-                         throw new Error(`Erreur de l'API: ${result.error} ${result.details ? `(${result.details})` : ''}`);
-                    } else {
-                         throw new Error("Réponse inattendue du serveur (clé 'outline' manquante).");
-                    }
-
-                } catch (error) {
-                    console.error("Error in handleGenerateOutline fetch:", error);
-                    // Display error within the outline area
-                    outlineDisplayArea.innerHTML = `<p class="text-danger">Erreur lors de la génération de l'ossature : ${error.message}. Vérifiez la console et les logs Netlify.</p>`;
-                    chapterDetailArea.style.display = 'none';
-                    appState.outlineData = null; // Ensure no broken data
-                    appState.currentStep = 'idea'; // Revert step on error
-                } finally {
-                    showLoadingIndicator(false);
-                    generateScenarioBtn.disabled = false; // Re-enable button
-                    updateUI(); // Update UI fully with result or error
-                }
+                 try {
+                     const response = await fetch('/api/generate-story', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(appState.lastInputData) });
+                     if (!response.ok) { let errorMsg = `Erreur HTTP: ${response.status} ${response.statusText}`; try { const errorBody = await response.json(); errorMsg += ` - ${errorBody.error || 'Erreur serveur.'} ${errorBody.details ? `(${errorBody.details})` : ''}`; } catch (e) {} throw new Error(errorMsg); }
+                     const result = await response.json();
+                     if (result.outline) { appState.outlineData = result.outline; appState.currentStep = 'outline_generated'; }
+                     else if (result.error) { throw new Error(`Erreur API: ${result.error} ${result.details ? `(${result.details})` : ''}`); }
+                     else { throw new Error("Réponse inattendue (clé 'outline' manquante)."); }
+                 } catch (error) {
+                     console.error("Error handleGenerateOutline:", error);
+                     outlineDisplayArea.innerHTML = `<p class="text-danger">Erreur génération ossature : ${error.message}.</p>`; chapterDetailArea.style.display = 'none';
+                     appState.outlineData = null; appState.currentStep = 'idea';
+                 } finally {
+                     showLoadingIndicator(false); generateScenarioBtn.disabled = false; updateUI();
+                 }
             }
 
-            // --- *** NOUVELLE FONCTION POUR GENERER LE DETAIL D'UN CHAPITRE *** ---
-            // --- *** (Maintenant décommentée et corrigée) *** ---
             async function handleGenerateChapterDetail(event) {
                  const button = event.target;
                  const chapterNumber = button.dataset.chapterNumber;
                  const chapterTitle = button.dataset.chapterTitle;
-
-                 if (!chapterNumber || !appState.outlineData || !appState.lastInputData) {
-                     console.error("Missing data needed to generate chapter detail.");
-                     alert("Erreur : Impossible de lancer la génération du détail (données manquantes).");
-                     return;
-                 }
-
+                 if (!chapterNumber || !appState.outlineData || !appState.lastInputData) { console.error("Missing data"); alert("Erreur : Données manquantes."); return; }
                  const chapterSummary = appState.outlineData.chapters?.find(ch => ch.chapter == chapterNumber)?.summary || '';
-                 console.log(`Requesting detail for Chapter ${chapterNumber}: "${chapterTitle}"`);
-                 chapterDetailArea.innerHTML = `<p>Génération du détail pour Chapitre ${chapterNumber} en cours...</p>`;
-                 chapterDetailArea.style.display = 'block';
-                 button.disabled = true;
-                 button.textContent = 'Génération...';
+                 console.log(`Requesting detail Chapter ${chapterNumber}`);
+                 chapterDetailArea.innerHTML = `<p>Génération détail Chapitre ${chapterNumber}...</p>`; chapterDetailArea.style.display = 'block';
+                 button.disabled = true; button.textContent = 'Génération...';
 
-                 const requestData = {
-                     keywords: appState.lastInputData.keywords,
-                     genre: appState.lastInputData.genre,
-                     style: appState.lastInputData.style,
-                     tone: appState.lastInputData.tone,
-                     details: appState.lastInputData.details,
-                     globalTitle: appState.outlineData.title,
-                     totalChapters: appState.outlineData.chapters.length,
-                     chapterNumber: parseInt(chapterNumber, 10),
-                     chapterTitle: chapterTitle,
-                     chapterSummary: chapterSummary
-                 };
+                 const requestData = { ...appState.lastInputData, globalTitle: appState.outlineData.title, totalChapters: appState.outlineData.chapters.length, chapterNumber: parseInt(chapterNumber, 10), chapterTitle, chapterSummary };
 
                  try {
-                     const response = await fetch('/api/generate-chapter-detail', {
-    method: 'POST', // <<< AJOUTER CETTE LIGNE
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(requestData) // Assurez-vous que requestData contient les bonnes infos
-});
-
-                     // LECTURE DU CORPS JSON (maintenant actif)
+                     const response = await fetch('/api/generate-chapter-detail', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestData) });
+                     if (!response.ok) { let errorMsg = `Erreur HTTP: ${response.status} ${response.statusText}`; try { const errorBody = await response.json(); let detailsPart = errorBody.details ? ` (${errorBody.details})` : ''; errorMsg += ` - ${errorBody.error || 'Erreur serveur.'}${detailsPart}`; } catch (e) {} throw new Error(errorMsg); }
                      const result = await response.json();
-
-                     // TRAITEMENT DU RÉSULTAT (maintenant actif)
-                     appState.chapterDetailData[chapterNumber] = result; // Stocker la réponse (qui devrait contenir scenarioText)
-                     appState.currentStep = 'chapter_detail_generated'; // Mettre à jour l'étape
-                     displayChapterDetail(chapterNumber, result); // Appeler la fonction pour afficher
-
+                     appState.chapterDetailData[chapterNumber] = result; appState.currentStep = 'chapter_detail_generated';
+                     displayChapterDetail(chapterNumber, result);
                  } catch (error) {
-                      console.error(`Error fetching/processing detail for chapter ${chapterNumber}:`, error);
-                       appState.chapterDetailData[chapterNumber] = { error: error.message }; // Stocker l'erreur
-                      displayChapterDetail(chapterNumber, { error: error.message }); // Afficher l'erreur
+                     console.error(`Error handleGenerateChapterDetail ${chapterNumber}:`, error);
+                     appState.chapterDetailData[chapterNumber] = { error: error.message };
+                     displayChapterDetail(chapterNumber, { error: error.message });
                  } finally {
-                      button.disabled = false; // Réactiver le bouton
-                      button.textContent = 'Générer Détail'; // Remettre texte normal
+                     button.disabled = false; button.textContent = 'Générer Détail';
+                     // Optionnel: mettre à jour l'UI pour activer l'onglet storyboard si c'est le premier détail généré
+                     updateUI();
                  }
+            }
 
-            } // Fin de handleGenerateChapterDetail (CORRIGÉE et DÉCOMMENTÉE)
-            // --- Event Handlers ---
-            function handleApproveOutline() { // Renamed from handleApproveScenario
-                if (!appState.outlineData || appState.outlineData.parsingError) {
-                    alert("Impossible d'approuver une ossature invalide ou contenant une erreur de parsing.");
-                    return;
+            async function handleGenerateStoryboard() {
+                const selectedChapterNumber = storyboardChapterSelect.value;
+                if (!selectedChapterNumber) { alert("Veuillez sélectionner un chapitre."); return; }
+
+                const chapterDetail = appState.chapterDetailData[selectedChapterNumber];
+                if (!chapterDetail || chapterDetail.error || !chapterDetail.scenarioText) { alert(`Le scénario détaillé pour le chapitre ${selectedChapterNumber} n'est pas disponible ou invalide.`); return; }
+
+                console.log(`Requesting storyboard Chapter ${selectedChapterNumber}`);
+                showStoryboardLoading(true); storyboardOutput.innerHTML = ''; generateStoryboardBtn.disabled = true; storyboardChapterSelect.disabled = true;
+
+                const requestData = { ...appState.lastInputData, globalTitle: appState.outlineData.title, chapterNumber: parseInt(selectedChapterNumber, 10), chapterTitle: appState.outlineData.chapters.find(ch => ch.chapter == selectedChapterNumber)?.title || '', detailedScenarioText: chapterDetail.scenarioText };
+
+                try {
+                     const response = await fetch('/api/generate-storyboard-chapter', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestData) });
+                     if (!response.ok) { let errorMsg = `Erreur HTTP: ${response.status} ${response.statusText}`; try { const errorBody = await response.json(); errorMsg += ` - ${errorBody.error || 'Erreur serveur.'} ${errorBody.details ? `(${errorBody.details})` : ''}`; } catch (e) {} throw new Error(errorMsg); }
+                     const result = await response.json();
+                     console.log("Storyboard data received:", result);
+                     appState.storyboardData[selectedChapterNumber] = result.storyboard; // Stocker le storyboard parsé
+                     displayStoryboard(selectedChapterNumber, result.storyboard);
+                     appState.currentStep = 'storyboard_generated'; // Mettre à jour l'état
+                } catch(error) {
+                     console.error("Error handleGenerateStoryboard:", error);
+                     storyboardOutput.innerHTML = `<p class="text-danger">Erreur génération storyboard : ${error.message}</p>`;
+                     appState.storyboardData[selectedChapterNumber] = { error: error.message }; // Stocker l'erreur
+                } finally {
+                     showStoryboardLoading(false); generateStoryboardBtn.disabled = false; storyboardChapterSelect.disabled = false; updateUI();
                 }
+            }
+
+            // --- Event Handlers ---
+            function handleApproveOutline() {
+                if (!appState.outlineData || appState.outlineData.parsingError) { alert("Impossible d'approuver une ossature invalide."); return; }
                 appState.currentStep = 'outline_approved';
-                appState.activeTab = 'storyboard'; // Move to storyboard tab (placeholder)
+                appState.activeTab = 'storyboard';
                 updateUI();
+                // Pré-sélectionner le premier chapitre avec détail généré dans l'onglet storyboard?
+                const firstDetailKey = Object.keys(appState.chapterDetailData).find(key => appState.chapterDetailData[key] && !appState.chapterDetailData[key].error);
+                if (firstDetailKey && storyboardChapterSelect) {
+                    storyboardChapterSelect.value = firstDetailKey;
+                    generateStoryboardBtn.disabled = false; // Activer le bouton
+                }
             }
-
-            function handleModifyOutlineRequest() { // Renamed
-                 scenarioModificationArea.style.display = 'block';
-                 scenarioControls.style.display = 'none';
-            }
-
-            async function handleSubmitOutlineModification() { // Renamed
-                 const modificationRequest = scenarioModificationInput.value.trim();
-                 if (!modificationRequest) {
-                     alert("Veuillez décrire les modifications souhaitées pour l'ossature.");
-                     return;
-                 }
-                 alert("Fonctionnalité de modification d'ossature non implémentée.\nCeci nécessiterait un appel backend avec l'ossature actuelle et la demande.");
-                  scenarioModificationInput.value = '';
-                  scenarioModificationArea.style.display = 'none';
-                  updateUI(); // Show controls again
-            }
-
-            function handleRegenerateOutline() { // Renamed
-                 if (confirm("Êtes-vous sûr de vouloir régénérer l'ossature ? L'ossature actuelle et les détails de chapitre générés seront perdus.")) {
-                     // Re-run the outline generation using the stored inputs
-                     if(appState.lastInputData) {
-                          // Optional: restore inputs to UI fields if needed, though not strictly necessary if appState.lastInputData is used
-                           keywordsInput.value = appState.lastInputData.keywords;
-                           genreSelect.value = appState.lastInputData.genre;
-                           styleSelect.value = appState.lastInputData.style;
-                           toneSelect.value = appState.lastInputData.tone;
-                           detailsInput.value = appState.lastInputData.details;
-                          handleGenerateOutline(); // Call the outline generation function
-                     } else {
-                          alert("Impossible de régénérer, les informations initiales n'ont pas été trouvées.");
-                     }
-                 }
-            }
+            function handleModifyOutlineRequest() { scenarioModificationArea.style.display = 'block'; scenarioControls.style.display = 'none'; }
+            async function handleSubmitOutlineModification() { const modificationRequest = scenarioModificationInput.value.trim(); if (!modificationRequest) { alert("Décrivez les modifications."); return; } alert("Modif non implémentée."); scenarioModificationInput.value = ''; scenarioModificationArea.style.display = 'none'; updateUI(); }
+            function handleRegenerateOutline() { if (confirm("Régénérer l'ossature ?")) { if(appState.lastInputData) { handleGenerateOutline(); } else { alert("Inputs initiaux non trouvés."); } } }
 
             // --- Event Listeners Setup ---
-            tabBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    if (this.classList.contains('disabled')) return;
-                    appState.activeTab = this.getAttribute('data-tab');
-                    updateUI();
-                });
-            });
-
-            generateScenarioBtn.addEventListener('click', handleGenerateOutline); // Renamed handler call
-            approveScenarioBtn.addEventListener('click', handleApproveOutline); // Renamed handler call
-            modifyScenarioRequestBtn.addEventListener('click', handleModifyOutlineRequest); // Renamed handler call
-            submitScenarioModificationBtn.addEventListener('click', handleSubmitOutlineModification); // Renamed handler call
-             regenerateScenarioBtn.addEventListener('click', handleRegenerateOutline); // Renamed handler call
-
-             // --- Session Management Listeners ---
-             document.getElementById('new-session').addEventListener('click', function() {
-                 if (confirm('Êtes-vous sûr de vouloir créer une nouvelle session ? Toutes les données non sauvegardées seront perdues.')) {
-                      appState = {
-                          currentStep: 'idea', outlineData: null, chapterDetailData: {}, lastInputData: null, activeTab: 'home'
-                      };
-                      keywordsInput.value = '';
-                      genreSelect.selectedIndex = 0;
-                      styleSelect.selectedIndex = 0;
-                      toneSelect.selectedIndex = 0;
-                      detailsInput.value = '';
-                      if(outlineDisplayArea) outlineDisplayArea.innerHTML = '';
-                      if(chapterDetailArea) { chapterDetailArea.innerHTML = ''; chapterDetailArea.style.display = 'none'; }
-                      if(scenarioOutput) scenarioOutput.innerHTML = '<p>Générez d\'abord une ossature...</p>';
-                      if(storyboardOutput) storyboardOutput.innerHTML = '<p>Approuvez d\'abord une ossature valide...</p>';
-                      if(promptsOutput) promptsOutput.innerHTML = '<p>Approuvez d\'abord le storyboard...</p>';
-                      updateUI();
-                 }
-             });
-
-            document.getElementById('save-session').addEventListener('click', function() {
-                 appState.lastInputData = {
-                     keywords: keywordsInput.value.trim(),
-                     genre: genreSelect.value,
-                     style: styleSelect.value,
-                     tone: toneSelect.value,
-                     details: detailsInput.value.trim()
-                 };
-                const sessionName = prompt('Donnez un nom à cette session:');
-                if (sessionName) {
-                    try {
-                         const sessionDataString = JSON.stringify(appState);
-                         if (sessionDataString.length > 4 * 1024 * 1024) { alert("Attention : La session est très volumineuse..."); }
-                         localStorage.setItem(`bdcreator_session_${sessionName}`, sessionDataString);
-                         alert(`Session "${sessionName}" sauvegardée avec succès!`);
-                    } catch (e) {
-                         alert(`Erreur lors de la sauvegarde: ${e.message}.`);
-                         console.error("Local storage save error:", e);
-                    }
-                }
-            });
-
-             document.getElementById('load-session').addEventListener('click', function() {
-                 const sessions = [];
-                 try {
-                     for (let i = 0; i < localStorage.length; i++) {
-                         const key = localStorage.key(i);
-                         if (key && key.startsWith('bdcreator_session_')) {
-                             sessions.push(key.replace('bdcreator_session_', ''));
-                         }
-                     }
-                 } catch(e) { console.error("Erreur lecture sessions:", e); return; } // Catch simplifié
-
-                 if (sessions.length === 0) { alert('Aucune session sauvegardée.'); return; }
-
-                 const sessionName = prompt(`Choisissez une session (${sessions.join(', ')}):`, sessions[0]);
-                 if (sessionName && sessions.includes(sessionName)) {
-                     try {
-                          const sessionString = localStorage.getItem(`bdcreator_session_${sessionName}`);
-                          if (!sessionString) throw new Error("Données non trouvées.");
-                          const loadedState = JSON.parse(sessionString);
-                           if (!loadedState || typeof loadedState.currentStep === 'undefined') throw new Error("Format invalide.");
-                          appState = loadedState;
-                           const inputsToRestore = appState.lastInputData || appState;
-                          keywordsInput.value = inputsToRestore.keywords || '';
-                          genreSelect.value = inputsToRestore.genre || 'Fantastique';
-                          styleSelect.value = inputsToRestore.style || 'Manga';
-                          toneSelect.value = inputsToRestore.tone || 'Épique';
-                          detailsInput.value = inputsToRestore.details || '';
-                          alert(`Session "${sessionName}" chargée!`);
-                          if(outlineDisplayArea) outlineDisplayArea.innerHTML = '';
-                          if(chapterDetailArea) { chapterDetailArea.innerHTML = ''; chapterDetailArea.style.display = 'none';}
-                          if(scenarioOutput) scenarioOutput.innerHTML = '';
-                          updateUI();
-                     } catch (e) {
-                          alert(`Erreur chargement session "${sessionName}": ${e.message}`);
-                          console.error("Load session error:", e);
-                     }
-                 }
-             });
-
-
-            // Footer link placeholder
-            document.getElementById('create-website-btn').addEventListener('click', function(e) {
-                e.preventDefault();
-                alert('Cette fonctionnalité externe n\'est pas disponible.');
-            });
+            tabBtns.forEach(btn => { btn.addEventListener('click', function() { if (this.classList.contains('disabled')) return; appState.activeTab = this.getAttribute('data-tab'); updateUI(); }); });
+            generateScenarioBtn.addEventListener('click', handleGenerateOutline);
+            approveScenarioBtn.addEventListener('click', handleApproveOutline);
+            modifyScenarioRequestBtn.addEventListener('click', handleModifyOutlineRequest);
+            submitScenarioModificationBtn.addEventListener('click', handleSubmitOutlineModification);
+            regenerateScenarioBtn.addEventListener('click', handleRegenerateOutline);
+            // Listeners Storyboard
+            if(storyboardChapterSelect) { storyboardChapterSelect.addEventListener('change', function() { generateStoryboardBtn.disabled = !this.value; if(this.value) { storyboardOutput.innerHTML = '<p>Prêt à générer le storyboard pour ce chapitre.</p>'; } else { storyboardOutput.innerHTML = '<p>Sélectionnez un chapitre...</p>';} }); }
+            if(generateStoryboardBtn) { generateStoryboardBtn.addEventListener('click', handleGenerateStoryboard); }
+             // Session Management Listeners
+             document.getElementById('new-session').addEventListener('click', function() { if (confirm('Nouvelle session ?')) { appState = { currentStep: 'idea', outlineData: null, chapterDetailData: {}, storyboardData: {}, lastInputData: null, activeTab: 'home' }; keywordsInput.value = ''; genreSelect.selectedIndex = 0; styleSelect.selectedIndex = 0; toneSelect.selectedIndex = 0; detailsInput.value = ''; if(outlineDisplayArea) outlineDisplayArea.innerHTML = ''; if(chapterDetailArea) { chapterDetailArea.innerHTML = ''; chapterDetailArea.style.display = 'none'; } if(scenarioOutput) scenarioOutput.innerHTML = '<p>Générez...</p>'; if(storyboardOutput) storyboardOutput.innerHTML = '<p>Sélectionnez...</p>'; if(promptsOutput) promptsOutput.innerHTML = '<p>Approuvez...</p>'; updateUI(); } });
+            document.getElementById('save-session').addEventListener('click', function() { appState.lastInputData = { keywords: keywordsInput.value.trim(), genre: genreSelect.value, style: styleSelect.value, tone: toneSelect.value, details: detailsInput.value.trim() }; const sessionName = prompt('Nom session:'); if (sessionName) { try { const sessionDataString = JSON.stringify(appState); if (sessionDataString.length > 4*1024*1024) { alert("Session volumineuse..."); } localStorage.setItem(`bdcreator_session_${sessionName}`, sessionDataString); alert(`Session "${sessionName}" sauvegardée.`); } catch (e) { alert(`Erreur sauvegarde: ${e.message}.`); console.error("Save error:", e); } } });
+            document.getElementById('load-session').addEventListener('click', function() { const sessions = []; try { for (let i = 0; i < localStorage.length; i++) { const key = localStorage.key(i); if (key && key.startsWith('bdcreator_session_')) { sessions.push(key.replace('bdcreator_session_', '')); } } } catch(e) { console.error("Ls error:", e); return; } if (sessions.length === 0) { alert('Aucune session.'); return; } const sessionName = prompt(`Charger session (${sessions.join(', ')}):`, sessions[0]); if (sessionName && sessions.includes(sessionName)) { try { const sessionString = localStorage.getItem(`bdcreator_session_${sessionName}`); if (!sessionString) throw new Error("Données non trouvées."); const loadedState = JSON.parse(sessionString); if (!loadedState || typeof loadedState.currentStep === 'undefined') throw new Error("Format invalide."); appState = loadedState; const inputsToRestore = appState.lastInputData || appState; keywordsInput.value = inputsToRestore.keywords || ''; genreSelect.value = inputsToRestore.genre || 'Fantastique'; styleSelect.value = inputsToRestore.style || 'Manga'; toneSelect.value = inputsToRestore.tone || 'Épique'; detailsInput.value = inputsToRestore.details || ''; alert(`Session "${sessionName}" chargée!`); if(outlineDisplayArea) outlineDisplayArea.innerHTML = ''; if(chapterDetailArea) { chapterDetailArea.innerHTML = ''; chapterDetailArea.style.display = 'none';} if(scenarioOutput) scenarioOutput.innerHTML = ''; if(storyboardOutput) storyboardOutput.innerHTML = ''; updateUI(); } catch (e) { alert(`Erreur chargement: ${e.message}`); console.error("Load error:", e); } } });
+            document.getElementById('create-website-btn').addEventListener('click', function(e) { e.preventDefault(); alert('Non dispo.'); });
 
             // --- Initial UI Setup ---
             updateUI();
