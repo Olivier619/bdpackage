@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -377,40 +377,24 @@
              function showLoadingIndicator(show) {
                  if (loadingIndicator) {
                      loadingIndicator.style.display = show ? 'block' : 'none';
-                 } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}
+                 }
              }
              // Show/Hide Storyboard Specific Loading Indicator
              function showStoryboardLoading(show) {
                  if (storyboardLoadingIndicator) {
                     storyboardLoadingIndicator.style.display = show ? 'block' : 'none';
-                 } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}
+                 }
              }
 
             // --- Display Functions ---
 
             function displayOutline(outlineData) {
                  outlineDisplayArea.innerHTML = '';
-                 if (!outlineData) { outlineDisplayArea.innerHTML = '<p>Aucune donnée d\'ossature à afficher.</p>'; return; } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}
+                 if (!outlineData) { outlineDisplayArea.innerHTML = '<p>Aucune donnée d\'ossature à afficher.</p>'; return; }
 
                  if (outlineData.parsingError) {
                      console.warn("Backend outline parsing failed:", outlineData.parsingError);
-                     outlineDisplayArea.innerHTML = `<h4>Erreur d'Analyse de l'Ossature</h4><p>L'IA a répondu, mais le format n'a pas pu être analysé automatiquement. Voici le texte brut :</p><pre style="white-space: pre-wrap; background-color: #eee; padding: 10px; border-radius: 4px; max-height: 300px; overflow-y: auto;">${escapeHtml(outlineData.rawText || 'N/A')} else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}</pre>`;
+                     outlineDisplayArea.innerHTML = `<h4>Erreur d'Analyse de l'Ossature</h4><p>L'IA a répondu, mais le format n'a pas pu être analysé automatiquement. Voici le texte brut :</p><pre style="white-space: pre-wrap; background-color: #eee; padding: 10px; border-radius: 4px; max-height: 300px; overflow-y: auto;">${escapeHtml(outlineData.rawText || 'N/A')}</pre>`;
                      chapterDetailArea.innerHTML = '';
                      chapterDetailArea.style.display = 'none';
                      return;
@@ -428,11 +412,7 @@
                      chaptersArray.forEach(chapter => {
                          const listItem = document.createElement('li');
                          const chapterInfo = document.createElement('div');
-                         chapterInfo.innerHTML = `<b>Chapitre ${chapter.chapter} else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}: ${escapeHtml(chapter.title || '')}</b><br><small><i>${escapeHtml(chapter.summary || 'Résumé non fourni.')}</i></small>`;
+                         chapterInfo.innerHTML = `<b>Chapitre ${chapter.chapter}: ${escapeHtml(chapter.title || '')}</b><br><small><i>${escapeHtml(chapter.summary || 'Résumé non fourni.')}</i></small>`;
                          listItem.appendChild(chapterInfo);
 
                          const generateButton = document.createElement('button');
@@ -448,8 +428,6 @@
                      chapterDetailArea.innerHTML = '<p>Sélectionnez un chapitre ci-dessus pour générer son contenu détaillé.</p>';
                      chapterDetailArea.style.display = 'block';
                  } else {
-    // bloc else corrigé
-
                      outlineDisplayArea.innerHTML += '<p>Aucun chapitre trouvé dans l\'ossature.</p>';
                      chapterDetailArea.innerHTML = '';
                      chapterDetailArea.style.display = 'none';
@@ -466,11 +444,7 @@
         if (!chapterDetailOutputArea) {
              console.error("ERREUR CRITIQUE: Impossible de trouver #chapter-detail-area !"); // Log 2a
              return;
-        } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}
+        }
         console.log("Zone #chapter-detail-area trouvée:", chapterDetailOutputArea); // Log 2b
 
         // 2. VIDER ET RENDRE VISIBLE
@@ -481,7 +455,7 @@
         // 3. AJOUTER LE TITRE
         try {
              const titleElement = document.createElement('h4');
-             titleElement.textContent = `Détail Simple - Chapitre ${chapterNumber}`;
+             titleElement.textContent = `Détail Simple - Chapitre ${chapterNumber} catch (e) { console.error(e); }`;
              chapterDetailOutputArea.appendChild(titleElement);
              console.log("Titre H4 ajouté."); // Log 4
         } catch (e) {
@@ -506,11 +480,7 @@
                   preElement.style.overflowY = "auto";
                   chapterDetailOutputArea.appendChild(preElement);
                   console.log("Texte du scénario (<pre>) ajouté à la page."); // Log 5a
-             } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-} catch (e) {
+             } catch (e) {
                   console.error("Erreur lors de l'ajout du <pre>:", e); // Log 5a Erreur
              }
 
@@ -518,19 +488,13 @@
             try {
                  const errorElement = document.createElement('p');
                  errorElement.style.color = 'red';
-                 errorElement.textContent = `Erreur reçue du serveur : ${detailData.error} else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-} ${detailData.details || ''}`;
+                 errorElement.textContent = `Erreur reçue du serveur : ${detailData.error} catch (e) { console.error(e); } ${detailData.details || ''}`;
                  chapterDetailOutputArea.appendChild(errorElement);
                  console.error("Erreur serveur affichée:", detailData); // Log 5b Erreur Serveur
             } catch (e) {
                  console.error("Erreur lors de l'ajout du <p> d'erreur serveur:", e);
             }
         } else {
-    // bloc else corrigé
-
              try {
                   const errorElement = document.createElement('p');
                   errorElement.style.color = 'orange';
@@ -549,20 +513,12 @@
                 storyboardOutput.innerHTML = ''; // Clear placeholder/previous
 
                 if (!storyboardData) {
-                    storyboardOutput.innerHTML = `<p class="text-danger">Aucune donnée de storyboard reçue pour le chapitre ${chapterNumber} else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}.</p>`;
+                    storyboardOutput.innerHTML = `<p class="text-danger">Aucune donnée de storyboard reçue pour le chapitre ${chapterNumber}.</p>`;
                     return;
                 }
                 // Handle parsing error from backend
                 if (storyboardData.parsingError) {
-                     storyboardOutput.innerHTML = `<h4>Erreur d'Analyse du Storyboard (Chap. ${chapterNumber} else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-})</h4>
+                     storyboardOutput.innerHTML = `<h4>Erreur d'Analyse du Storyboard (Chap. ${chapterNumber})</h4>
                                                 <p>L'IA a répondu, mais le format n'a pas pu être analysé automatiquement. Voici le texte brut reçu :</p>
                                                 <pre style="white-space: pre-wrap; background-color: #eee; padding: 10px; border-radius: 4px; max-height: 400px; overflow-y: auto;">${escapeHtml(storyboardData.rawText || 'N/A')}</pre>`;
                      return;
@@ -578,22 +534,14 @@
                                currentPage = panelData.page;
                                pageContainer = document.createElement('div');
                                pageContainer.classList.add('storyboard-page');
-                               pageContainer.innerHTML = `<h5>Page ${currentPage} else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}</h5>`;
+                               pageContainer.innerHTML = `<h5>Page ${currentPage}</h5>`;
                                storyboardOutput.appendChild(pageContainer);
                           }
-                          if (pageContainer) {
+                          if(pageContainer) {
                                const panelElement = document.createElement('div');
                                panelElement.classList.add('storyboard-panel-display');
                                panelElement.innerHTML = `
-                                   <h6>Case ${panelData.panel} else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}</h6>
+                                   <h6>Case ${panelData.panel}</h6>
                                    <div class="storyboard-panel-details">
                                        <p><strong>Description:</strong> ${escapeHtml(panelData.description || 'N/A')}</p>
                                        <p><strong>Type Plan:</strong> ${escapeHtml(panelData.shotType || 'N/A')}</p>
@@ -608,14 +556,8 @@
                           }
                      });
                 } else if (Array.isArray(storyboardData) && storyboardData.length === 0) {
-                     storyboardOutput.innerHTML = `<p>Aucune case de storyboard n'a pu être extraite pour le chapitre ${chapterNumber} else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}.</p>`;
+                     storyboardOutput.innerHTML = `<p>Aucune case de storyboard n'a pu être extraite pour le chapitre ${chapterNumber}.</p>`;
                  } else {
-    // bloc else corrigé
-
                       storyboardOutput.innerHTML = `<h4>Storyboard Chapitre ${chapterNumber} (Format Inconnu)</h4><pre>${escapeHtml(JSON.stringify(storyboardData, null, 2))}</pre>`;
                  }
             }
@@ -630,22 +572,14 @@
                 const stepsCompleted = ['idea'];
                 if (appState.currentStep === 'outline_generated' || appState.currentStep === 'chapter_detail_generated' || appState.currentStep === 'outline_approved' || appState.currentStep === 'storyboard_generated') {
                     stepsCompleted.push('scenario');
-                } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}
+                }
                  if (appState.currentStep === 'outline_approved' || appState.currentStep === 'storyboard_generated') {
                      stepsCompleted.push('storyboard'); // Mark storyboard step itself if approved or generated
-                 } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}
+                 }
                  // Add 'prompts' later
 
                  stepsCompleted.forEach(step => {
-                    if (progressSteps[step]) progressSteps[step].classList.add('completed');
+                    if(progressSteps[step]) progressSteps[step].classList.add('completed');
                  });
                  // Set active step
                  if (appState.currentStep === 'idea') progressSteps.idea.classList.add('active');
@@ -684,18 +618,10 @@
                             chapterDetailArea.style.display = 'block';
                             console.log("updateUI: Placeholder détail affiché.");
                          } else {
-    // bloc else corrigé
-
                               chapterDetailArea.style.display = 'block';
                               console.log("updateUI: Contenu existant (erreur?) dans zone détail laissé tel quel.");
-                         } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}
+                         }
                     } else {
-    // bloc else corrigé
-
                          chapterDetailArea.style.display = 'block';
                          console.log("updateUI: Détail déjà affiché, zone détail reste visible.");
                     }
@@ -707,9 +633,7 @@
                     modifyScenarioRequestBtn.disabled = !hasValidOutline;
                     regenerateScenarioBtn.disabled = false;
 
-                } else {
-    // bloc else corrigé
- // <<< ELSE correspondant au IF imbriqué : SI on n'a PAS d'ossature
+                } else { // <<< ELSE correspondant au IF imbriqué : SI on n'a PAS d'ossature
                     // Pas d'ossature
                     outlineDisplayArea.innerHTML = '<p>Générez d\'abord une ossature depuis l\'onglet "Idée & Options".</p>';
                     chapterDetailArea.innerHTML = ''; // Vide si pas d'ossature
@@ -718,11 +642,9 @@
                     scenarioModificationArea.style.display = 'none'; // Cacher mods
                 } // <<< FIN du ELSE imbriqué
 
-            } else {
-    // bloc else corrigé
- // <<< ELSE correspondant au IF Principal : SI l'onglet actif N'EST PAS 'scenario'
+            } else { // <<< ELSE correspondant au IF Principal : SI l'onglet actif N'EST PAS 'scenario'
                   // Cacher les contrôles spécifiques à l'onglet scénario
-                  if (scenarioControls) scenarioControls.style.display = 'none';
+                  if(scenarioControls) scenarioControls.style.display = 'none';
                   if(scenarioModificationArea) scenarioModificationArea.style.display = 'none';
                   // Optionnel: Cacher aussi la zone détail quand on quitte l'onglet?
                   // if (chapterDetailArea) chapterDetailArea.style.display = 'none';
@@ -740,8 +662,6 @@
                     modifyScenarioRequestBtn.disabled = !hasValidOutline;
                     regenerateScenarioBtn.disabled = false;
                 } else {
-    // bloc else corrigé
-
                     // Pas d'ossature (inchangé)
                     outlineDisplayArea.innerHTML = '<p>Générez d\'abord une ossature...</p>';
                     chapterDetailArea.innerHTML = ''; chapterDetailArea.style.display = 'none';
@@ -766,11 +686,7 @@
                             if (appState.chapterDetailData[chapter.chapter] && !appState.chapterDetailData[chapter.chapter].error) {
                                 const option = document.createElement('option');
                                 option.value = chapter.chapter;
-                                option.textContent = `Chapitre ${chapter.chapter} else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}: ${escapeHtml(chapter.title || 'Sans titre')}`;
+                                option.textContent = `Chapitre ${chapter.chapter}: ${escapeHtml(chapter.title || 'Sans titre')}`;
                                 storyboardChapterSelect.appendChild(option);
                             }
                         });
@@ -779,43 +695,25 @@
                          storyboardChapterSelect.innerHTML = '<option value="">Générez d\'abord le détail d\'un chapitre</option>';
                          generateStoryboardBtn.disabled = true;
                     } else {
-    // bloc else corrigé
-
                          storyboardChapterSelect.value = previouslySelected; // Try to restore selection
                          generateStoryboardBtn.disabled = !storyboardChapterSelect.value; // Disable if "-- Sélectionnez --" is chosen
-                    } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}
+                    }
 
 
                 } else if (storyboardChapterSelectorContainer) {
                     storyboardChapterSelectorContainer.style.display = 'none';
-                } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}
+                }
 
                 // Clear storyboard output if not on the tab or not ready
-                if (appState.activeTab !== 'storyboard' && storyboardOutput.innerHTML !== '' ) {
+                if(appState.activeTab !== 'storyboard' && storyboardOutput.innerHTML !== '' ) {
                     // storyboardOutput.innerHTML = ''; // Clear storyboard if navigating away? Maybe not desired.
-                } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}
+                }
 
 
                 // Prompts Tab
                 if (appState.activeTab === 'prompts') {
                      promptsOutput.innerHTML = '<p>La fonctionnalité de génération de prompts sera ajoutée prochainement...</p>';
-                 } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}
+                 }
 
                 console.log("UI Update finished.");
             }
@@ -824,36 +722,19 @@
 
             async function handleGenerateOutline() {
                  appState.lastInputData = { keywords: keywordsInput.value.trim(), genre: genreSelect.value, style: styleSelect.value, tone: toneSelect.value, details: detailsInput.value.trim() };
-                 if (!appState.lastInputData.keywords) { alert('Veuillez entrer une idée initiale.'); return; } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}
+                 if (!appState.lastInputData.keywords) { alert('Veuillez entrer une idée initiale.'); return; }
                  showLoadingIndicator(true); generateScenarioBtn.disabled = true;
                  appState.outlineData = null; appState.chapterDetailData = {}; appState.storyboardData = {}; // Clear all downstream data
                  appState.activeTab = 'scenario'; updateUI();
                  outlineDisplayArea.innerHTML = '<p>Envoi de la requête pour l\'ossature...</p>'; chapterDetailArea.style.display = 'none';
 
                  try {
-                     const response = await fetch('/api/generate-story', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(appState.lastInputData) });
-                     if (!response.ok) { let errorMsg = `Erreur HTTP: ${response.status} else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-} ${response.statusText}`; try { const errorBody = await response.json(); errorMsg += ` - ${errorBody.error || 'Erreur serveur.'} ${errorBody.details ? `(${errorBody.details})` : ''}`; } catch (e) {} throw new Error(errorMsg); }
+                     const response = await fetch('/api/generate-story', { method: 'POST', headers: { 'Content-Type': 'application/json' } catch (e) { console.error(e); }, body: JSON.stringify(appState.lastInputData) });
+                     if (!response.ok) { let errorMsg = `Erreur HTTP: ${response.status} ${response.statusText}`; try { const errorBody = await response.json(); errorMsg += ` - ${errorBody.error || 'Erreur serveur.'} catch (e) { console.error(e); } ${errorBody.details ? `(${errorBody.details})` : ''}`; } catch (e) {} throw new Error(errorMsg); }
                      const result = await response.json();
-                     if (result.outline) { appState.outlineData = result.outline; appState.currentStep = 'outline_generated'; } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}
-                     else if (result.error) { throw new Error(`Erreur API: ${result.error} else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-} ${result.details ? `(${result.details})` : ''}`); } else {
-    // bloc else corrigé
- throw new Error("Réponse inattendue (clé 'outline' manquante)."); }
+                     if (result.outline) { appState.outlineData = result.outline; appState.currentStep = 'outline_generated'; }
+                     else if (result.error) { throw new Error(`Erreur API: ${result.error} ${result.details ? `(${result.details})` : ''}`); }
+                     else { throw new Error("Réponse inattendue (clé 'outline' manquante)."); }
                  } catch (error) {
                      console.error("Error handleGenerateOutline:", error);
                      outlineDisplayArea.innerHTML = `<p class="text-danger">Erreur génération ossature : ${error.message}.</p>`; chapterDetailArea.style.display = 'none';
@@ -867,11 +748,7 @@
                  const button = event.target;
                  const chapterNumber = button.dataset.chapterNumber;
                  const chapterTitle = button.dataset.chapterTitle;
-                 if (!chapterNumber || !appState.outlineData || !appState.lastInputData) { console.error("Missing data"); alert("Erreur : Données manquantes."); return; } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}
+                 if (!chapterNumber || !appState.outlineData || !appState.lastInputData) { console.error("Missing data"); alert("Erreur : Données manquantes."); return; }
                  const chapterSummary = appState.outlineData.chapters?.find(ch => ch.chapter == chapterNumber)?.summary || '';
                  console.log(`Requesting detail Chapter ${chapterNumber}`);
                  chapterDetailArea.innerHTML = `<p>Génération détail Chapitre ${chapterNumber}...</p>`; chapterDetailArea.style.display = 'block';
@@ -880,12 +757,8 @@
                  const requestData = { ...appState.lastInputData, globalTitle: appState.outlineData.title, totalChapters: appState.outlineData.chapters.length, chapterNumber: parseInt(chapterNumber, 10), chapterTitle, chapterSummary };
 
                  try {
-                     const response = await fetch('/api/generate-chapter-detail', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestData) });
-                     if (!response.ok) { let errorMsg = `Erreur HTTP: ${response.status} else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-} ${response.statusText}`; try { const errorBody = await response.json(); let detailsPart = errorBody.details ? ` (${errorBody.details})` : ''; errorMsg += ` - ${errorBody.error || 'Erreur serveur.'}${detailsPart}`; } catch (e) {} throw new Error(errorMsg); }
+                     const response = await fetch('/api/generate-chapter-detail', { method: 'POST', headers: { 'Content-Type': 'application/json' } catch (e) { console.error(e); }, body: JSON.stringify(requestData) });
+                     if (!response.ok) { let errorMsg = `Erreur HTTP: ${response.status} ${response.statusText}`; try { const errorBody = await response.json(); let detailsPart = errorBody.details ? ` (${errorBody.details} catch (e) { console.error(e); })` : ''; errorMsg += ` - ${errorBody.error || 'Erreur serveur.'}${detailsPart}`; } catch (e) {} throw new Error(errorMsg); }
                      const result = await response.json();
                      appState.chapterDetailData[chapterNumber] = result; appState.currentStep = 'chapter_detail_generated';
                      displayChapterDetail(chapterNumber, result);
@@ -902,18 +775,10 @@
 
             async function handleGenerateStoryboard() {
                 const selectedChapterNumber = storyboardChapterSelect.value;
-                if (!selectedChapterNumber) { alert("Veuillez sélectionner un chapitre."); return; } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}
+                if (!selectedChapterNumber) { alert("Veuillez sélectionner un chapitre."); return; }
 
                 const chapterDetail = appState.chapterDetailData[selectedChapterNumber];
-                if (!chapterDetail || chapterDetail.error || !chapterDetail.scenarioText) { alert(`Le scénario détaillé pour le chapitre ${selectedChapterNumber} else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-} n'est pas disponible ou invalide.`); return; }
+                if (!chapterDetail || chapterDetail.error || !chapterDetail.scenarioText) { alert(`Le scénario détaillé pour le chapitre ${selectedChapterNumber} n'est pas disponible ou invalide.`); return; }
 
                 console.log(`Requesting storyboard Chapter ${selectedChapterNumber}`);
                 showStoryboardLoading(true); storyboardOutput.innerHTML = ''; generateStoryboardBtn.disabled = true; storyboardChapterSelect.disabled = true;
@@ -921,12 +786,8 @@
                 const requestData = { ...appState.lastInputData, globalTitle: appState.outlineData.title, chapterNumber: parseInt(selectedChapterNumber, 10), chapterTitle: appState.outlineData.chapters.find(ch => ch.chapter == selectedChapterNumber)?.title || '', detailedScenarioText: chapterDetail.scenarioText };
 
                 try {
-                     const response = await fetch('/api/generate-storyboard-chapter', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestData) });
-                     if (!response.ok) { let errorMsg = `Erreur HTTP: ${response.status} else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-} ${response.statusText}`; try { const errorBody = await response.json(); errorMsg += ` - ${errorBody.error || 'Erreur serveur.'} ${errorBody.details ? `(${errorBody.details})` : ''}`; } catch (e) {} throw new Error(errorMsg); }
+                     const response = await fetch('/api/generate-storyboard-chapter', { method: 'POST', headers: { 'Content-Type': 'application/json' } catch (e) { console.error(e); }, body: JSON.stringify(requestData) });
+                     if (!response.ok) { let errorMsg = `Erreur HTTP: ${response.status} ${response.statusText}`; try { const errorBody = await response.json(); errorMsg += ` - ${errorBody.error || 'Erreur serveur.'} catch (e) { console.error(e); } ${errorBody.details ? `(${errorBody.details})` : ''}`; } catch (e) {} throw new Error(errorMsg); }
                      const result = await response.json();
                      console.log("Storyboard data received:", result);
                      appState.storyboardData[selectedChapterNumber] = result.storyboard; // Stocker le storyboard parsé
@@ -943,11 +804,7 @@
 
             // --- Event Handlers ---
             function handleApproveOutline() {
-                if (!appState.outlineData || appState.outlineData.parsingError) { alert("Impossible d'approuver une ossature invalide."); return; } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}
+                if (!appState.outlineData || appState.outlineData.parsingError) { alert("Impossible d'approuver une ossature invalide."); return; }
                 appState.currentStep = 'outline_approved';
                 appState.activeTab = 'storyboard';
                 updateUI();
@@ -956,25 +813,11 @@
                 if (firstDetailKey && storyboardChapterSelect) {
                     storyboardChapterSelect.value = firstDetailKey;
                     generateStoryboardBtn.disabled = false; // Activer le bouton
-                } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}
+                }
             }
             function handleModifyOutlineRequest() { scenarioModificationArea.style.display = 'block'; scenarioControls.style.display = 'none'; }
-            async function handleSubmitOutlineModification() { const modificationRequest = scenarioModificationInput.value.trim(); if (!modificationRequest) { alert("Décrivez les modifications."); return; } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-} alert("Modif non implémentée."); scenarioModificationInput.value = ''; scenarioModificationArea.style.display = 'none'; updateUI(); }
-            function handleRegenerateOutline() { if (confirm("Régénérer l'ossature ?")) { if(appState.lastInputData) { handleGenerateOutline(); } else {
-    // bloc else corrigé
- alert("Inputs initiaux non trouvés."); } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-} } }
+            async function handleSubmitOutlineModification() { const modificationRequest = scenarioModificationInput.value.trim(); if (!modificationRequest) { alert("Décrivez les modifications."); return; } alert("Modif non implémentée."); scenarioModificationInput.value = ''; scenarioModificationArea.style.display = 'none'; updateUI(); }
+            function handleRegenerateOutline() { if (confirm("Régénérer l'ossature ?")) { if(appState.lastInputData) { handleGenerateOutline(); } else { alert("Inputs initiaux non trouvés."); } } }
 
             // --- Event Listeners Setup ---
             tabBtns.forEach(btn => { btn.addEventListener('click', function() { if (this.classList.contains('disabled')) return; appState.activeTab = this.getAttribute('data-tab'); updateUI(); }); });
@@ -984,58 +827,12 @@
             submitScenarioModificationBtn.addEventListener('click', handleSubmitOutlineModification);
             regenerateScenarioBtn.addEventListener('click', handleRegenerateOutline);
             // Listeners Storyboard
-            if(storyboardChapterSelect) { storyboardChapterSelect.addEventListener('change', function() { generateStoryboardBtn.disabled = !this.value; if(this.value) { storyboardOutput.innerHTML = '<p>Prêt à générer le storyboard pour ce chapitre.</p>'; } else {
-    // bloc else corrigé
- storyboardOutput.innerHTML = '<p>Sélectionnez un chapitre...</p>';} else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-} }); }
-            if (generateStoryboardBtn) { generateStoryboardBtn.addEventListener('click', handleGenerateStoryboard); } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}
+            if(storyboardChapterSelect) { storyboardChapterSelect.addEventListener('change', function() { generateStoryboardBtn.disabled = !this.value; if(this.value) { storyboardOutput.innerHTML = '<p>Prêt à générer le storyboard pour ce chapitre.</p>'; } else { storyboardOutput.innerHTML = '<p>Sélectionnez un chapitre...</p>';} }); }
+            if(generateStoryboardBtn) { generateStoryboardBtn.addEventListener('click', handleGenerateStoryboard); }
              // Session Management Listeners
-             document.getElementById('new-session').addEventListener('click', function() { if (confirm('Nouvelle session ?')) { appState = { currentStep: 'idea', outlineData: null, chapterDetailData: {} else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}, storyboardData: {}, lastInputData: null, activeTab: 'home' }; keywordsInput.value = ''; genreSelect.selectedIndex = 0; styleSelect.selectedIndex = 0; toneSelect.selectedIndex = 0; detailsInput.value = ''; if (outlineDisplayArea) outlineDisplayArea.innerHTML = ''; if(chapterDetailArea) { chapterDetailArea.innerHTML = ''; chapterDetailArea.style.display = 'none'; } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-} if (scenarioOutput) scenarioOutput.innerHTML = '<p>Générez...</p>'; if(storyboardOutput) storyboardOutput.innerHTML = '<p>Sélectionnez...</p>'; if(promptsOutput) promptsOutput.innerHTML = '<p>Approuvez...</p>'; updateUI(); } });
-            document.getElementById('save-session').addEventListener('click', function() { appState.lastInputData = { keywords: keywordsInput.value.trim(), genre: genreSelect.value, style: styleSelect.value, tone: toneSelect.value, details: detailsInput.value.trim() } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}; const sessionName = prompt('Nom session:'); if (sessionName) { try { const sessionDataString = JSON.stringify(appState); if (sessionDataString.length > 4*1024*1024) { alert("Session volumineuse..."); } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-} localStorage.setItem(`bdcreator_session_${sessionName}`, sessionDataString); alert(`Session "${sessionName}" sauvegardée.`); } catch (e) { alert(`Erreur sauvegarde: ${e.message}.`); console.error("Save error:", e); } } });
-            document.getElementById('load-session').addEventListener('click', function() { const sessions = []; try { for (let i = 0; i < localStorage.length; i++) { const key = localStorage.key(i); if (key && key.startsWith('bdcreator_session_')) { sessions.push(key.replace('bdcreator_session_', '')); } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-} } } catch(e) { console.error("Ls error:", e); return; } if (sessions.length === 0) { alert('Aucune session.'); return; } else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-} const sessionName = prompt(`Charger session (${sessions.join(', ')}):`, sessions[0]); if (sessionName && sessions.includes(sessionName)) { try { const sessionString = localStorage.getItem(`bdcreator_session_${sessionName} else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}`); if (!sessionString) throw new Error("Données non trouvées."); const loadedState = JSON.parse(sessionString); if (!loadedState || typeof loadedState.currentStep === 'undefined') throw new Error("Format invalide."); appState = loadedState; const inputsToRestore = appState.lastInputData || appState; keywordsInput.value = inputsToRestore.keywords || ''; genreSelect.value = inputsToRestore.genre || 'Fantastique'; styleSelect.value = inputsToRestore.style || 'Manga'; toneSelect.value = inputsToRestore.tone || 'Épique'; detailsInput.value = inputsToRestore.details || ''; alert(`Session "${sessionName}" chargée!`); if(outlineDisplayArea) outlineDisplayArea.innerHTML = ''; if(chapterDetailArea) { chapterDetailArea.innerHTML = ''; chapterDetailArea.style.display = 'none';} else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-} if (scenarioOutput) scenarioOutput.innerHTML = ''; if(storyboardOutput) storyboardOutput.innerHTML = ''; updateUI(); } catch (e) { alert(`Erreur chargement: ${e.message} else {
-    // bloc else corrigé
-
-    // bloc else à compléter si besoin
-}`); console.error("Load error:", e); } } });
+             document.getElementById('new-session').addEventListener('click', function() { if (confirm('Nouvelle session ?')) { appState = { currentStep: 'idea', outlineData: null, chapterDetailData: {}, storyboardData: {}, lastInputData: null, activeTab: 'home' }; keywordsInput.value = ''; genreSelect.selectedIndex = 0; styleSelect.selectedIndex = 0; toneSelect.selectedIndex = 0; detailsInput.value = ''; if(outlineDisplayArea) outlineDisplayArea.innerHTML = ''; if(chapterDetailArea) { chapterDetailArea.innerHTML = ''; chapterDetailArea.style.display = 'none'; } if(scenarioOutput) scenarioOutput.innerHTML = '<p>Générez...</p>'; if(storyboardOutput) storyboardOutput.innerHTML = '<p>Sélectionnez...</p>'; if(promptsOutput) promptsOutput.innerHTML = '<p>Approuvez...</p>'; updateUI(); } });
+            document.getElementById('save-session').addEventListener('click', function() { appState.lastInputData = { keywords: keywordsInput.value.trim(), genre: genreSelect.value, style: styleSelect.value, tone: toneSelect.value, details: detailsInput.value.trim() }; const sessionName = prompt('Nom session:'); if (sessionName) { try { const sessionDataString = JSON.stringify(appState); if (sessionDataString.length > 4*1024*1024) { alert("Session volumineuse..."); } catch (e) { console.error(e); } localStorage.setItem(`bdcreator_session_${sessionName}`, sessionDataString); alert(`Session "${sessionName}" sauvegardée.`); } catch (e) { alert(`Erreur sauvegarde: ${e.message}.`); console.error("Save error:", e); } } });
+            document.getElementById('load-session').addEventListener('click', function() { const sessions = []; try { for (let i = 0; i < localStorage.length; i++) { const key = localStorage.key(i); if (key && key.startsWith('bdcreator_session_')) { sessions.push(key.replace('bdcreator_session_', '')); } catch (e) { console.error(e); } } } catch(e) { console.error("Ls error:", e); return; } if (sessions.length === 0) { alert('Aucune session.'); return; } const sessionName = prompt(`Charger session (${sessions.join(', ')}):`, sessions[0]); if (sessionName && sessions.includes(sessionName)) { try { const sessionString = localStorage.getItem(`bdcreator_session_${sessionName} catch (e) { console.error(e); }`); if (!sessionString) throw new Error("Données non trouvées."); const loadedState = JSON.parse(sessionString); if (!loadedState || typeof loadedState.currentStep === 'undefined') throw new Error("Format invalide."); appState = loadedState; const inputsToRestore = appState.lastInputData || appState; keywordsInput.value = inputsToRestore.keywords || ''; genreSelect.value = inputsToRestore.genre || 'Fantastique'; styleSelect.value = inputsToRestore.style || 'Manga'; toneSelect.value = inputsToRestore.tone || 'Épique'; detailsInput.value = inputsToRestore.details || ''; alert(`Session "${sessionName}" chargée!`); if(outlineDisplayArea) outlineDisplayArea.innerHTML = ''; if(chapterDetailArea) { chapterDetailArea.innerHTML = ''; chapterDetailArea.style.display = 'none';} if(scenarioOutput) scenarioOutput.innerHTML = ''; if(storyboardOutput) storyboardOutput.innerHTML = ''; updateUI(); } catch (e) { alert(`Erreur chargement: ${e.message}`); console.error("Load error:", e); } } });
             // document.getElementById('create-website-btn').addEventListener('click', function(e) { e.preventDefault(); alert('Non dispo.'); });
 
             // --- Initial UI Setup ---
