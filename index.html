@@ -434,53 +434,78 @@
                  }
              }
 
-                 // --- *** VERSION TRÈS SIMPLE DE displayChapterDetail POUR TESTER *** ---
+                    // --- *** VERSION TRÈS SIMPLE DE displayChapterDetail POUR TESTER *** ---
     function displayChapterDetail(chapterNumber, detailData) {
-        console.log("Données reçues pour displayChapterDetail:", detailData); // Log pour voir ce qu'on reçoit
+        console.log("Début displayChapterDetail pour chap:", chapterNumber, "Data:", detailData); // Log 1
 
-        const chapterDetailOutputArea = document.getElementById('chapter-detail-area'); // La zone où afficher
+        // 1. TROUVER LA ZONE D'AFFICHAGE
+        const chapterDetailOutputArea = document.getElementById('chapter-detail-area');
 
         if (!chapterDetailOutputArea) {
-             console.error("ERREUR: Impossible de trouver l'élément #chapter-detail-area !");
+             console.error("ERREUR CRITIQUE: Impossible de trouver #chapter-detail-area !"); // Log 2a
              return;
         }
+        console.log("Zone #chapter-detail-area trouvée:", chapterDetailOutputArea); // Log 2b
 
-        // Vider la zone
+        // 2. VIDER ET RENDRE VISIBLE
         chapterDetailOutputArea.innerHTML = '';
-        chapterDetailOutputArea.style.display = 'block'; // Rendre visible
+        chapterDetailOutputArea.style.display = 'block';
+        console.log("Zone vidée et display mis à 'block'."); // Log 3
 
-        // Créer un titre simple
-        const titleElement = document.createElement('h4');
-        titleElement.textContent = `Détail Simple - Chapitre ${chapterNumber}`;
-        chapterDetailOutputArea.appendChild(titleElement);
-
-        // Vérifier si on a bien reçu le texte
-        if (detailData && detailData.scenarioText) {
-            // Afficher le texte brut dans une balise <pre> pour garder les sauts de ligne
-            const preElement = document.createElement('pre');
-            preElement.textContent = detailData.scenarioText; // Mettre le texte dedans
-            preElement.style.border = "1px solid #ccc"; // Ajouter une bordure pour le voir
-            preElement.style.padding = "10px";
-            preElement.style.whiteSpace = "pre-wrap"; // Pour les sauts de ligne
-            preElement.style.maxHeight = "500px";
-            preElement.style.overflowY = "auto";
-            chapterDetailOutputArea.appendChild(preElement); // Ajouter à la page
-            console.log("Texte du scénario ajouté à la page.");
-        } else if (detailData && detailData.error) {
-            // Afficher l'erreur si le backend en a renvoyé une
-            const errorElement = document.createElement('p');
-            errorElement.style.color = 'red';
-            errorElement.textContent = `Erreur reçue du serveur : ${detailData.error} ${detailData.details || ''}`;
-            chapterDetailOutputArea.appendChild(errorElement);
-            console.error("Erreur reçue du serveur affichée:", detailData);
-        } else {
-            // Afficher un message si les données sont bizarres
-             const errorElement = document.createElement('p');
-            errorElement.style.color = 'orange';
-            errorElement.textContent = `Impossible d'afficher le détail : données reçues inattendues ou vides.`;
-            chapterDetailOutputArea.appendChild(errorElement);
-            console.warn("Données inattendues reçues:", detailData);
+        // 3. AJOUTER LE TITRE
+        try {
+             const titleElement = document.createElement('h4');
+             titleElement.textContent = `Détail Simple - Chapitre ${chapterNumber}`;
+             chapterDetailOutputArea.appendChild(titleElement);
+             console.log("Titre H4 ajouté."); // Log 4
+        } catch (e) {
+             console.error("Erreur lors de l'ajout du H4:", e); // Log 4 Erreur
         }
+
+
+        // 4. VÉRIFIER ET AFFICHER LE TEXTE OU L'ERREUR
+        if (detailData && detailData.scenarioText) {
+             try {
+                  const preElement = document.createElement('pre');
+                  preElement.textContent = detailData.scenarioText;
+                  // Styles visibles
+                  preElement.style.border = "2px solid red";
+                  preElement.style.padding = "10px";
+                  preElement.style.margin = "10px 0";
+                  preElement.style.backgroundColor = "#eee";
+                  preElement.style.color = "#111";
+                  preElement.style.minHeight = "50px";
+                  preElement.style.whiteSpace = "pre-wrap";
+                  preElement.style.maxHeight = "500px";
+                  preElement.style.overflowY = "auto";
+                  chapterDetailOutputArea.appendChild(preElement);
+                  console.log("Texte du scénario (<pre>) ajouté à la page."); // Log 5a
+             } catch (e) {
+                  console.error("Erreur lors de l'ajout du <pre>:", e); // Log 5a Erreur
+             }
+
+        } else if (detailData && detailData.error) {
+            try {
+                 const errorElement = document.createElement('p');
+                 errorElement.style.color = 'red';
+                 errorElement.textContent = `Erreur reçue du serveur : ${detailData.error} ${detailData.details || ''}`;
+                 chapterDetailOutputArea.appendChild(errorElement);
+                 console.error("Erreur serveur affichée:", detailData); // Log 5b Erreur Serveur
+            } catch (e) {
+                 console.error("Erreur lors de l'ajout du <p> d'erreur serveur:", e);
+            }
+        } else {
+             try {
+                  const errorElement = document.createElement('p');
+                  errorElement.style.color = 'orange';
+                  errorElement.textContent = `Impossible d'afficher le détail : données reçues inattendues ou vides.`;
+                  chapterDetailOutputArea.appendChild(errorElement);
+                  console.warn("Données inattendues reçues:", detailData); // Log 5c Données Inattendues
+             } catch (e) {
+                  console.error("Erreur lors de l'ajout du <p> de données inattendues:", e);
+             }
+        }
+        console.log("Fin de displayChapterDetail."); // Log 6
     }
     // --- *** FIN DE LA VERSION SIMPLE *** ---
                  
