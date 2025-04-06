@@ -1,7 +1,6 @@
 {
   "dependencies": {
-    "@google/generative-ai": "^0.24.0" // Virgule ajoutée ici si "dependencies" est avant "type"
+    "@google/generative-ai": "^0.24.0"
   },
-  "type": "module" // <<< LIGNE AJOUTÉE
-  // Autres clés...
+  "type": "module"
 }
