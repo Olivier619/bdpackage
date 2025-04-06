@@ -1279,20 +1279,11 @@
                  };
 
                  try {
-                     const response = await fetch('/api/generate-chapter-detail', { /* ... */ });
-
-                     // VÉRIFICATION DE LA RÉPONSE HTTP (maintenant actif)
-                     if (!response.ok) {
-                          let errorMsg = `Erreur HTTP: ${response.status} ${response.statusText}`;
-                          try {
-                              const errorBody = await response.json();
-                              let detailsPart = errorBody.details ? ` (${errorBody.details})` : '';
-                              errorMsg += ` - ${errorBody.error || 'Erreur serveur.'}${detailsPart}`;
-                          } catch (e) {
-                              console.warn("Impossible de parser le corps de l'erreur JSON (détail chapitre).");
-                          }
-                          throw new Error(errorMsg); // <<< Avec le point-virgule si vous voulez, mais pas obligatoire
-                     }
+                     const response = await fetch('/api/generate-chapter-detail', {
+    method: 'POST', // <<< AJOUTER CETTE LIGNE
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(requestData) // Assurez-vous que requestData contient les bonnes infos
+});
 
                      // LECTURE DU CORPS JSON (maintenant actif)
                      const result = await response.json();
