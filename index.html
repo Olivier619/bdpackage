@@ -434,23 +434,55 @@
                  }
              }
 
-             function displayChapterDetail(chapterNumber, detailData) {
-                  chapterDetailArea.innerHTML = '';
-                  const detailContainer = document.createElement('div');
-                   detailContainer.innerHTML = `<h4>Détail - Chapitre ${chapterNumber}</h4>`;
+                 // --- *** VERSION TRÈS SIMPLE DE displayChapterDetail POUR TESTER *** ---
+    function displayChapterDetail(chapterNumber, detailData) {
+        console.log("Données reçues pour displayChapterDetail:", detailData); // Log pour voir ce qu'on reçoit
 
-                  if (detailData && detailData.scenarioText) {
-                       const preformattedText = document.createElement('pre');
-                       preformattedText.textContent = detailData.scenarioText;
-                       detailContainer.appendChild(preformattedText);
-                       // const detailControls = document.createElement('div');
-                       // detailControls.style.marginTop = '10px';
-                       // detailContainer.appendChild(detailControls);
-                  } else if (detailData && detailData.error) {
-                       detailContainer.innerHTML += `<p class="text-danger">Erreur lors de la génération du détail : ${detailData.error} ${detailData.details ? `(${detailData.details})` : ''}</p>`;
-                  } else {
-                      detailContainer.innerHTML += `<p class="text-danger">Erreur inattendue lors de la réception du détail.</p>`;
-                  }
+        const chapterDetailOutputArea = document.getElementById('chapter-detail-area'); // La zone où afficher
+
+        if (!chapterDetailOutputArea) {
+             console.error("ERREUR: Impossible de trouver l'élément #chapter-detail-area !");
+             return;
+        }
+
+        // Vider la zone
+        chapterDetailOutputArea.innerHTML = '';
+        chapterDetailOutputArea.style.display = 'block'; // Rendre visible
+
+        // Créer un titre simple
+        const titleElement = document.createElement('h4');
+        titleElement.textContent = `Détail Simple - Chapitre ${chapterNumber}`;
+        chapterDetailOutputArea.appendChild(titleElement);
+
+        // Vérifier si on a bien reçu le texte
+        if (detailData && detailData.scenarioText) {
+            // Afficher le texte brut dans une balise <pre> pour garder les sauts de ligne
+            const preElement = document.createElement('pre');
+            preElement.textContent = detailData.scenarioText; // Mettre le texte dedans
+            preElement.style.border = "1px solid #ccc"; // Ajouter une bordure pour le voir
+            preElement.style.padding = "10px";
+            preElement.style.whiteSpace = "pre-wrap"; // Pour les sauts de ligne
+            preElement.style.maxHeight = "500px";
+            preElement.style.overflowY = "auto";
+            chapterDetailOutputArea.appendChild(preElement); // Ajouter à la page
+            console.log("Texte du scénario ajouté à la page.");
+        } else if (detailData && detailData.error) {
+            // Afficher l'erreur si le backend en a renvoyé une
+            const errorElement = document.createElement('p');
+            errorElement.style.color = 'red';
+            errorElement.textContent = `Erreur reçue du serveur : ${detailData.error} ${detailData.details || ''}`;
+            chapterDetailOutputArea.appendChild(errorElement);
+            console.error("Erreur reçue du serveur affichée:", detailData);
+        } else {
+            // Afficher un message si les données sont bizarres
+             const errorElement = document.createElement('p');
+            errorElement.style.color = 'orange';
+            errorElement.textContent = `Impossible d'afficher le détail : données reçues inattendues ou vides.`;
+            chapterDetailOutputArea.appendChild(errorElement);
+            console.warn("Données inattendues reçues:", detailData);
+        }
+    }
+    // --- *** FIN DE LA VERSION SIMPLE *** ---
                    chapterDetailArea.appendChild(detailContainer);
                    chapterDetailArea.style.display = 'block';
              }
