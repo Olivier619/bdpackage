@@ -602,17 +602,16 @@
                 tabContents.forEach(content => { content.style.display = content.id === `${appState.activeTab}-content` ? 'block' : 'none'; });
                 tabBtns.forEach(btn => { btn.classList.toggle('active', btn.getAttribute('data-tab') === appState.activeTab); });
 
-                                                        // --- Scenario/Outline Tab Specific Updates ---
-            if (appState.activeTab === 'scenario') {
-                const hasValidOutline = !!appState.outlineData && !appState.outlineData.parsingError; // Répéter la vérification ici pour clarté
+                                         // --- Scenario/Outline Tab Specific Updates ---
+            if (appState.activeTab === 'scenario') { // <<< IF Principal pour l'onglet
+                const hasValidOutline = !!appState.outlineData && !appState.outlineData.parsingError;
 
-                if (appState.outlineData) {
-                    // 1. Toujours afficher/mettre à jour l'ossature
+                if (appState.outlineData) { // <<< IF imbriqué : SI on a une ossature
+                    // 1. Afficher l'ossature
                     displayOutline(appState.outlineData);
 
-                    // 2. Gérer la VISIBILITÉ de la zone de détail, mais PAS son contenu
+                    // 2. Gérer la visibilité/placeholder de la zone détail
                     const isDetailAlreadyDisplayed = chapterDetailArea.querySelector('h4')?.textContent.includes('Détail Simple - Chapitre');
-
                     if (!isDetailAlreadyDisplayed) {
                          if (chapterDetailArea.textContent.includes('Sélectionnez un chapitre') || chapterDetailArea.innerHTML === '') {
                             chapterDetailArea.innerHTML = '<p>Sélectionnez un chapitre ci-dessus pour générer son contenu détaillé.</p>';
@@ -627,32 +626,33 @@
                          console.log("updateUI: Détail déjà affiché, zone détail reste visible.");
                     }
 
-                    // 3. Gérer les contrôles (Maintenant au bon endroit, après la logique de détail)
+                    // 3. Gérer les contrôles SI on a une ossature
                     scenarioControls.style.display = 'flex';
                     scenarioModificationArea.style.display = 'none';
                     approveScenarioBtn.disabled = !hasValidOutline || appState.currentStep === 'outline_approved';
                     modifyScenarioRequestBtn.disabled = !hasValidOutline;
                     regenerateScenarioBtn.disabled = false;
 
-                } else {
+                } else { // <<< ELSE correspondant au IF imbriqué : SI on n'a PAS d'ossature
                     // Pas d'ossature
                     outlineDisplayArea.innerHTML = '<p>Générez d\'abord une ossature depuis l\'onglet "Idée & Options".</p>';
                     chapterDetailArea.innerHTML = ''; // Vide si pas d'ossature
                     chapterDetailArea.style.display = 'none'; // Caché si pas d'ossature
                     scenarioControls.style.display = 'none'; // Cacher contrôles
                     scenarioModificationArea.style.display = 'none'; // Cacher mods
-                }
+                } // <<< FIN du ELSE imbriqué
 
-            } else { // Si l'onglet actif N'EST PAS 'scenario'
+            } else { // <<< ELSE correspondant au IF Principal : SI l'onglet actif N'EST PAS 'scenario'
                   // Cacher les contrôles spécifiques à l'onglet scénario
                   if(scenarioControls) scenarioControls.style.display = 'none';
                   if(scenarioModificationArea) scenarioModificationArea.style.display = 'none';
                   // Optionnel: Cacher aussi la zone détail quand on quitte l'onglet?
                   // if (chapterDetailArea) chapterDetailArea.style.display = 'none';
-            }
+            } // <<< FIN du ELSE Principal
             // --- FIN Scenario/Outline Tab Specific Updates ---
 
             // --- Other Tabs ---
+            // ...
             // ... (code pour les autres onglets reste inchangé) ...
 
 
