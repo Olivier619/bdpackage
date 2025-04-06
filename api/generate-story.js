@@ -192,7 +192,4 @@ export default async function handler(request, response) {
           else if (error.status) { errorMessage = `... ${error.message}`; statusCode = error.status; }
         return response.status(statusCode).json({ error: "Failed to generate outline (with summaries) via API.", details: errorMessage });
     }
-}la syntaxe Vercel
-        return response.status(statusCode).json({ error: "Failed to generate simple outline via API.", details: errorMessage });
-    }
 }
