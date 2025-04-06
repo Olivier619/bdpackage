@@ -602,35 +602,48 @@
                 tabContents.forEach(content => { content.style.display = content.id === `${appState.activeTab}-content` ? 'block' : 'none'; });
                 tabBtns.forEach(btn => { btn.classList.toggle('active', btn.getAttribute('data-tab') === appState.activeTab); });
 
-                // Scenario/Outline Tab Specific Updates
-                if (appState.activeTab === 'scenario') {
-                    if (appState.outlineData) {
-                        displayOutline(appState.outlineData);
-                        // Update chapter details based on stored state
-                        const lastDetailKey = Object.keys(appState.chapterDetailData).pop(); // Show last generated detail? Or clear? Let's clear for now.
-                        if (lastDetailKey && appState.chapterDetailData[lastDetailKey]) {
-                            // displayChapterDetail(lastDetailKey, appState.chapterDetailData[lastDetailKey]); // Optionnel: réafficher le dernier détail
-                        } else if (chapterDetailArea.innerHTML !== '<p>Sélectionnez un chapitre ci-dessus pour générer son contenu détaillé.</p>') {
-                            // Reset if no details or only placeholder was there
-                             chapterDetailArea.innerHTML = '<p>Sélectionnez un chapitre ci-dessus pour générer son contenu détaillé.</p>';
-                             chapterDetailArea.style.display = 'block'; // Ensure it's visible if outline has chapters
-                        }
+                            // --- Scenario/Outline Tab Specific Updates ---
+            if (appState.activeTab === 'scenario') {
+                if (appState.outlineData) {
+                    // Toujours afficher l'ossature quand on est sur cet onglet
+                    displayOutline(appState.outlineData);
 
+                    // --- LOGIQUE POUR chapterDetailArea MODIFIÉE ---
+                    // Vérifier si un détail est actuellement affiché (par exemple, en cherchant le H4 spécifique)
+                    const isDetailAlreadyDisplayed = chapterDetailArea.querySelector('h4')?.textContent.includes('Détail Simple - Chapitre');
 
-                        scenarioControls.style.display = 'flex';
-                        scenarioModificationArea.style.display = 'none';
-                        approveScenarioBtn.disabled = !hasValidOutline || appState.currentStep === 'outline_approved'; // Disable if already approved
-                        modifyScenarioRequestBtn.disabled = !hasValidOutline;
-                        regenerateScenarioBtn.disabled = false;
+                    // NE PAS effacer si un détail vient d'être généré et affiché
+                    if (!isDetailAlreadyDisplayed) {
+                         // S'il n'y a RIEN ou juste le placeholder initial, afficher le placeholder
+                         if (chapterDetailArea.innerHTML === '' || chapterDetailArea.textContent.includes('Sélectionnez un chapitre')) {
+                            chapterDetailArea.innerHTML = '<p>Sélectionnez un chapitre ci-dessus pour générer son contenu détaillé.</p>';
+                            chapterDetailArea.style.display = 'block'; // Assurer visibilité si outline existe
+                         }
+                         // Si autre chose était affiché (erreur?), on le laisse pour l'instant
                     } else {
-                        outlineDisplayArea.innerHTML = '<p>Générez d\'abord une ossature depuis l\'onglet "Idée & Options".</p>';
-                        chapterDetailArea.innerHTML = ''; chapterDetailArea.style.display = 'none';
-                        scenarioControls.style.display = 'none'; scenarioModificationArea.style.display = 'none';
+                         // Un détail est déjà affiché, on s'assure juste que la zone est visible
+                         chapterDetailArea.style.display = 'block';
+                         console.log("updateUI: Détail déjà affiché, on ne touche pas à chapterDetailArea.");
                     }
-                } else {
-                      scenarioControls.style.display = 'none'; scenarioModificationArea.style.display = 'none';
-                }
+                    // --- FIN LOGIQUE MODIFIÉE ---
 
+
+                    // Affichage des contrôles (inchangé)
+                    scenarioControls.style.display = 'flex';
+                    scenarioModificationArea.style.display = 'none';
+                    approveScenarioBtn.disabled = !hasValidOutline || appState.currentStep === 'outline_approved';
+                    modifyScenarioRequestBtn.disabled = !hasValidOutline;
+                    regenerateScenarioBtn.disabled = false;
+                } else {
+                    // Pas d'ossature (inchangé)
+                    outlineDisplayArea.innerHTML = '<p>Générez d\'abord une ossature...</p>';
+                    chapterDetailArea.innerHTML = ''; chapterDetailArea.style.display = 'none';
+                    scenarioControls.style.display = 'none'; scenarioModificationArea.style.display = 'none';
+                }
+            } else {
+                  // Cacher contrôles si pas sur l'onglet (inchangé)
+                  scenarioControls.style.display = 'none'; scenarioModificationArea.style.display = 'none';
+            }
                 // Storyboard Tab Specific Updates
                 const storyboardChapterSelectorContainer = document.getElementById('storyboard-chapter-selector-container'); // Re-get reference just in case
                 const storyboardChapterSelect = document.getElementById('storyboard-chapter-select');
