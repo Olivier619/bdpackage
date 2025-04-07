@@ -633,23 +633,24 @@
                         // 1. Afficher l'ossature
                         displayOutline(appState.outlineData);
 
-                        // 2. Gérer la visibilité/placeholder de la zone détail
-                        const isDetailAlreadyDisplayed = chapterDetailArea.querySelector('h4')?.textContent.includes('Détail Simple - Chapitre');
-                        if (!isDetailAlreadyDisplayed) {
-                             if (chapterDetailArea.textContent.includes('Sélectionnez un chapitre') || chapterDetailArea.innerHTML === '') {
-                                chapterDetailArea.innerHTML = '<p>Sélectionnez un chapitre ci-dessus pour générer son contenu détaillé.</p>';
-                                chapterDetailArea.style.display = 'block';
-                                console.log("updateUI: Placeholder détail affiché.");
-                             } else {
-                                  // If there's existing content (maybe an error message), leave it visible
-                                  chapterDetailArea.style.display = 'block';
-                                  console.log("updateUI: Contenu existant (erreur?) dans zone détail laissé tel quel.");
-                             }
-                        } else {
-                             // If detail is already displayed, ensure the area stays visible
-                             chapterDetailArea.style.display = 'block';
-                             console.log("updateUI: Détail déjà affiché, zone détail reste visible.");
-                        }
+                                    // Assurer la visibilité de la zone détail si elle a un contenu ou si on est censé voir le placeholder
+            if (appState.outlineData && (Object.keys(appState.chapterDetailData).length > 0 || chapterDetailArea.innerHTML !== '')) {
+                // Si une ossature existe ET que soit des détails ont été chargés (même avec erreur),
+                // OU que la zone n'est pas vide (contient le placeholder ou un détail)
+                chapterDetailArea.style.display = 'block';
+                console.log("updateUI: Assure visibilité de chapter-detail-area.");
+                // On ne modifie PAS son contenu ici, c'est le rôle de displayChapterDetail
+            } else if (appState.outlineData) {
+                // Si une ossature existe mais AUCUN détail n'a été demandé ET la zone est vide
+                chapterDetailArea.innerHTML = '<p>Sélectionnez un chapitre ci-dessus pour générer son contenu détaillé.</p>';
+                chapterDetailArea.style.display = 'block';
+                console.log("updateUI: Placeholder détail initial affiché.");
+            }
+             else {
+                 // Si pas d'ossature du tout
+                 chapterDetailArea.style.display = 'none';
+                 console.log("updateUI: chapter-detail-area cachée (pas d'ossature).");
+             }
 
                         // 3. Gérer les contrôles SI on a une ossature
                         scenarioControls.style.display = 'flex';
