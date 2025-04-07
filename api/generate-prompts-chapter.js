@@ -3,44 +3,67 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const apiKey = process.env.GOOGLE_API_KEY;
 
-// --- Fonction Helper pour Parser la Réponse des Prompts ---
+// --- Fonction Helper pour Parser la Réponse des Prompts (MISE À JOUR) ---
 function parsePromptsResponse(text) {
-    console.log("Attempting to parse prompts text:\n", text.substring(0, 500) + "...");
+    console.log("Attempting to parse prompts text (Page/Panel):\n", text.substring(0, 500) + "...");
     const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
     const prompts = [];
+    let currentPage = null; // Ajouté
     let currentPanel = null;
+    let currentPrompt = ""; // Pour gérer les prompts sur plusieurs lignes
 
     try {
         lines.forEach(line => {
-            const promptMatch = line.match(/^(?:PANEL|CASE)\s+(\d+)\s+PROMPT\s*:\s*(.*)/i);
+            // Nouveau Regex pour capturer PAGE X - CASE Y
+            const promptMatch = line.match(/^(?:PAGE)\s+(\d+)\s+-\s+(?:CASE|PANEL)\s+(\d+)\s+PROMPT\s*:\s*(.*)/i);
 
             if (promptMatch) {
-                currentPanel = parseInt(promptMatch[1], 10);
-                const promptText = promptMatch[2].trim();
-                if (currentPanel && promptText) {
-                    prompts.push({ panel: currentPanel, prompt: promptText });
-                    console.log(`Parsed Prompt for Panel ${currentPanel}: ${promptText.substring(0, 60)}...`);
+                // Sauvegarder le prompt précédent s'il existe
+                if (currentPage !== null && currentPanel !== null && currentPrompt.length > 0) {
+                    prompts.push({ page: currentPage, panel: currentPanel, prompt: currentPrompt.trim() });
+                    console.log(`Saved Prompt for Page ${currentPage} - Panel ${currentPanel}`);
                 }
-            } else if (currentPanel !== null && prompts.length > 0 && !line.match(/^(?:PANEL|CASE)\s+(\d+)/i) && line.length > 5 && !line.startsWith('-') && !line.startsWith('==')) {
-                 // Append to the previous prompt if it's a continuation line (heuristic)
-                 prompts[prompts.length - 1].prompt += "\n" + line;
-                 console.log(`Appended to Prompt for Panel ${currentPanel}: ${line.substring(0,60)}...`);
+
+                // Extraire les nouvelles informations
+                currentPage = parseInt(promptMatch[1], 10);
+                currentPanel = parseInt(promptMatch[2], 10);
+                currentPrompt = promptMatch[3].trim(); // Commence un nouveau prompt
+
+                console.log(`Parsing Prompt Start for Page ${currentPage} - Panel ${currentPanel}: ${currentPrompt.substring(0, 60)}...`);
+
+            } else if (currentPage !== null && currentPanel !== null && !line.match(/^(?:PAGE)\s+(\d+)\s+-\s+(?:CASE|PANEL)/i) && line.length > 5 && !line.startsWith('-') && !line.startsWith('==')) {
+                 // Append to the current prompt if it's a continuation line
+                 currentPrompt += "\n" + line;
+                 console.log(`Appended to Prompt for Page ${currentPage} - Panel ${currentPanel}: ${line.substring(0,60)}...`);
             } else {
                  if (!line.startsWith('---') && !line.startsWith('==') && !line.toLowerCase().includes('below') && !line.toLowerCase().includes('english')) {
-                    console.warn("Ignoring line during prompt parsing:", line);
+                    console.warn("Ignoring line during prompt parsing (Page/Panel):", line);
                  }
             }
         });
 
-        prompts.sort((a, b) => a.panel - b.panel); // Ensure order
-        console.log("Final Parsed Prompts:", prompts);
-        if (prompts.length === 0 && text.length > 10) { // Check text length to avoid error on empty valid response
-             throw new Error("Parsing failed: No prompts parsed matching the expected format.");
+        // Sauvegarder le tout dernier prompt après la boucle
+        if (currentPage !== null && currentPanel !== null && currentPrompt.length > 0) {
+            prompts.push({ page: currentPage, panel: currentPanel, prompt: currentPrompt.trim() });
+            console.log(`Saved Last Prompt for Page ${currentPage} - Panel ${currentPanel}`);
+        }
+
+
+        // Trier par page puis par case
+        prompts.sort((a, b) => {
+             if (a.page !== b.page) { return a.page - b.page; }
+             return a.panel - b.panel;
+         });
+
+        console.log("Final Parsed Prompts (Page/Panel):", prompts);
+        if (prompts.length === 0 && text.length > 10) {
+             throw new Error("Parsing failed: No prompts parsed matching the expected format (PAGE X - CASE Y PROMPT: ...).");
          }
-        return prompts; // Returns array: [{ panel: 1, prompt: "..." }, ...]
+        // Retourne array: [{ page: 1, panel: 1, prompt: "..." }, { page: 1, panel: 2, prompt: "..."}, ...]
+        return prompts;
 
     } catch (parseError) {
-        console.error("Error during prompts parsing:", parseError);
+        console.error("Error during prompts parsing (Page/Panel):", parseError);
         return { parsingError: parseError.message, rawText: text };
     }
 }
@@ -60,15 +83,23 @@ export default async function handler(request, response) {
         return response.status(400).json({ error: "Missing required style or storyboard data for prompt generation." });
     }
 
-    console.log(`--- CONSTRUCTING PROMPTS PROMPT for Chapter ${chapterNumber} ---`);
+    console.log(`--- CONSTRUCTING PROMPTS PROMPT for Chapter ${chapterNumber} (Page/Panel) ---`);
 
-    // Prepare storyboard text for the prompt
-    let storyboardContext = storyboardDataForChapter.map(panel => {
-        return `PANEL ${panel.panel}:\n- Description: ${panel.description || 'N/A'}\n- Shot Type: ${panel.shotType || 'N/A'}\n- Angle: ${panel.angle || 'N/A'}\n- Notes: ${panel.notes || 'None'}`;
-    }).join('\n\n');
+    // Préparer le contexte du storyboard en incluant PAGE et CASE (MISE À JOUR)
+    let storyboardContext = "";
+    let currentPageContext = -1;
+    storyboardDataForChapter.forEach(panel => {
+        if (panel.page !== currentPageContext) {
+            if (currentPageContext !== -1) { storyboardContext += "\n"; } // Add newline between pages
+            storyboardContext += `PAGE ${panel.page}\n------\n`;
+            currentPageContext = panel.page;
+        }
+        storyboardContext += `CASE ${panel.panel}:\n- Description: ${panel.description || 'N/A'}\n- Shot Type: ${panel.shotType || 'N/A'}\n- Angle: ${panel.angle || 'N/A'}\n- Notes: ${panel.notes || 'None'}\n\n`;
+    });
 
 
-    let prompt = `TASK: Generate image generation prompts in **ENGLISH**, optimized for Midjourney v6, for EACH panel described below.
+    // Prompt pour Gemini (MISE À JOUR format de sortie)
+    let prompt = `TASK: Generate image generation prompts in **ENGLISH**, optimized for Midjourney, for EACH panel described below.
 
 GENERAL COMIC CONTEXT:
 - Visual Style: ${style}
@@ -84,25 +115,25 @@ ${storyboardContext}
 
 INSTRUCTIONS FOR PROMPT GENERATION (FOR EACH PANEL):
 1.  **Language: ENGLISH ONLY.** Generate the prompts themselves strictly in English.
-2.  **Focus: Generate ONE prompt PER panel** based on its specific data.
-3.  **Content Source:** Primarily use the panel's "Description".
-4.  **Incorporate Camera:** Translate "Shot Type" and "Angle" into descriptive English terms suitable for image generation (e.g., "close-up shot", "low angle view", "wide angle establishing shot", "dynamic action shot", "eye-level shot").
+2.  **Focus: Generate ONE prompt PER panel** based on its specific data (description, shot, angle, notes).
+3.  **Identify Correct Panel:** Use the correct description and technical details corresponding to the PAGE and CASE number.
+4.  **Incorporate Camera:** Translate "Shot Type" and "Angle" into descriptive English terms (e.g., "close-up shot", "low angle view", "wide angle establishing shot", "dynamic action shot", "eye-level shot").
 5.  **Style Integration:** The prompt MUST strongly reflect the target **Visual Style: ${style}**. Include keywords related to this style (e.g., "manga style", "bande dessinee art style", "american comic book art", "digital painting", "cinematic lighting").
 6.  **Keywords:** Use descriptive English keywords (nouns, adjectives) for scene, characters, actions, objects, mood, lighting, and setting.
-7.  **Image Generation Prompt Optimization:** // Renommé pour être plus général
+7.  **Image Generation Prompt Optimization:**
     *   Keep prompts relatively concise but evocative. Aim for clarity.
     *   Structure suggestion: [Subject/Characters], [Action/Pose], [Setting/Background Details], [Mood/Atmosphere], [Style Keywords], [Camera Shot/Angle].
-    *   **DO NOT include technical parameters like \`--v\` or \`--ar\` at the end of the prompt.** // <-- LIGNE MODIFIÉE
+    *   **DO NOT include technical parameters like \`--v\` or \`--ar\` at the end of the prompt.**
     *   Focus solely on the descriptive text for the image.
 8.  **Clarity:** Ensure the prompt clearly conveys the visual essence of the panel.
 
-OUTPUT FORMAT (Strictly follow this for EACH panel):
+OUTPUT FORMAT (Strictly follow this for EACH panel, including Page and Case numbers):
 
-PANEL [Panel Number] PROMPT: [Generated English prompt for this panel]
+PAGE [Page Number] - CASE [Panel Number] PROMPT: [Generated English prompt for this specific panel.]
 
-(Repeat for all panels provided)
+(Repeat for all panels provided, maintaining the correct Page and Case numbers)
 
-**FINAL REMINDER: Generate ONLY the English prompts in the specified format (PANEL X PROMPT: ...) based on the provided storyboard panels and the visual style "${style}". DO NOT add --v 6.0.**
+**FINAL REMINDER: Generate ONLY the English prompts in the specified format (PAGE X - CASE Y PROMPT: ...) based on the provided storyboard panels and the visual style "${style}". DO NOT add --v 6.0.**
 PROMPTS BELOW:
 ------------------------------------
 `;
@@ -120,22 +151,21 @@ PROMPTS BELOW:
 
         console.log("--- RAW TEXT FROM GEMINI (Prompts) ---\n" + text.substring(0, 500) + (text.length > 500 ? "..." : "") + "\n--- END RAW TEXT ---");
 
-        const parsedPrompts = parsePromptsResponse(text); // Returns array or { parsingError, rawText }
+        const parsedPrompts = parsePromptsResponse(text); // Utilise le parser mis à jour
 
         if (parsedPrompts.parsingError) {
              console.warn(`Prompt parsing failed for chapter ${chapterNumber}.`);
-             // Send back the error structure
-             return response.status(200).json({ prompts: parsedPrompts }); // Send error within success response
+             return response.status(200).json({ prompts: parsedPrompts });
          } else {
              console.log(`Prompts parsed successfully for chapter ${chapterNumber}. Count: ${parsedPrompts.length}`);
-             return response.status(200).json({ prompts: parsedPrompts }); // Send array: [{panel: 1, prompt: "..."}, ...]
+             // Renvoie [{ page: 1, panel: 1, prompt: "..." }, ...]
+             return response.status(200).json({ prompts: parsedPrompts });
          }
 
     } catch (error) {
         console.error(`Error calling Google AI API (Prompts Chap ${chapterNumber}):`, error);
-        let errorMessage = `API call failed: ${error.message}`;
-        let statusCode = 500;
-         if (error.response && error.response.promptFeedback && error.response.promptFeedback.blockReason) {errorMessage = `Blocage Google : ${error.response.promptFeedback.blockReason}`; statusCode = 400;}
+        let errorMessage = `API call failed: ${error.message}`; let statusCode = 500;
+         if (error.response?.promptFeedback?.blockReason) {errorMessage = `Blocage Google : ${error.response.promptFeedback.blockReason}`; statusCode = 400;}
          else if (error.message?.includes('API key not valid')) {errorMessage = "Clé API invalide."; statusCode = 500;}
          else if (error.status === 404) {errorMessage = `Modèle non trouvé: ${error.message}`; statusCode = 404;}
          else if (error.status) {errorMessage = `Erreur API: ${error.message}`; statusCode = error.status;}
