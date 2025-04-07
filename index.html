@@ -560,56 +560,69 @@
                   }
              }
 
-            // *** NOUVELLE FONCTION pour afficher les prompts ***
-            function displayPrompts(chapterNumber, promptData) {
-                 promptsOutput.innerHTML = ''; // Vider la zone
+           // DANS index (12).html
 
-                 if (!promptData) {
-                     promptsOutput.innerHTML = `<p class="text-danger">Aucune donnée de prompt reçue pour le chapitre ${chapterNumber}.</p>`;
-                     return;
-                 }
+// *** MISE À JOUR displayPrompts pour afficher Page/Case ***
+function displayPrompts(chapterNumber, promptData) {
+    promptsOutput.innerHTML = ''; // Vider la zone
 
-                 // Gérer l'erreur de parsing rapportée par le backend
-                 if (promptData.parsingError) {
-                      promptsOutput.innerHTML = `<h4>Erreur d'Analyse des Prompts (Chap. ${chapterNumber})</h4>
-                                                 <p>L'IA a répondu, mais le format des prompts n'a pas pu être analysé. Voici le texte brut reçu :</p>
-                                                 <pre style="white-space: pre-wrap; background-color: #eee; padding: 10px; border-radius: 4px; max-height: 400px; overflow-y: auto;">${escapeHtml(promptData.rawText || 'N/A')}</pre>`;
-                      return;
-                 }
+    if (!promptData) {
+        promptsOutput.innerHTML = `<p class="text-danger">Aucune donnée de prompt reçue pour le chapitre ${chapterNumber}.</p>`;
+        return;
+    }
 
-                 // Gérer une erreur générale (API ou réseau)
-                 if (promptData.error) {
-                      promptsOutput.innerHTML = `<p class="text-danger">Erreur lors de la génération des prompts pour le chapitre ${chapterNumber}: ${escapeHtml(promptData.error)} ${promptData.details ? '(' + escapeHtml(promptData.details) + ')' : ''}</p>`;
-                      return;
-                  }
+    // Gérer l'erreur de parsing rapportée par le backend
+    if (promptData.parsingError) {
+         promptsOutput.innerHTML = `<h4>Erreur d'Analyse des Prompts (Chap. ${chapterNumber})</h4>
+                                    <p>L'IA a répondu, mais le format des prompts n'a pas pu être analysé correctement (attendait "PAGE X - CASE Y PROMPT: ..."). Voici le texte brut reçu :</p>
+                                    <pre style="white-space: pre-wrap; background-color: #eee; padding: 10px; border-radius: 4px; max-height: 400px; overflow-y: auto;">${escapeHtml(promptData.rawText || 'N/A')}</pre>`;
+         return;
+    }
 
-                 // Si promptData est le tableau attendu [{ panel: 1, prompt: "..." }, ...]
-                 if (Array.isArray(promptData) && promptData.length > 0) {
-                      promptData.forEach(item => {
-                           const promptElement = document.createElement('div');
-                           promptElement.classList.add('prompt-item'); // Utilise la classe CSS existante
+    // Gérer une erreur générale (API ou réseau)
+    if (promptData.error) {
+         promptsOutput.innerHTML = `<p class="text-danger">Erreur lors de la génération des prompts pour le chapitre ${chapterNumber}: ${escapeHtml(promptData.error)} ${promptData.details ? '(' + escapeHtml(promptData.details) + ')' : ''}</p>`;
+         return;
+     }
 
-                           const promptText = item.prompt || 'Prompt vide.';
-                           promptElement.innerHTML = `
-                               <h6>Panel ${item.panel} Prompt:</h6>
-                               <pre>${escapeHtml(promptText)}</pre>
-                               <button class="btn btn-sm btn-secondary copy-prompt-btn" data-prompt="${escapeHtml(promptText)}">
-                                   <i class="fas fa-copy"></i> Copier
-                               </button>
-                           `;
-                           promptsOutput.appendChild(promptElement);
-                      });
 
-                      // Ajouter les écouteurs d'événements aux nouveaux boutons "Copier"
-                      addCopyButtonListeners();
+    // Si promptData est le tableau attendu [{ page: 1, panel: 1, prompt: "..." }, ...]
+    if (Array.isArray(promptData) && promptData.length > 0) {
+         promptData.forEach(item => {
+              // Vérifier si page et panel existent
+              if (item.page === undefined || item.panel === undefined) {
+                  console.warn("Prompt item skipped due to missing page/panel number:", item);
+                  return; // Passer à l'item suivant
+              }
 
-                 } else if (Array.isArray(promptData) && promptData.length === 0) {
-                      promptsOutput.innerHTML = `<p>Aucun prompt n'a pu être extrait pour le chapitre ${chapterNumber}, bien que l'API ait répondu.</p>`;
-                 } else {
-                      // Fallback pour format inattendu
-                      promptsOutput.innerHTML = `<h4>Prompts Chapitre ${chapterNumber} (Format Inconnu)</h4><pre>${escapeHtml(JSON.stringify(promptData, null, 2))}</pre>`;
-                 }
-             }
+              const promptElement = document.createElement('div');
+              promptElement.classList.add('prompt-item');
+
+              const promptText = item.prompt || 'Prompt vide.';
+              // Afficher Page et Case dans le titre
+              promptElement.innerHTML = `
+                  <h6>Page ${item.page} - Case ${item.panel} Prompt:</h6>
+                  <pre>${escapeHtml(promptText)}</pre>
+                  <button class="btn btn-sm btn-secondary copy-prompt-btn" data-prompt="${escapeHtml(promptText)}">
+                      <i class="fas fa-copy"></i> Copier
+                  </button>
+              `;
+              promptsOutput.appendChild(promptElement);
+         });
+
+         // Ajouter les écouteurs d'événements aux nouveaux boutons "Copier"
+         addCopyButtonListeners();
+
+    } else if (Array.isArray(promptData) && promptData.length === 0) {
+         promptsOutput.innerHTML = `<p>Aucun prompt n'a pu être extrait pour le chapitre ${chapterNumber}, bien que l'API ait répondu.</p>`;
+    } else {
+         // Fallback pour format inattendu
+         promptsOutput.innerHTML = `<h4>Prompts Chapitre ${chapterNumber} (Format Inconnu)</h4><pre>${escapeHtml(JSON.stringify(promptData, null, 2))}</pre>`;
+    }
+}
+
+// Les fonctions addCopyButtonListeners et handleCopyPrompt restent inchangées
+// ... (addCopyButtonListeners et handleCopyPrompt) ...
 
              // *** NOUVELLE FONCTION pour ajouter les listeners aux boutons Copier ***
              function addCopyButtonListeners() {
