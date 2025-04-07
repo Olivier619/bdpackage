@@ -89,20 +89,20 @@ INSTRUCTIONS FOR PROMPT GENERATION (FOR EACH PANEL):
 4.  **Incorporate Camera:** Translate "Shot Type" and "Angle" into descriptive English terms suitable for image generation (e.g., "close-up shot", "low angle view", "wide angle establishing shot", "dynamic action shot", "eye-level shot").
 5.  **Style Integration:** The prompt MUST strongly reflect the target **Visual Style: ${style}**. Include keywords related to this style (e.g., "manga style", "bande dessinee art style", "american comic book art", "digital painting", "cinematic lighting").
 6.  **Keywords:** Use descriptive English keywords (nouns, adjectives) for scene, characters, actions, objects, mood, lighting, and setting.
-7.  **Midjourney v6 Optimization:**
+7.  **Image Generation Prompt Optimization:** // Renommé pour être plus général
     *   Keep prompts relatively concise but evocative. Aim for clarity.
     *   Structure suggestion: [Subject/Characters], [Action/Pose], [Setting/Background Details], [Mood/Atmosphere], [Style Keywords], [Camera Shot/Angle].
-    *   **Include \`--v 6.0\` at the end of each prompt.**
-    *   (Optional: you can suggest aspect ratio like \`--ar 2:3\` or \`--ar 3:4\` if it seems appropriate for comic panels, but start without forcing it).
+    *   **DO NOT include technical parameters like \`--v\` or \`--ar\` at the end of the prompt.** // <-- LIGNE MODIFIÉE
+    *   Focus solely on the descriptive text for the image.
 8.  **Clarity:** Ensure the prompt clearly conveys the visual essence of the panel.
 
 OUTPUT FORMAT (Strictly follow this for EACH panel):
 
-PANEL [Panel Number] PROMPT: [Generated English prompt for this panel, ending with --v 6.0]
+PANEL [Panel Number] PROMPT: [Generated English prompt for this panel]
 
 (Repeat for all panels provided)
 
-**FINAL REMINDER: Generate ONLY the English prompts in the specified format (PANEL X PROMPT: ... --v 6.0) based on the provided storyboard panels and the visual style "${style}".**
+**FINAL REMINDER: Generate ONLY the English prompts in the specified format (PANEL X PROMPT: ...) based on the provided storyboard panels and the visual style "${style}". DO NOT add --v 6.0.**
 PROMPTS BELOW:
 ------------------------------------
 `;
