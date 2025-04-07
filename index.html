@@ -92,7 +92,7 @@
         .storyboard-panel-display h6 { color: var(--dark-color); margin-bottom: 8px; }
         .storyboard-panel-details p { margin-bottom: 5px; font-size: 0.95em; }
         .storyboard-panel-details p strong { color: var(--dark-color); }
-        .storyboard-visual-placeholder { border: 1px dashed #ccc; min-height: 100px; display: flex; align-items: center; justify-content: center; color: #aaa; font-style: italic; margin-top: 10px; background-color: #f0f0f0; border-radius: 4px; padding: 10px; text-align: center; }
+        /* .storyboard-visual-placeholder removed */
         .prompt-item { border-left-color: var(--success-color); }
         .prompt-item pre { background-color: #333; color: white; padding: 15px; border-radius: 5px; overflow-x: auto; margin-top: 10px; white-space: pre-wrap; word-break: break-all; }
         .session-controls { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
@@ -382,7 +382,7 @@
                      .replace(/&/g, "&") // Use & for ampersand
                      .replace(/</g, "<")
                      .replace(/>/g, ">")
-                     .replace(/"/g, "&quot;")
+                     .replace(/"/g, """)
                      .replace(/'/g, "'"); // Use numeric entity for single quote
              }
 
@@ -401,6 +401,7 @@
 
             // --- Display Functions ---
 
+            // *** CORRECTED displayOutline: Does NOT modify chapterDetailArea ***
             function displayOutline(outlineData) {
                  outlineDisplayArea.innerHTML = '';
                  if (!outlineData) { outlineDisplayArea.innerHTML = '<p>Aucune donnée d\'ossature à afficher.</p>'; return; }
@@ -408,8 +409,7 @@
                  if (outlineData.parsingError) {
                      console.warn("Backend outline parsing failed:", outlineData.parsingError);
                      outlineDisplayArea.innerHTML = `<h4>Erreur d'Analyse de l'Ossature</h4><p>L'IA a répondu, mais le format n'a pas pu être analysé automatiquement. Voici le texte brut :</p><pre style="white-space: pre-wrap; background-color: #eee; padding: 10px; border-radius: 4px; max-height: 300px; overflow-y: auto;">${escapeHtml(outlineData.rawText || 'N/A')}</pre>`;
-                     chapterDetailArea.innerHTML = '';
-                     chapterDetailArea.style.display = 'none';
+                     // Removed modification of chapterDetailArea here
                      return;
                  }
 
@@ -438,17 +438,17 @@
                          chapterList.appendChild(listItem);
                      });
                      outlineDisplayArea.appendChild(chapterList);
-                     
+                     // ---> LES LIGNES QUI MODIFIAIENT chapterDetailArea ONT ETE SUPPRIMEES ICI <---
                  } else {
                      outlineDisplayArea.innerHTML += '<p>Aucun chapitre trouvé dans l\'ossature.</p>';
-                     }
-             }
+                     // ---> LES LIGNES QUI MODIFIAIENT chapterDetailArea ONT ETE SUPPRIMEES ICI <---
+                 }
+            }
 
-            // --- *** VERSION SIMPLE DE displayChapterDetail POUR TESTER *** ---
+            // --- *** VERSION SIMPLE DE displayChapterDetail POUR TESTER (Fonctionne) *** ---
             function displayChapterDetail(chapterNumber, detailData) {
                 console.log("Début displayChapterDetail pour chap:", chapterNumber, "Data:", detailData); // Log 1
 
-                // 1. TROUVER LA ZONE D'AFFICHAGE
                 const chapterDetailOutputArea = document.getElementById('chapter-detail-area');
 
                 if (!chapterDetailOutputArea) {
@@ -457,50 +457,44 @@
                 }
                 console.log("Zone #chapter-detail-area trouvée:", chapterDetailOutputArea); // Log 2b
 
-                // 2. VIDER ET RENDRE VISIBLE
                 chapterDetailOutputArea.innerHTML = '';
                 chapterDetailOutputArea.style.display = 'block';
                 console.log("Zone vidée et display mis à 'block'."); // Log 3
 
-                // 3. AJOUTER LE TITRE
                 try {
                      const titleElement = document.createElement('h4');
-                     titleElement.textContent = `Détail Simple - Chapitre ${chapterNumber}`; // Corrected: Removed invalid catch
+                     titleElement.textContent = `Détail Simple - Chapitre ${chapterNumber}`;
                      chapterDetailOutputArea.appendChild(titleElement);
                      console.log("Titre H4 ajouté."); // Log 4
                 } catch (e) {
-                     console.error("Erreur lors de l'ajout du H4:", e); // Log 4 Erreur
+                     console.error("Erreur lors de l'ajout du H4:", e);
                 }
 
-
-                // 4. VÉRIFIER ET AFFICHER LE TEXTE OU L'ERREUR
                 if (detailData && detailData.scenarioText) {
                      try {
                           const preElement = document.createElement('pre');
                           preElement.textContent = detailData.scenarioText;
-                          // Styles visibles (optional, can use CSS instead)
-                          preElement.style.border = "1px solid #ddd"; // More subtle border
+                          preElement.style.border = "1px solid #ddd";
                           preElement.style.padding = "10px";
                           preElement.style.margin = "10px 0";
-                          preElement.style.backgroundColor = "#fff"; // White background usually better
-                          preElement.style.color = "#333"; // Dark text
+                          preElement.style.backgroundColor = "#fff";
+                          preElement.style.color = "#333";
                           preElement.style.minHeight = "50px";
                           preElement.style.whiteSpace = "pre-wrap";
                           preElement.style.maxHeight = "500px";
                           preElement.style.overflowY = "auto";
-                          preElement.style.fontFamily = "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace"; // Match CSS
-                          preElement.style.fontSize = "0.9em"; // Match CSS
+                          preElement.style.fontFamily = "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace";
+                          preElement.style.fontSize = "0.9em";
                           chapterDetailOutputArea.appendChild(preElement);
                           console.log("Texte du scénario (<pre>) ajouté à la page."); // Log 5a
                      } catch (e) {
-                          console.error("Erreur lors de l'ajout du <pre>:", e); // Log 5a Erreur
+                          console.error("Erreur lors de l'ajout du <pre>:", e);
                      }
-
                 } else if (detailData && detailData.error) {
                     try {
                          const errorElement = document.createElement('p');
                          errorElement.style.color = 'red';
-                         errorElement.textContent = `Erreur reçue du serveur : ${detailData.error} ${detailData.details ? '(' + detailData.details + ')' : ''}`; // Corrected: Removed invalid catch
+                         errorElement.textContent = `Erreur reçue du serveur : ${detailData.error} ${detailData.details ? '(' + detailData.details + ')' : ''}`;
                          chapterDetailOutputArea.appendChild(errorElement);
                          console.error("Erreur serveur affichée:", detailData); // Log 5b Erreur Serveur
                     } catch (e) {
@@ -521,14 +515,14 @@
             }
             // --- *** FIN DE LA VERSION SIMPLE *** ---
 
-             function displayStoryboard(chapterNumber, storyboardData) {
+            // *** CORRECTED displayStoryboard: Placeholder removed, correct syntax ***
+            function displayStoryboard(chapterNumber, storyboardData) {
                 storyboardOutput.innerHTML = ''; // Clear placeholder/previous
 
                 if (!storyboardData) {
                     storyboardOutput.innerHTML = `<p class="text-danger">Aucune donnée de storyboard reçue pour le chapitre ${chapterNumber}.</p>`;
                     return;
                 }
-                // Handle parsing error from backend
                 if (storyboardData.parsingError) {
                      storyboardOutput.innerHTML = `<h4>Erreur d'Analyse du Storyboard (Chap. ${chapterNumber})</h4>
                                                 <p>L'IA a répondu, mais le format n'a pas pu être analysé automatiquement. Voici le texte brut reçu :</p>
@@ -537,11 +531,11 @@
                 }
 
                 // Assume storyboardData is the array of panel objects
-                let currentPage = -1;
-                let pageContainer = null;
+                if (Array.isArray(storyboardData) && storyboardData.length > 0) { // Main IF
+                     let currentPage = -1;
+                     let pageContainer = null;
 
-                if (Array.isArray(storyboardData) && storyboardData.length > 0) {
-                     storyboardData.forEach(panelData => {
+                     storyboardData.forEach(panelData => { // forEach loop
                           if (panelData.page !== currentPage) {
                                currentPage = panelData.page;
                                pageContainer = document.createElement('div');
@@ -549,7 +543,7 @@
                                pageContainer.innerHTML = `<h5>Page ${currentPage}</h5>`;
                                storyboardOutput.appendChild(pageContainer);
                           }
-                          if(pageContainer) {
+                          if(pageContainer) { // Inner IF
                                const panelElement = document.createElement('div');
                                panelElement.classList.add('storyboard-panel-display');
                                panelElement.innerHTML = `
@@ -560,20 +554,23 @@
                                        <p><strong>Angle:</strong> ${escapeHtml(panelData.angle || 'N/A')}</p>
                                        ${panelData.notes ? `<p><i>Notes: ${escapeHtml(panelData.notes)}</i></p>` : ''}
                                    </div>
-                                   '
+                               `; // <-- Backtick ` is correct here
                                pageContainer.appendChild(panelElement);
-                          }
-                     });
-                } else if (Array.isArray(storyboardData) && storyboardData.length === 0) {
-                     storyboardOutput.innerHTML = `<p>Aucune case de storyboard n'a pu être extraite pour le chapitre ${chapterNumber}.</p>`;
-                 } else {
-                      // Fallback for unexpected format, display as JSON
-                      storyboardOutput.innerHTML = `<h4>Storyboard Chapitre ${chapterNumber} (Format Inconnu)</h4><pre>${escapeHtml(JSON.stringify(storyboardData, null, 2))}</pre>`;
-                 }
-            }
+                          } // END of inner IF
+                     }); // END of forEach loop
+
+                 } // <--- ESSENTIAL closing brace for main IF is HERE
+                 else if (Array.isArray(storyboardData) && storyboardData.length === 0) {
+                      storyboardOutput.innerHTML = `<p>Aucune case de storyboard n'a pu être extraite pour le chapitre ${chapterNumber}.</p>`;
+                  } else {
+                       // Fallback for unexpected format, display as JSON
+                       storyboardOutput.innerHTML = `<h4>Storyboard Chapitre ${chapterNumber} (Format Inconnu)</h4><pre>${escapeHtml(JSON.stringify(storyboardData, null, 2))}</pre>`;
+                  }
+             }
 
 
-             // --- UI Update Logic ---
+            // --- UI Update Logic ---
+            // *** CORRECTED updateUI: Handles chapterDetailArea visibility correctly ***
             function updateUI() {
                 console.log("Updating UI, current step:", appState.currentStep, "active tab:", appState.activeTab);
 
@@ -586,10 +583,7 @@
                  if (appState.currentStep === 'outline_approved' || appState.currentStep === 'storyboard_generated') {
                      stepsCompleted.push('storyboard'); // Mark storyboard step itself if approved or generated
                  }
-                 // Add 'prompts' later if needed:
-                 // if (appState.currentStep === 'prompts_generated') {
-                 //    stepsCompleted.push('prompts');
-                 // }
+                 // Add 'prompts' later if needed
 
                  stepsCompleted.forEach(step => {
                     if(progressSteps[step]) progressSteps[step].classList.add('completed');
@@ -598,16 +592,12 @@
                  if (appState.currentStep === 'idea') progressSteps.idea.classList.add('active');
                  else if (appState.currentStep === 'outline_generated' || appState.currentStep === 'chapter_detail_generated') progressSteps.scenario.classList.add('active');
                  else if (appState.currentStep === 'outline_approved' || appState.currentStep === 'storyboard_generated') progressSteps.storyboard.classList.add('active');
-                 // Add prompts later:
-                 // else if (appState.currentStep === 'prompts_generated') progressSteps.prompts.classList.add('active');
-
+                 // Add prompts later
 
                 // Tabs Activation/Disabling
                 const hasValidOutline = !!appState.outlineData && !appState.outlineData.parsingError;
                 const hasGeneratedAnyDetails = Object.values(appState.chapterDetailData).some(detail => detail && !detail.error);
-                // Allow activating storyboard tab if outline is approved OR if at least one detail was successfully generated
                 const canAccessStoryboard = hasValidOutline && (appState.currentStep === 'outline_approved' || hasGeneratedAnyDetails);
-                // Define when prompts can be accessed (e.g., after at least one storyboard is generated)
                 const hasGeneratedAnyStoryboard = Object.values(appState.storyboardData).some(sb => sb && !sb.error && !sb.parsingError && Array.isArray(sb) && sb.length > 0);
                 const canAccessPrompts = hasGeneratedAnyStoryboard; // Update this logic as needed
 
@@ -624,27 +614,32 @@
                     const hasValidOutline = !!appState.outlineData && !appState.outlineData.parsingError;
 
                     if (appState.outlineData) { // <<< IF imbriqué : SI on a une ossature
-                        // 1. Afficher l'ossature
+                        // 1. Afficher l'ossature (Cette fonction ne modifie PLUS chapterDetailArea)
                         displayOutline(appState.outlineData);
 
-                                    // Assurer la visibilité de la zone détail si elle a un contenu ou si on est censé voir le placeholder
-            if (appState.outlineData && (Object.keys(appState.chapterDetailData).length > 0 || chapterDetailArea.innerHTML !== '')) {
-                // Si une ossature existe ET que soit des détails ont été chargés (même avec erreur),
-                // OU que la zone n'est pas vide (contient le placeholder ou un détail)
-                chapterDetailArea.style.display = 'block';
-                console.log("updateUI: Assure visibilité de chapter-detail-area.");
-                // On ne modifie PAS son contenu ici, c'est le rôle de displayChapterDetail
-            } else if (appState.outlineData) {
-                // Si une ossature existe mais AUCUN détail n'a été demandé ET la zone est vide
-                chapterDetailArea.innerHTML = '<p>Sélectionnez un chapitre ci-dessus pour générer son contenu détaillé.</p>';
-                chapterDetailArea.style.display = 'block';
-                console.log("updateUI: Placeholder détail initial affiché.");
-            }
-             else {
-                 // Si pas d'ossature du tout
-                 chapterDetailArea.style.display = 'none';
-                 console.log("updateUI: chapter-detail-area cachée (pas d'ossature).");
-             }
+                        // 2. Gérer la visibilité/placeholder de la zone détail (Logique CORRIGÉE)
+                        console.log(">>> updateUI: Début gestion chapter-detail-area. Contenu actuel:", chapterDetailArea.innerHTML.substring(0, 50) + "..."); // Log DEBUT BLOC
+
+                        // Assurer la visibilité de la zone détail si elle a un contenu ou si on est censé voir le placeholder
+                        if (appState.outlineData && (Object.keys(appState.chapterDetailData).length > 0 || chapterDetailArea.innerHTML !== '')) {
+                            // Si une ossature existe ET que soit des détails ont été chargés (même avec erreur),
+                            // OU que la zone n'est pas vide (contient le placeholder ou un détail)
+                            chapterDetailArea.style.display = 'block';
+                            console.log(">>> updateUI: BRANCHE 1 EXECUTEE. Assure visibilité seulement."); // Log BRANCHE 1
+                            // On ne modifie PAS son contenu ici, c'est le rôle de displayChapterDetail
+                        } else if (appState.outlineData) {
+                            // Si une ossature existe mais AUCUN détail n'a été demandé ET la zone est vide
+                            chapterDetailArea.innerHTML = '<p>Sélectionnez un chapitre ci-dessus pour générer son contenu détaillé.</p>';
+                            chapterDetailArea.style.display = 'block';
+                            console.log(">>> updateUI: BRANCHE 2 EXECUTEE. Placeholder initial mis."); // Log BRANCHE 2
+                        }
+                         else {
+                             // Si pas d'ossature du tout
+                             chapterDetailArea.style.display = 'none';
+                             console.log(">>> updateUI: BRANCHE 3 EXECUTEE. Zone cachée (pas d'ossature)."); // Log BRANCHE 3
+                         }
+                         console.log(">>> updateUI: Fin gestion chapter-detail-area."); // Log FIN BLOC
+
 
                         // 3. Gérer les contrôles SI on a une ossature
                         scenarioControls.style.display = 'flex';
@@ -666,8 +661,6 @@
                       // Cacher les contrôles spécifiques à l'onglet scénario si on quitte l'onglet
                       if(scenarioControls) scenarioControls.style.display = 'none';
                       if(scenarioModificationArea) scenarioModificationArea.style.display = 'none';
-                      // Optionnel: Décider si cacher la zone détail en quittant l'onglet scénario
-                      // if (chapterDetailArea) chapterDetailArea.style.display = 'none';
                 } // <<< FIN du ELSE Principal
                 // --- FIN Scenario/Outline Tab Specific Updates ---
 
@@ -726,12 +719,6 @@
                     storyboardChapterSelectorContainer.style.display = 'none'; // Hide selector if not on tab or not ready
                 }
 
-                // Clear storyboard output if navigating away? (Optional - might be better to keep it)
-                // if(appState.activeTab !== 'storyboard' && storyboardOutput.innerHTML !== '' ) {
-                //     storyboardOutput.innerHTML = '';
-                // }
-
-
                 // --- Prompts Tab Specific Updates ---
                 if (appState.activeTab === 'prompts') {
                      if (canAccessPrompts) {
@@ -759,14 +746,14 @@
                  try {
                      const response = await fetch('/api/generate-story', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' }, // Corrected: Removed invalid catch
-                        body: JSON.stringify(appState.lastInputData) // Corrected: Removed invalid catch
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(appState.lastInputData)
                     });
                      if (!response.ok) {
                          let errorMsg = `Erreur HTTP: ${response.status} ${response.statusText}`;
                          try {
                              const errorBody = await response.json();
-                             let detailsPart = errorBody.details ? ` (${errorBody.details})` : ''; // Corrected: Removed invalid catch
+                             let detailsPart = errorBody.details ? ` (${errorBody.details})` : '';
                              errorMsg += ` - ${errorBody.error || 'Erreur serveur.'}${detailsPart}`;
                          } catch (parseError) { console.error("Could not parse error response body:", parseError); }
                          throw new Error(errorMsg);
@@ -775,7 +762,6 @@
                      if (result.outline) {
                          appState.outlineData = result.outline;
                          appState.currentStep = 'outline_generated';
-                         // Check for parsing errors passed from backend
                          if (result.outline.parsingError) {
                              console.warn("Backend reported parsing error for outline:", result.outline.parsingError);
                          }
@@ -784,7 +770,6 @@
                      else { throw new Error("Réponse inattendue du serveur (clé 'outline' manquante)."); }
                  } catch (error) {
                      console.error("Error handleGenerateOutline:", error);
-                     // Display error in the outline area itself
                      outlineDisplayArea.innerHTML = `<p class="text-danger">Erreur lors de la génération de l'ossature : ${escapeHtml(error.message)}.</p>`;
                      chapterDetailArea.style.display = 'none';
                      appState.outlineData = null; // Ensure outlineData is null on error
@@ -817,8 +802,8 @@
                  try {
                      const response = await fetch('/api/generate-chapter-detail', {
                          method: 'POST',
-                         headers: { 'Content-Type': 'application/json' }, // Corrected: Removed invalid catch
-                         body: JSON.stringify(requestData) // Corrected: Removed invalid catch
+                         headers: { 'Content-Type': 'application/json' },
+                         body: JSON.stringify(requestData)
                      });
                      if (!response.ok) {
                          let errorMsg = `Erreur HTTP: ${response.status} ${response.statusText}`;
@@ -830,20 +815,17 @@
                          throw new Error(errorMsg);
                      }
                      const result = await response.json();
-                     // Store result whether it's success or error from API
                      appState.chapterDetailData[chapterNumber] = result;
-                     if (!result.error) { // Only update step if successful
+                     if (!result.error) {
                         appState.currentStep = 'chapter_detail_generated';
                      }
                      displayChapterDetail(chapterNumber, result); // Display result (text or error)
                  } catch (error) {
                      console.error(`Error handleGenerateChapterDetail Chapter ${chapterNumber}:`, error);
-                     // Store the network/fetch error
                      appState.chapterDetailData[chapterNumber] = { error: error.message };
                      displayChapterDetail(chapterNumber, { error: error.message }); // Display network error
                  } finally {
                      button.disabled = false; button.textContent = 'Générer Détail';
-                     // Update UI to potentially enable storyboard tab/options
                      updateUI();
                  }
             }
@@ -862,21 +844,21 @@
                 showStoryboardLoading(true);
                 storyboardOutput.innerHTML = `<p>Génération du storyboard pour le chapitre ${selectedChapterNumber}...</p>`;
                 generateStoryboardBtn.disabled = true;
-                storyboardChapterSelect.disabled = true; // Disable select during generation
+                storyboardChapterSelect.disabled = true;
 
                 const requestData = {
-                    ...appState.lastInputData, // Includes genre, style, tone etc.
+                    ...appState.lastInputData,
                     globalTitle: appState.outlineData.title,
                     chapterNumber: parseInt(selectedChapterNumber, 10),
                     chapterTitle: appState.outlineData.chapters.find(ch => ch.chapter == selectedChapterNumber)?.title || '',
-                    detailedScenarioText: chapterDetail.scenarioText // Send the generated detail
+                    detailedScenarioText: chapterDetail.scenarioText
                 };
 
                 try {
                      const response = await fetch('/api/generate-storyboard-chapter', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' }, // Corrected: Removed invalid catch
-                        body: JSON.stringify(requestData) // Corrected: Removed invalid catch
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(requestData)
                      });
                      if (!response.ok) {
                          let errorMsg = `Erreur HTTP: ${response.status} ${response.statusText}`;
@@ -890,30 +872,26 @@
                      const result = await response.json();
                      console.log("Storyboard data received from API:", result);
 
-                     // Store result (could contain storyboard array or error/parsingError)
                      appState.storyboardData[selectedChapterNumber] = result.storyboard;
 
-                     // Check for parsing error reported by backend
                      if (result.storyboard && result.storyboard.parsingError) {
                          console.warn(`Backend reported parsing error for storyboard Chapter ${selectedChapterNumber}:`, result.storyboard.parsingError);
                      }
 
                      displayStoryboard(selectedChapterNumber, result.storyboard); // Display whatever was received
 
-                     // Update step only if storyboard seems valid (no error and not a parsing error object)
                      if (result.storyboard && !result.storyboard.error && !result.storyboard.parsingError) {
                         appState.currentStep = 'storyboard_generated';
                      }
                 } catch(error) {
                      console.error(`Error handleGenerateStoryboard Chapter ${selectedChapterNumber}:`, error);
-                     // Store network/fetch error
                      appState.storyboardData[selectedChapterNumber] = { error: error.message };
                      storyboardOutput.innerHTML = `<p class="text-danger">Erreur lors de la génération du storyboard : ${escapeHtml(error.message)}</p>`;
                 } finally {
                      showStoryboardLoading(false);
-                     generateStoryboardBtn.disabled = false; // Re-enable button
-                     storyboardChapterSelect.disabled = false; // Re-enable select
-                     updateUI(); // Update UI (e.g., potentially enable prompts tab)
+                     generateStoryboardBtn.disabled = false;
+                     storyboardChapterSelect.disabled = false;
+                     updateUI();
                 }
             }
 
@@ -923,7 +901,6 @@
                      alert("Impossible d'approuver une ossature invalide ou contenant des erreurs d'analyse.");
                      return;
                 }
-                // Check if any details have been generated
                 const hasAnyDetails = Object.values(appState.chapterDetailData).some(detail => detail && !detail.error);
                 if (!hasAnyDetails) {
                     if (!confirm("Aucun détail de chapitre n'a encore été généré. Voulez-vous quand même passer au Storyboard ? Vous devrez générer les détails avant de pouvoir créer un storyboard.")) {
@@ -932,27 +909,24 @@
                 }
 
                 appState.currentStep = 'outline_approved';
-                appState.activeTab = 'storyboard'; // Move user to storyboard tab
-                updateUI(); // Update UI to reflect new state and active tab
+                appState.activeTab = 'storyboard';
+                updateUI();
 
-                // Try to pre-select the first chapter with generated details in the storyboard tab dropdown
                 const firstDetailKey = Object.keys(appState.chapterDetailData).find(key => appState.chapterDetailData[key] && !appState.chapterDetailData[key].error);
                 if (firstDetailKey && storyboardChapterSelect) {
                     storyboardChapterSelect.value = firstDetailKey;
-                    generateStoryboardBtn.disabled = false; // Enable the generate button since a chapter is selected
-                     storyboardOutput.innerHTML = '<p>Prêt à générer le storyboard pour ce chapitre.</p>'; // Update placeholder text
+                    generateStoryboardBtn.disabled = false;
+                     storyboardOutput.innerHTML = '<p>Prêt à générer le storyboard pour ce chapitre.</p>';
                 } else if (storyboardChapterSelect && storyboardChapterSelect.options.length > 1) {
-                    // If there are options but none were pre-selected (e.g., page reload)
                     storyboardOutput.innerHTML = '<p>Sélectionnez un chapitre ci-dessus pour générer son storyboard.</p>';
                 } else {
-                     // If no details were generated yet
                      storyboardOutput.innerHTML = '<p>Générez d\'abord le détail d\'un chapitre dans l\'onglet Scénario.</p>';
                  }
             }
 
             function handleModifyOutlineRequest() {
-                scenarioModificationArea.style.display = 'block'; // Show mod area
-                scenarioControls.style.display = 'none'; // Hide regular controls
+                scenarioModificationArea.style.display = 'block';
+                scenarioControls.style.display = 'none';
             }
 
             async function handleSubmitOutlineModification() {
@@ -964,20 +938,18 @@
                  // TODO: Implement API call for modification
                  console.warn("Modification submission not implemented yet. Request:", modificationRequest);
                  alert("Fonctionnalité de modification non implémentée pour le moment.");
-                 // For now, just hide the area and show controls again
-                 scenarioModificationInput.value = ''; // Clear input
+                 scenarioModificationInput.value = '';
                  scenarioModificationArea.style.display = 'none';
-                 updateUI(); // Restore UI (will show controls again based on state)
+                 updateUI();
             }
 
             function handleRegenerateOutline() {
                  if (confirm("Êtes-vous sûr de vouloir régénérer l'ossature complète ? Le scénario et le storyboard actuels seront perdus.")) {
                     if(appState.lastInputData) {
-                        // Re-use the last input data to generate a new outline
                         handleGenerateOutline();
                     } else {
                         alert("Impossible de régénérer : les données d'entrée initiales n'ont pas été trouvées. Veuillez remplir l'onglet 'Idée & Options'.");
-                        appState.activeTab = 'home'; // Send user back to input tab
+                        appState.activeTab = 'home';
                         updateUI();
                     }
                  }
@@ -986,9 +958,9 @@
             // --- Event Listeners Setup ---
             tabBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
-                    if (this.classList.contains('disabled')) return; // Don't switch if disabled
+                    if (this.classList.contains('disabled')) return;
                     appState.activeTab = this.getAttribute('data-tab');
-                    updateUI(); // Update UI when tab changes
+                    updateUI();
                 });
             });
             generateScenarioBtn.addEventListener('click', handleGenerateOutline);
@@ -997,21 +969,19 @@
             submitScenarioModificationBtn.addEventListener('click', handleSubmitOutlineModification);
             regenerateScenarioBtn.addEventListener('click', handleRegenerateOutline);
 
-            // Storyboard Listeners
             if(storyboardChapterSelect) {
                 storyboardChapterSelect.addEventListener('change', function() {
-                    generateStoryboardBtn.disabled = !this.value; // Disable button if "-- Select --" is chosen
+                    generateStoryboardBtn.disabled = !this.value;
                     if(this.value) {
-                        // If a chapter is selected, check if storyboard data exists for it
                         if (appState.storyboardData[this.value] && !appState.storyboardData[this.value].error && !appState.storyboardData[this.value].parsingError) {
-                            displayStoryboard(this.value, appState.storyboardData[this.value]); // Show existing storyboard
+                            displayStoryboard(this.value, appState.storyboardData[this.value]);
                         } else if (appState.storyboardData[this.value] && (appState.storyboardData[this.value].error || appState.storyboardData[this.value].parsingError)) {
-                            displayStoryboard(this.value, appState.storyboardData[this.value]); // Show existing error/parsing error message
+                            displayStoryboard(this.value, appState.storyboardData[this.value]);
                         } else {
-                             storyboardOutput.innerHTML = '<p>Prêt à générer le storyboard pour ce chapitre.</p>'; // Reset placeholder if no data/error exists yet
+                             storyboardOutput.innerHTML = '<p>Prêt à générer le storyboard pour ce chapitre.</p>';
                          }
                     } else {
-                        storyboardOutput.innerHTML = '<p>Sélectionnez un chapitre ci-dessus.</p>'; // Placeholder for "-- Select --"
+                        storyboardOutput.innerHTML = '<p>Sélectionnez un chapitre ci-dessus.</p>';
                     }
                 });
             }
@@ -1022,34 +992,27 @@
              // Session Management Listeners
              document.getElementById('new-session').addEventListener('click', function() {
                  if (confirm('Commencer une nouvelle session ? Tout travail non sauvegardé sera perdu.')) {
-                     // Reset state completely
                      appState = { currentStep: 'idea', outlineData: null, chapterDetailData: {}, storyboardData: {}, lastInputData: null, activeTab: 'home' };
-                     // Clear inputs
                      keywordsInput.value = '';
                      genreSelect.selectedIndex = 0;
                      styleSelect.selectedIndex = 0;
                      toneSelect.selectedIndex = 0;
                      detailsInput.value = '';
-                     // Clear output areas
-                     if(outlineDisplayArea) outlineDisplayArea.innerHTML = '<p>Générez une ossature...</p>'; // Reset placeholder
+                     if(outlineDisplayArea) outlineDisplayArea.innerHTML = '<p>Générez une ossature...</p>';
                      if(chapterDetailArea) { chapterDetailArea.innerHTML = ''; chapterDetailArea.style.display = 'none'; }
-                     if(scenarioOutput && !outlineDisplayArea) scenarioOutput.innerHTML = '<p>Générez une ossature...</p>'; // Fallback scenario placeholder
-                     if(storyboardOutput) storyboardOutput.innerHTML = '<p>Sélectionnez un chapitre...</p>'; // Reset placeholder
-                     if(promptsOutput) promptsOutput.innerHTML = '<p>Approuvez...</p>'; // Reset placeholder
-                     // Update UI to reflect reset state (tabs, progress, etc.)
+                     if(scenarioOutput && !outlineDisplayArea) scenarioOutput.innerHTML = '<p>Générez une ossature...</p>';
+                     if(storyboardOutput) storyboardOutput.innerHTML = '<p>Sélectionnez un chapitre...</p>';
+                     if(promptsOutput) promptsOutput.innerHTML = '<p>Approuvez...</p>';
                      updateUI();
                  }
              });
             document.getElementById('save-session').addEventListener('click', function() {
-                // Capture current input values *before* saving
                 appState.lastInputData = { keywords: keywordsInput.value.trim(), genre: genreSelect.value, style: styleSelect.value, tone: toneSelect.value, details: detailsInput.value.trim() };
                 const sessionName = prompt('Entrez un nom pour cette session :', `Session_${new Date().toISOString().slice(0,10)}`);
                 if (sessionName) {
                     try {
-                        // Attempt to stringify (might fail for very large/complex states)
                         const sessionDataString = JSON.stringify(appState);
-                        // Basic check for size (localStorage limit is typically 5-10MB)
-                        if (sessionDataString.length > 4 * 1024 * 1024) { // Warn over 4MB
+                        if (sessionDataString.length > 4 * 1024 * 1024) {
                             alert("Attention : La taille de la session est importante, la sauvegarde pourrait échouer ou ralentir le navigateur.");
                         }
                         localStorage.setItem(`bdcreator_session_${sessionName}`, sessionDataString);
@@ -1084,51 +1047,56 @@
 
                  if (sessionName && sessions.includes(sessionName)) {
                      try {
-                         const sessionString = localStorage.getItem(`bdcreator_session_${sessionName}`); // Corrected: Removed invalid catch
+                         const sessionString = localStorage.getItem(`bdcreator_session_${sessionName}`);
                          if (!sessionString) throw new Error("Les données de la session sont vides ou n'ont pas pu être récupérées.");
 
                          const loadedState = JSON.parse(sessionString);
-                         // Basic validation of loaded state
                          if (!loadedState || typeof loadedState.currentStep === 'undefined' || typeof loadedState.activeTab === 'undefined') {
                             throw new Error("Le format des données de la session est invalide ou corrompu.");
                          }
 
-                         // Restore state
                          appState = loadedState;
 
-                         // Restore input fields from saved lastInputData (if available)
-                         const inputsToRestore = appState.lastInputData || {}; // Use empty object if lastInputData wasn't saved
+                         const inputsToRestore = appState.lastInputData || {};
                          keywordsInput.value = inputsToRestore.keywords || '';
-                         genreSelect.value = inputsToRestore.genre || 'Fantastique'; // Default fallback
-                         styleSelect.value = inputsToRestore.style || 'Manga';       // Default fallback
-                         toneSelect.value = inputsToRestore.tone || 'Épique';       // Default fallback
+                         genreSelect.value = inputsToRestore.genre || 'Fantastique';
+                         styleSelect.value = inputsToRestore.style || 'Manga';
+                         toneSelect.value = inputsToRestore.tone || 'Épique';
                          detailsInput.value = inputsToRestore.details || '';
 
                          alert(`Session "${sessionName}" chargée avec succès !`);
 
-                         // Clear dynamic output areas before updating UI to avoid showing stale data briefly
                          if(outlineDisplayArea) outlineDisplayArea.innerHTML = '';
                          if(chapterDetailArea) { chapterDetailArea.innerHTML = ''; chapterDetailArea.style.display = 'none';}
                          if(scenarioOutput && !outlineDisplayArea) scenarioOutput.innerHTML = '';
                          if(storyboardOutput) storyboardOutput.innerHTML = '';
                          if(promptsOutput) promptsOutput.innerHTML = '';
 
-                         // Update the entire UI based on the loaded state
-                         updateUI();
+                         updateUI(); // Update the entire UI based on the loaded state
 
-                         // Specifically re-render outline/details/storyboard if data exists
+                         // Specifically re-render outline/details/storyboard if data exists AND if the tab is active
                          if(appState.activeTab === 'scenario' && appState.outlineData) {
                              displayOutline(appState.outlineData);
-                             // Optionally display the last viewed chapter detail? Needs more state saving.
+                             // Attempt to display the first available detail if any exists (simplification)
+                             const firstDetailKey = Object.keys(appState.chapterDetailData).find(key => appState.chapterDetailData[key] && !appState.chapterDetailData[key].error);
+                             if(firstDetailKey){
+                                displayChapterDetail(firstDetailKey, appState.chapterDetailData[firstDetailKey]);
+                             }
                          }
-                         if(appState.activeTab === 'storyboard' && storyboardChapterSelect.value && appState.storyboardData[storyboardChapterSelect.value]) {
-                            displayStoryboard(storyboardChapterSelect.value, appState.storyboardData[storyboardChapterSelect.value]);
+                         if(appState.activeTab === 'storyboard') {
+                            // Update UI will repopulate the select. If a value was selected, the change listener should trigger display.
+                            // If not, the placeholder text will be correct.
+                             const selectedStoryboardChapter = storyboardChapterSelect.value;
+                            if (selectedStoryboardChapter && appState.storyboardData[selectedStoryboardChapter]) {
+                                displayStoryboard(selectedStoryboardChapter, appState.storyboardData[selectedStoryboardChapter]);
+                            }
                          }
-
 
                      } catch (e) {
                          alert(`Erreur lors du chargement de la session "${sessionName}" : ${e.message}. La session est peut-être corrompue.`);
                          console.error("Load session error:", e);
+                         // Optionally reset to a clean state on load failure
+                         // document.getElementById('new-session').click();
                      }
                  } else if (sessionName) {
                     alert(`Nom de session invalide : "${sessionName}"`);
