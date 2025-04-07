@@ -283,14 +283,25 @@
 
 
             <!-- Tab 4: Prompts -->
-            <div class="tab-content" id="prompts-content">
-                <h3>Vos Prompts Midjourney (Bientôt Disponible)</h3>
-                <div id="prompts-output">
-                    <p>Générez et approuvez d'abord le storyboard d'un chapitre.</p>
-                    <p>La fonctionnalité de génération de prompts sera ajoutée prochainement.</p>
-                </div>
-            </div>
-        </div>
+<div class="tab-content" id="prompts-content">
+    <h3>Vos Prompts Midjourney</h3>
+    <!-- Sélecteur de Chapitre pour Prompts -->
+    <div class="chapter-selector" id="prompts-chapter-selector-container" style="display: none;">
+        <label for="prompts-chapter-select">Choisir le chapitre :</label>
+        <select id="prompts-chapter-select"><option value="">-- Sélectionnez --</option></select>
+        <button class="btn btn-primary btn-sm" id="generate-prompts-btn" disabled>Générer Prompts Chapitre</button>
+    </div>
+    <!-- Indicateur de Chargement pour Prompts -->
+    <div id="prompts-loading-indicator" style="display: none; margin-top: 15px;">
+        <div class="spinner" style="border-left-color: var(--success-color);"></div> <!-- Spinner vert -->
+        <p>Génération des prompts pour ce chapitre...</p>
+    </div>
+    <!-- Zone d'Affichage des Prompts -->
+    <div id="prompts-output" style="margin-top: 20px;">
+        <p>Sélectionnez un chapitre dont le storyboard a été généré, puis cliquez sur "Générer Prompts Chapitre".</p>
+        <!-- Les prompts générés s'afficheront ici -->
+    </div>
+</div>
     </section>
 
     <footer>
