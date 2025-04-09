@@ -576,13 +576,57 @@
                  finally { showLoadingIndicator(false); generateScenarioBtn.disabled = false; updateUI(); } // updateUI appelle updateCopyAllButtonState
             }
 
-            async function handleGenerateChapterDetail(event) {
-                 const button = event.target; const chapterNumber = button.dataset.chapterNumber; const chapterTitle = button.dataset.chapterTitle; if (!chapterNumber || !appState.outlineData || !appState.lastInputData) { console.error("Data missing for detail gen"); alert("Internal error."); return; } const chapterSummary = appState.outlineData.chapters?.find(ch => ch.chapter == chapterNumber)?.summary || '';
-                 console.log(`Requesting detail C${chapterNumber}`); chapterDetailArea.innerHTML = `<p>Génération détail C${chapterNumber}...</p>`; chapterDetailArea.style.display = 'block'; button.disabled = true; button.textContent = '...'; const requestData = { ...appState.lastInputData, globalTitle: appState.outlineData.title, totalChapters: appState.outlineData.chapters.length, chapterNumber: parseInt(chapterNumber, 10), chapterTitle, chapterSummary };
-                 try { const response = await fetch('/api/generate-chapter-detail', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestData) }); if (!response.ok) { let e = `HTTP Error: ${response.status}`; try{ const b=await response.json();e+=` - ${b.error||'Server Error'}${b.details?` (${b.details})`:''}`}catch(p){} throw new Error(e); } const result = await response.json(); appState.chapterDetailData[chapterNumber] = result; if (!result.error) { appState.currentStep = 'chapter_detail_generated'; } displayChapterDetail(chapterNumber, result); }
-                 catch (error) { console.error(`Error detail C${chapterNumber}:`, error); appState.chapterDetailData[chapterNumber] = { error: error.message }; displayChapterDetail(chapterNumber, { error: error.message }); }
-                 finally { button.disabled = false; button.textContent = 'Générer Détail'; updateUI(); } // updateUI appelle updateCopyAllButtonState
-            }
+            // DANS index (12).html
+
+async function handleGenerateChapterDetail(event) {
+    const button = event.target; const chapterNumber = button.dataset.chapterNumber; const chapterTitle = button.dataset.chapterTitle;
+    // On vérifie juste qu'on a une ossature, pas besoin de lastInputData ici
+    if (!chapterNumber || !appState.outlineData) {
+        console.error("Data missing for detail gen: No outline or chapter number.");
+        alert("Erreur interne: Ossature non trouvée.");
+        return;
+    }
+
+    // *** Lire les inputs ACTUELS ***
+    const currentInputs = {
+        keywords: keywordsInput.value.trim(),
+        genre: genreSelect.value,
+        style: styleSelect.value,
+        tone: toneSelect.value,
+        details: detailsInput.value.trim() // Lit la valeur à jour du textarea
+    };
+    // Mettre à jour lastInputData (utile si on régénère l'ossature plus tard)
+    appState.lastInputData = currentInputs;
+
+    const chapterSummary = appState.outlineData.chapters?.find(ch => ch.chapter == chapterNumber)?.summary || '';
+    console.log(`Requesting detail C${chapterNumber}`); chapterDetailArea.innerHTML = `<p>Génération détail C${chapterNumber}...</p>`; chapterDetailArea.style.display = 'block'; button.disabled = true; button.textContent = '...';
+
+    // *** Utiliser currentInputs pour construire requestData ***
+    const requestData = {
+        ...currentInputs, // Utilise les valeurs lues
+        globalTitle: appState.outlineData.title,
+        totalChapters: appState.outlineData.chapters.length,
+        chapterNumber: parseInt(chapterNumber, 10),
+        chapterTitle,
+        chapterSummary
+    };
+
+    try {
+         const response = await fetch('/api/generate-chapter-detail', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestData) });
+         if (!response.ok) { let e = `HTTP Error: ${response.status}`; try{ const b=await response.json();e+=` - ${b.error||'Server Error'}${b.details?` (${b.details})`:''}`}catch(p){} throw new Error(e); }
+         const result = await response.json();
+         appState.chapterDetailData[chapterNumber] = result;
+         if (!result.error) { appState.currentStep = 'chapter_detail_generated'; }
+         displayChapterDetail(chapterNumber, result);
+     } catch (error) {
+         console.error(`Error detail C${chapterNumber}:`, error);
+         appState.chapterDetailData[chapterNumber] = { error: error.message };
+         displayChapterDetail(chapterNumber, { error: error.message });
+     } finally {
+         button.disabled = false; button.textContent = 'Générer Détail';
+         updateUI(); // updateUI appelle updateCopyAllButtonState
+     }
+}
 
             async function handleGenerateStoryboard() {
                 const selectedChapterNumber = storyboardChapterSelect.value; if (!selectedChapterNumber) { alert("Sélectionnez chapitre."); return; } const chapterDetail = appState.chapterDetailData[selectedChapterNumber]; if (!chapterDetail || chapterDetail.error || !chapterDetail.scenarioText) { alert(`Détail C${selectedChapterNumber} non dispo/erreur.`); return; }
