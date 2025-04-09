@@ -102,53 +102,60 @@ export default async function handler(request, response) {
 
 // ... (Imports, parsePromptsResponse, début handler, extraction data, storyboardContext) ...
 
-    // Prompt pour Gemini (MISE À JOUR Cohérence + Noms)
-    let prompt = `TASK: Generate image generation prompts in **ENGLISH**, optimized for Midjourney, for EACH panel described below. Ensure character and setting consistency throughout this entire response, using the provided details as a primary reference, establishing consistency for newly introduced elements, AND explicitly naming known characters present.
+    // api/generate-prompts-chapter.js
 
-GENERAL COMIC CONTEXT:
+// ... (Imports, parsePromptsResponse, début handler, extraction data (avec 'details'), storyboardContext) ...
+
+    // Prompt pour Gemini (MISE À JOUR Cohérence + Noms - Tentative Renforcée)
+    let prompt = `TASK: Generate image generation prompts in **ENGLISH**, optimized for Midjourney, for EACH panel described below. Adhere strictly to character and setting consistency throughout this response.
+
+CONTEXT:
 - Visual Style: ${style}
 - Genre: ${genre || 'N/A'}
 - Tone: ${tone || 'N/A'}
-- Global Title (for info): ${globalTitle || 'N/A'}
 - Chapter ${chapterNumber || 'N/A'}: ${chapterTitle || 'N/A'}
 
-**USER-PROVIDED CHARACTER/SETTING DETAILS (Primary reference for consistency):**
+**CHARACTER/SETTING REFERENCE DETAILS (Use these FIRST):**
 \`\`\`
 ${details || 'No specific character or setting details were provided by the user.'}
 \`\`\`
 
-STORYBOARD PANELS FOR THIS CHAPTER TO ANALYZE:
+STORYBOARD PANELS FOR THIS CHAPTER:
 \`\`\`
 ${storyboardContext}
 \`\`\`
 
-INSTRUCTIONS FOR PROMPT GENERATION (FOR EACH PANEL):
-1.  **Language: ENGLISH ONLY.** Generate the prompts themselves strictly in English.
-2.  **Focus: Generate ONE prompt PER panel** based on its specific data (description, shot, angle, notes).
-3.  **Identify Correct Panel:** Use the correct description and technical details corresponding to the PAGE and CASE number.
-4.  **Character/Setting Consistency (CRUCIAL):**
-    *   **Priority:** If a character/setting from "USER-PROVIDED DETAILS" appears, **use the user's description** consistently across all prompts in this response.
-    *   **New Elements:** If a new character/setting appears, describe it clearly the first time. **RE-USE that description** for its subsequent appearances in this response.
-    *   **Explicit Naming:** **ALWAYS include the names** of the characters present in the panel description within the generated prompt, if their names are known (either from user details or the panel description itself). Example: "...Alani and Master Elron stand..."
-    *   Avoid contradictions.
-5.  **Incorporate Camera:** Translate "Shot Type" and "Angle".
-6.  **Style Integration:** Must reflect **Visual Style: ${style}**.
-7.  **Keywords:** Use descriptive English keywords.
-8.  **Image Generation Prompt Optimization:**
-    *   Concise but evocative. Clear structure.
-    *   **DO NOT include technical parameters** like \`--v\` or \`--ar\`.
-9.  **Clarity:** Ensure visual essence is conveyed.
+**CRITICAL INSTRUCTIONS FOR CONSISTENCY AND PROMPT GENERATION:**
 
-OUTPUT FORMAT (Strictly follow this for EACH panel):
+1.  **Parse Storyboard:** For each PAGE and CASE in the storyboard: identify the description, shot type, angle, and any characters present.
+2.  **Consistency Check (Apply to EACH prompt generated):**
+    *   **User Details First:** If a character/setting from the "REFERENCE DETAILS" is present in the current panel, **you MUST use the EXACT description** provided in the reference details for that character/setting in your generated prompt.
+    *   **Internal Memory (New Elements):** If a new character/setting (NOT in reference details) appears for the first time in a panel, describe it based on the panel description. **Remember this description.** For ALL subsequent panels in THIS response where that SAME new character/setting appears, **you MUST reuse the description you established initially.** DO NOT change their appearance later.
+    *   **Character Naming:** You MUST include the names of known characters if they are present in the panel description.
+3.  **Prompt Content:** Generate ONE English prompt per panel, primarily using the panel's "Description", incorporating the camera details (Shot Type/Angle translated to English terms), and reflecting the "Visual Style: ${style}".
+4.  **Prompt Structure:** Suggested structure: [Subject/Characters (with CONSISTENT description)], [Action/Pose], [Setting/Background Details], [Mood/Atmosphere], [Style Keywords], [Camera Shot/Angle].
+5.  **Exclusions:** **DO NOT include technical parameters** like \`--v\` or \`--ar\`.
 
-PAGE [Page Number] - CASE [Panel Number] PROMPT: [Generated English prompt for this specific panel, ensuring character/setting consistency AND including names of present characters.]
+**OUTPUT FORMAT (Strictly follow for EACH panel):**
 
-(Repeat for all panels provided, maintaining consistency and naming)
+PAGE [Page Number] - CASE [Panel Number] PROMPT: [Generated English prompt adhering to ALL consistency and content instructions above.]
 
-**FINAL REMINDER: Generate ONLY English prompts (PAGE X - CASE Y PROMPT: ...). PRIORITIZE USER DETAILS, MAINTAIN CONSISTENCY for new elements, and NAME characters present. DO NOT add --v 6.0.**
+(Repeat for all panels, ensuring consistency is maintained throughout the entire list of prompts)
+
+**FINAL CHECK: Before outputting, verify that for every prompt, character/setting descriptions match either the USER-PROVIDED DETAILS or the description you established for them upon their first appearance in this specific response. Ensure names are included.**
 PROMPTS BELOW:
 ------------------------------------
 `;
+
+    console.log(`Sending PROMPTS prompt for Chapter ${chapterNumber} to Gemini...`);
+
+    try {
+        // ... (Reste du code try/catch/finally INCHANGÉ) ...
+        // ... (Appel Gemini, parsing, renvoi de la réponse) ...
+
+    } catch (error) {
+        // ... (Gestion des erreurs INCHANGÉE) ...
+    }
 
     // ... (Reste du code try/catch/finally INCHANGÉ) ...
 
