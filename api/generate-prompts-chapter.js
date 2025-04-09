@@ -98,8 +98,12 @@ export default async function handler(request, response) {
     });
 
 
-    // Prompt pour Gemini (MISE À JOUR format de sortie)
-    let prompt = `TASK: Generate image generation prompts in **ENGLISH**, optimized for Midjourney, for EACH panel described below.
+    // api/generate-prompts-chapter.js
+
+// ... (Imports, parsePromptsResponse, début handler, extraction data, storyboardContext) ...
+
+    // Prompt pour Gemini (MISE À JOUR Cohérence + Noms)
+    let prompt = `TASK: Generate image generation prompts in **ENGLISH**, optimized for Midjourney, for EACH panel described below. Ensure character and setting consistency throughout this entire response, using the provided details as a primary reference, establishing consistency for newly introduced elements, AND explicitly naming known characters present.
 
 GENERAL COMIC CONTEXT:
 - Visual Style: ${style}
@@ -107,6 +111,11 @@ GENERAL COMIC CONTEXT:
 - Tone: ${tone || 'N/A'}
 - Global Title (for info): ${globalTitle || 'N/A'}
 - Chapter ${chapterNumber || 'N/A'}: ${chapterTitle || 'N/A'}
+
+**USER-PROVIDED CHARACTER/SETTING DETAILS (Primary reference for consistency):**
+\`\`\`
+${details || 'No specific character or setting details were provided by the user.'}
+\`\`\`
 
 STORYBOARD PANELS FOR THIS CHAPTER TO ANALYZE:
 \`\`\`
@@ -117,26 +126,31 @@ INSTRUCTIONS FOR PROMPT GENERATION (FOR EACH PANEL):
 1.  **Language: ENGLISH ONLY.** Generate the prompts themselves strictly in English.
 2.  **Focus: Generate ONE prompt PER panel** based on its specific data (description, shot, angle, notes).
 3.  **Identify Correct Panel:** Use the correct description and technical details corresponding to the PAGE and CASE number.
-4.  **Incorporate Camera:** Translate "Shot Type" and "Angle" into descriptive English terms (e.g., "close-up shot", "low angle view", "wide angle establishing shot", "dynamic action shot", "eye-level shot").
-5.  **Style Integration:** The prompt MUST strongly reflect the target **Visual Style: ${style}**. Include keywords related to this style (e.g., "manga style", "bande dessinee art style", "american comic book art", "digital painting", "cinematic lighting").
-6.  **Keywords:** Use descriptive English keywords (nouns, adjectives) for scene, characters, actions, objects, mood, lighting, and setting.
-7.  **Image Generation Prompt Optimization:**
-    *   Keep prompts relatively concise but evocative. Aim for clarity.
-    *   Structure suggestion: [Subject/Characters], [Action/Pose], [Setting/Background Details], [Mood/Atmosphere], [Style Keywords], [Camera Shot/Angle].
-    *   **DO NOT include technical parameters like \`--v\` or \`--ar\` at the end of the prompt.**
-    *   Focus solely on the descriptive text for the image.
-8.  **Clarity:** Ensure the prompt clearly conveys the visual essence of the panel.
+4.  **Character/Setting Consistency (CRUCIAL):**
+    *   **Priority:** If a character/setting from "USER-PROVIDED DETAILS" appears, **use the user's description** consistently across all prompts in this response.
+    *   **New Elements:** If a new character/setting appears, describe it clearly the first time. **RE-USE that description** for its subsequent appearances in this response.
+    *   **Explicit Naming:** **ALWAYS include the names** of the characters present in the panel description within the generated prompt, if their names are known (either from user details or the panel description itself). Example: "...Alani and Master Elron stand..."
+    *   Avoid contradictions.
+5.  **Incorporate Camera:** Translate "Shot Type" and "Angle".
+6.  **Style Integration:** Must reflect **Visual Style: ${style}**.
+7.  **Keywords:** Use descriptive English keywords.
+8.  **Image Generation Prompt Optimization:**
+    *   Concise but evocative. Clear structure.
+    *   **DO NOT include technical parameters** like \`--v\` or \`--ar\`.
+9.  **Clarity:** Ensure visual essence is conveyed.
 
-OUTPUT FORMAT (Strictly follow this for EACH panel, including Page and Case numbers):
+OUTPUT FORMAT (Strictly follow this for EACH panel):
 
-PAGE [Page Number] - CASE [Panel Number] PROMPT: [Generated English prompt for this specific panel.]
+PAGE [Page Number] - CASE [Panel Number] PROMPT: [Generated English prompt for this specific panel, ensuring character/setting consistency AND including names of present characters.]
 
-(Repeat for all panels provided, maintaining the correct Page and Case numbers)
+(Repeat for all panels provided, maintaining consistency and naming)
 
-**FINAL REMINDER: Generate ONLY the English prompts in the specified format (PAGE X - CASE Y PROMPT: ...) based on the provided storyboard panels and the visual style "${style}". DO NOT add --v 6.0.**
+**FINAL REMINDER: Generate ONLY English prompts (PAGE X - CASE Y PROMPT: ...). PRIORITIZE USER DETAILS, MAINTAIN CONSISTENCY for new elements, and NAME characters present. DO NOT add --v 6.0.**
 PROMPTS BELOW:
 ------------------------------------
 `;
+
+    // ... (Reste du code try/catch/finally INCHANGÉ) ...
 
     console.log(`Sending PROMPTS prompt for Chapter ${chapterNumber} to Gemini...`);
 
