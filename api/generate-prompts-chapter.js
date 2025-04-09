@@ -76,7 +76,7 @@ export default async function handler(request, response) {
 
     const inputData = request.body;
     console.log("Received request data for prompt generation:", inputData);
-    const { style, genre, tone, globalTitle, chapterNumber, chapterTitle, storyboardDataForChapter } = inputData || {};
+    const { style, genre, tone, details, globalTitle, chapterNumber, chapterTitle, storyboardDataForChapter } = inputData || {};
 
     if (!style || !storyboardDataForChapter || !Array.isArray(storyboardDataForChapter) || storyboardDataForChapter.length === 0) {
         console.error("Missing style or valid storyboard data for prompt generation:", { style, hasStoryboard: !!storyboardDataForChapter });
