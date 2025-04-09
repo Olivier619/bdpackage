@@ -628,21 +628,102 @@ async function handleGenerateChapterDetail(event) {
      }
 }
 
-            async function handleGenerateStoryboard() {
-                const selectedChapterNumber = storyboardChapterSelect.value; if (!selectedChapterNumber) { alert("Sélectionnez chapitre."); return; } const chapterDetail = appState.chapterDetailData[selectedChapterNumber]; if (!chapterDetail || chapterDetail.error || !chapterDetail.scenarioText) { alert(`Détail C${selectedChapterNumber} non dispo/erreur.`); return; }
-                console.log(`Requesting storyboard C${selectedChapterNumber}`); showStoryboardLoading(true); storyboardOutput.innerHTML = `<p>Génération storyboard C${selectedChapterNumber}...</p>`; generateStoryboardBtn.disabled = true; storyboardChapterSelect.disabled = true; const requestData = { ...appState.lastInputData, globalTitle: appState.outlineData.title, chapterNumber: parseInt(selectedChapterNumber, 10), chapterTitle: appState.outlineData.chapters.find(ch => ch.chapter == selectedChapterNumber)?.title || '', detailedScenarioText: chapterDetail.scenarioText };
-                try { const response = await fetch('/api/generate-storyboard-chapter', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestData) }); if (!response.ok) { let e = `HTTP Error: ${response.status}`; try{ const b=await response.json();e+=` - ${b.error||'Server Error'}${b.details?` (${b.details})`:''}`}catch(p){} throw new Error(e); } const result = await response.json(); console.log("Storyboard data:", result); appState.storyboardData[selectedChapterNumber] = result.storyboard; if (result.storyboard?.parsingError) console.warn(`Storyboard parsing error C${selectedChapterNumber}:`, result.storyboard.parsingError); displayStoryboard(selectedChapterNumber, result.storyboard); if (result.storyboard && !result.storyboard.error && !result.storyboard.parsingError) appState.currentStep = 'storyboard_generated'; }
-                catch(error) { console.error(`Error storyboard C${selectedChapterNumber}:`, error); appState.storyboardData[selectedChapterNumber] = { error: error.message }; storyboardOutput.innerHTML = `<p class="text-danger">Erreur storyboard: ${escapeHtml(error.message)}</p>`; }
-                finally { showStoryboardLoading(false); generateStoryboardBtn.disabled = false; storyboardChapterSelect.disabled = false; updateUI(); }
-            }
+            // DANS index (12).html
 
-            async function handleGeneratePrompts() {
-                 const selectedChapterNumber = promptsChapterSelect.value; if (!selectedChapterNumber) { alert("Sélectionnez chapitre."); return; } const storyboardChapterData = appState.storyboardData[selectedChapterNumber]; if (!storyboardChapterData || storyboardChapterData.error || storyboardChapterData.parsingError || !Array.isArray(storyboardChapterData) || storyboardChapterData.length === 0) { alert(`Storyboard C${selectedChapterNumber} non dispo/erreur/vide.`); return; }
-                 console.log(`Requesting prompts C${selectedChapterNumber}`); showPromptsLoading(true); promptsOutput.innerHTML = `<p>Génération prompts C${selectedChapterNumber}...</p>`; generatePromptsBtn.disabled = true; promptsChapterSelect.disabled = true; const requestData = { style: appState.lastInputData?.style||'?', genre: appState.lastInputData?.genre||'?', tone: appState.lastInputData?.tone||'?', globalTitle: appState.outlineData?.title||'', chapterNumber: parseInt(selectedChapterNumber, 10), chapterTitle: appState.outlineData?.chapters.find(ch => ch.chapter == selectedChapterNumber)?.title||'', storyboardDataForChapter: storyboardChapterData };
-                 try { const response = await fetch('/api/generate-prompts-chapter', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestData) }); if (!response.ok) { let e = `HTTP Error: ${response.status}`; try{ const b=await response.json();e+=` - ${b.error||'Server Error'}${b.details?` (${b.details})`:''}`}catch(p){} throw new Error(e); } const result = await response.json(); console.log("Prompts data:", result); appState.promptData[selectedChapterNumber] = result.prompts || { error: result.error || "Unexpected API response." }; displayPrompts(selectedChapterNumber, appState.promptData[selectedChapterNumber]); if (Array.isArray(appState.promptData[selectedChapterNumber])) appState.currentStep = 'prompts_generated'; }
-                 catch(error) { console.error(`Error prompts C${selectedChapterNumber}:`, error); appState.promptData[selectedChapterNumber] = { error: error.message }; displayPrompts(selectedChapterNumber, appState.promptData[selectedChapterNumber]); }
-                 finally { showPromptsLoading(false); generatePromptsBtn.disabled = false; promptsChapterSelect.disabled = false; updateUI(); }
-            }
+async function handleGenerateStoryboard() {
+    const selectedChapterNumber = storyboardChapterSelect.value; if (!selectedChapterNumber) { alert("Sélectionnez chapitre."); return; }
+    const chapterDetail = appState.chapterDetailData[selectedChapterNumber]; if (!chapterDetail || chapterDetail.error || !chapterDetail.scenarioText) { alert(`Détail C${selectedChapterNumber} non dispo/erreur.`); return; }
+    // On a besoin de l'outline pour le titre et les infos générales
+    if (!appState.outlineData) { alert("Erreur interne: Ossature non trouvée."); return; }
+
+    // *** Lire les inputs ACTUELS (surtout pour 'details' mais aussi les autres au cas où) ***
+     const currentInputs = {
+         keywords: keywordsInput.value.trim(), // Peut être utile pour contexte
+         genre: genreSelect.value,
+         style: styleSelect.value, // Essentiel pour le style visuel
+         tone: toneSelect.value,
+         details: detailsInput.value.trim() // Lit la valeur à jour du textarea
+     };
+     // Mettre à jour lastInputData
+     appState.lastInputData = currentInputs;
+
+    console.log(`Requesting storyboard C${selectedChapterNumber}`); showStoryboardLoading(true); storyboardOutput.innerHTML = `<p>Génération storyboard C${selectedChapterNumber}...</p>`; generateStoryboardBtn.disabled = true; storyboardChapterSelect.disabled = true;
+
+    // *** Utiliser currentInputs pour construire requestData ***
+    const requestData = {
+        ...currentInputs, // Utilise les valeurs lues
+        globalTitle: appState.outlineData.title,
+        chapterNumber: parseInt(selectedChapterNumber, 10),
+        chapterTitle: appState.outlineData.chapters.find(ch => ch.chapter == selectedChapterNumber)?.title || '',
+        detailedScenarioText: chapterDetail.scenarioText // Le détail spécifique est toujours nécessaire
+    };
+
+    try {
+        const response = await fetch('/api/generate-storyboard-chapter', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestData) });
+        if (!response.ok) { let e = `HTTP Error: ${response.status}`; try{ const b=await response.json();e+=` - ${b.error||'Server Error'}${b.details?` (${b.details})`:''}`}catch(p){} throw new Error(e); }
+        const result = await response.json(); console.log("Storyboard data:", result);
+        appState.storyboardData[selectedChapterNumber] = result.storyboard;
+        if (result.storyboard?.parsingError) console.warn(`Storyboard parsing error C${selectedChapterNumber}:`, result.storyboard.parsingError);
+        displayStoryboard(selectedChapterNumber, result.storyboard);
+        if (result.storyboard && !result.storyboard.error && !result.storyboard.parsingError) appState.currentStep = 'storyboard_generated';
+    } catch(error) {
+        console.error(`Error storyboard C${selectedChapterNumber}:`, error);
+        appState.storyboardData[selectedChapterNumber] = { error: error.message };
+        storyboardOutput.innerHTML = `<p class="text-danger">Erreur storyboard: ${escapeHtml(error.message)}</p>`;
+    } finally {
+        showStoryboardLoading(false); generateStoryboardBtn.disabled = false; storyboardChapterSelect.disabled = false; updateUI();
+    }
+}
+
+            // DANS index (12).html
+
+async function handleGeneratePrompts() {
+     const selectedChapterNumber = promptsChapterSelect.value; if (!selectedChapterNumber) { alert("Sélectionnez chapitre."); return; }
+     const storyboardChapterData = appState.storyboardData[selectedChapterNumber]; if (!storyboardChapterData || storyboardChapterData.error || storyboardChapterData.parsingError || !Array.isArray(storyboardChapterData) || storyboardChapterData.length === 0) { alert(`Storyboard C${selectedChapterNumber} non dispo/erreur/vide.`); return; }
+     // On a besoin de l'outline pour les titres
+     if (!appState.outlineData) { alert("Erreur interne: Ossature non trouvée."); return; }
+
+     // *** Lire les inputs ACTUELS (surtout pour 'details') ***
+      const currentInputs = {
+          // keywords: keywordsInput.value.trim(), // Moins pertinent ici peut-être
+          genre: genreSelect.value,         // Pertinent pour le contexte
+          style: styleSelect.value,         // Essentiel
+          tone: toneSelect.value,          // Pertinent pour le contexte
+          details: detailsInput.value.trim() // Lit la valeur à jour pour la cohérence !
+      };
+      // Mettre à jour lastInputData
+      appState.lastInputData = currentInputs;
+
+     console.log(`Requesting prompts C${selectedChapterNumber}`); showPromptsLoading(true); promptsOutput.innerHTML = `<p>Génération prompts C${selectedChapterNumber}...</p>`; generatePromptsBtn.disabled = true; promptsChapterSelect.disabled = true;
+
+     // *** Utiliser currentInputs pour construire requestData ***
+     const requestData = {
+         // Ne pas utiliser ...currentInputs directement si on ne veut pas keywords
+         genre: currentInputs.genre,
+         style: currentInputs.style,
+         tone: currentInputs.tone,
+         details: currentInputs.details, // Envoyer les détails à jour
+         globalTitle: appState.outlineData.title,
+         chapterNumber: parseInt(selectedChapterNumber, 10),
+         chapterTitle: appState.outlineData.chapters.find(ch => ch.chapter == selectedChapterNumber)?.title || '',
+         storyboardDataForChapter: storyboardChapterData // Le storyboard est essentiel
+     };
+
+     try {
+         const response = await fetch('/api/generate-prompts-chapter', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestData) });
+         if (!response.ok) { let e = `HTTP Error: ${response.status}`; try{ const b=await response.json();e+=` - ${b.error||'Server Error'}${b.details?` (${b.details})`:''}`}catch(p){} throw new Error(e); }
+         const result = await response.json(); console.log("Prompts data:", result);
+         appState.promptData[selectedChapterNumber] = result.prompts || { error: result.error || "Unexpected API response." };
+         displayPrompts(selectedChapterNumber, appState.promptData[selectedChapterNumber]);
+         if (Array.isArray(appState.promptData[selectedChapterNumber])) appState.currentStep = 'prompts_generated';
+     } catch(error) {
+         console.error(`Error prompts C${selectedChapterNumber}:`, error);
+         appState.promptData[selectedChapterNumber] = { error: error.message };
+         displayPrompts(selectedChapterNumber, appState.promptData[selectedChapterNumber]);
+     } finally {
+         showPromptsLoading(false); generatePromptsBtn.disabled = false; promptsChapterSelect.disabled = false; updateUI();
+     }
+}
 
             // --- Event Handlers ---
             function handleApproveOutline() { if (!appState.outlineData || appState.outlineData.parsingError) { alert("Cannot approve invalid outline."); return; } const hasAnyDetails = Object.values(appState.chapterDetailData).some(d => d && !d.error); if (!hasAnyDetails) { if (!confirm("No chapter details generated yet. Proceed to Storyboard anyway?")) return; } appState.currentStep = 'outline_approved'; appState.activeTab = 'storyboard'; updateUI(); const firstDetailKey = Object.keys(appState.chapterDetailData).find(k => appState.chapterDetailData[k] && !appState.chapterDetailData[k].error); if (firstDetailKey && storyboardChapterSelect) { storyboardChapterSelect.value = firstDetailKey; generateStoryboardBtn.disabled = false; storyboardOutput.innerHTML = '<p>Ready to generate storyboard.</p>'; } else if (storyboardChapterSelect?.options.length > 1) { storyboardOutput.innerHTML = '<p>Select chapter above.</p>'; } else { storyboardOutput.innerHTML = '<p>Generate chapter detail first.</p>'; } }
