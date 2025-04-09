@@ -402,7 +402,7 @@
              };
 
             // --- Helper Functions ---
-            function escapeHtml(unsafe) { if (typeof unsafe !== 'string') return unsafe; return unsafe.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">").replace(/"/g, """).replace(/'/g, "'"); }
+            function escapeHtml(unsafe) { if (typeof unsafe !== 'string') return unsafe; return unsafe.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">").replace(/"/g,"&quot;").replace(/'/g, "'"); }
             function showLoadingIndicator(show) { if (loadingIndicator) loadingIndicator.style.display = show ? 'block' : 'none'; }
             function showStoryboardLoading(show) { if (storyboardLoadingIndicator) storyboardLoadingIndicator.style.display = show ? 'block' : 'none'; }
             function showPromptsLoading(show) { if (promptsLoadingIndicator) promptsLoadingIndicator.style.display = show ? 'block' : 'none'; }
