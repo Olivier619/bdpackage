@@ -1,9 +1,10 @@
-// api/generate-story.js
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+// La clé API est correctement lue depuis les variables d'environnement, c'est bien !
 const apiKey = process.env.GOOGLE_API_KEY;
 
 // --- Helper Function to Parse Gemini's Outline Response (avec résumés) ---
+// (Pas de changement nécessaire ici, elle est appelée plus loin dans la fonction)
 function parseOutline(text) {
     console.log("Attempting to parse outline text (with summaries):\n", text.substring(0, 300) + "...");
     const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
@@ -54,15 +55,57 @@ function parseOutline(text) {
 }
 // --- End Helper Function ---
 
-export default async function handler(request, response) {
-    if (!apiKey) { console.error("API Key missing"); return response.status(500).json({ error: "API Key not configured." }); }
-    if (request.method !== "POST") { response.setHeader('Allow', ['POST']); return response.status(405).end('Method Not Allowed'); }
+// MODIFICATION MAJEURE : Changer la signature de la fonction pour le format Netlify Functions (event, context)
+export default async function handler(event, context) { // <-- CHANGÉ ICI
 
-    const inputData = request.body;
-    console.log("Received request data (outline w/ summary):", inputData);
+    // Log pour voir l'objet event reçu
+    console.log("Received event object:", JSON.stringify(event, null, 2)); // Log complet de l'event
+
+    if (!apiKey) {
+        console.error("API Key missing");
+        // Retourner au format Netlify Functions
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: "API Key not configured." }),
+            headers: { 'Content-Type': 'application/json' }
+        };
+    }
+
+    if (event.httpMethod !== "POST") { // Accéder à la méthode via event
+        // Retourner au format Netlify Functions
+        return {
+            statusCode: 405,
+            body: "Method Not Allowed",
+            headers: { 'Allow': 'POST' }
+        };
+    }
+
+    let inputData;
+    try {
+        // MODIFICATION : Lire et parser le corps de la requête
+        inputData = JSON.parse(event.body); // event.body contient le corps comme une chaîne de caractères
+        console.log("Received parsed request data (outline w/ summary):", inputData); // Log data parsée
+    } catch (parseError) {
+        console.error("Failed to parse request body:", parseError);
+        // Retourner au format Netlify Functions
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ error: "Invalid JSON body." }),
+            headers: { 'Content-Type': 'application/json' }
+        };
+    }
+
     const { keywords, genre, style, tone, details } = inputData || {};
 
-    if (!keywords || !genre || !style || !tone) { console.error("Missing fields:", { keywords, genre, style, tone }); return response.status(400).json({ error: "Missing required input fields." }); }
+    if (!keywords || !genre || !style || !tone) {
+        console.error("Missing required input fields:", { keywords, genre, style, tone });
+        // Retourner au format Netlify Functions
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ error: "Missing required input fields." }),
+            headers: { 'Content-Type': 'application/json' }
+        };
+    }
 
     console.log("--- CONSTRUCTING OUTLINE PROMPT (with summaries) ---");
     let prompt = `Tâche : Créer une **ossature détaillée** pour une bande dessinée d'environ 48 pages. NE PAS écrire le scénario complet, seulement l'organisation.\n\nINPUTS UTILISATEUR :\n- Idée/Mots-clés : ${keywords}\n- Genre : ${genre}\n- Style Visuel Cible (pour info) : ${style}\n- Ton : ${tone}\n`;
@@ -73,7 +116,7 @@ export default async function handler(request, response) {
 
     try {
         const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" }); // Utilisation de 1.5 Pro
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
 
         const result = await model.generateContent(prompt);
         console.log("Received result object from Gemini (outline w/ summary).");
@@ -87,16 +130,28 @@ export default async function handler(request, response) {
         if (parsedOutline.parsingError) { console.warn("Outline parsing failed."); }
         else { console.log("Outline parsed successfully."); }
 
-        return response.status(200).json({ outline: parsedOutline });
+        // MODIFICATION : Retourner au format Netlify Functions
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ outline: parsedOutline }),
+            headers: { 'Content-Type': 'application/json' }
+        };
 
     } catch (error) {
         console.error("Error calling Google AI API (outline w/ summary):", error);
         let errorMessage = `API call failed: ${error.message}`;
         let statusCode = 500;
-        if (error.response && error.response.promptFeedback && error.response.promptFeedback.blockReason) { errorMessage = `Blocage Google : ${error.response.promptFeedback.blockReason}`; statusCode = 400; }
-        else if (error.message?.includes('API key not valid')) { errorMessage = "Clé API invalide."; statusCode = 500; }
-        else if (error.status === 404) { errorMessage = `Modèle non trouvé: ${error.message}`; statusCode = 404;}
-        else if (error.status) { errorMessage = `Erreur API: ${error.message}`; statusCode = error.status; }
-        return response.status(statusCode).json({ error: "Échec génération ossature.", details: errorMessage });
+         if (error.response && error.response.promptFeedback && error.response.promptFeedback.blockReason) { errorMessage = `Blocage Google : ${error.response.promptFeedback.blockReason}`; statusCode = 400; }
+         else if (error.message?.includes('API key not valid')) { errorMessage = "Clé API invalide."; statusCode = 500; }
+         else if (error.status === 404) { errorMessage = `Modèle non trouvé: ${error.message}`; statusCode = 404; }
+         // Gérer spécifiquement l'erreur 429
+         else if (error.status === 429 || error.message?.includes('429 Too Many Requests')) { errorMessage = `Quota API dépassé. Veuillez réessayer plus tard ou vérifier votre plan Google AI.`; statusCode = 429; }
+         else if (error.status) { errorMessage = `Erreur API: ${error.message}`; statusCode = error.status; }
+        // MODIFICATION : Retourner au format Netlify Functions dans le bloc catch
+        return {
+            statusCode: statusCode,
+            body: JSON.stringify({ error: `Échec génération ossature.`, details: errorMessage }),
+            headers: { 'Content-Type': 'application/json' }
+        };
     }
 }
