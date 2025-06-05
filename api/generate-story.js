@@ -1,6 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-// Importez Buffer pour décoder le base64
-import { Buffer } from 'buffer'; // Assurez-vous que 'buffer' est installé si nécessaire, mais c'est souvent built-in dans Node.js
+import { Buffer } from 'buffer'; // Buffer est nécessaire pour le décodage Base64
 
 const apiKey = process.env.GOOGLE_API_KEY;
 
@@ -50,95 +49,70 @@ function parseOutline(text) {
         return { title, chapters };
     } catch (parseError) {
         console.error("Error during outline parsing (with summaries):", parseError);
-        // Assurez-vous que l'objet d'erreur est stringifiable
         return { title: "Erreur Parsing", chapters: [], rawText: text, parsingError: parseError.message };
     }
 }
 // --- End Helper Function ---
 
 export default async function handler(event, context) {
-    console.log("Received event object:", JSON.stringify(event, null, 2)); // Log complet de l'event
+    console.log("Received event object:", JSON.stringify(event, null, 2));
     console.log("event.body type:", typeof event.body);
     console.log("event.isBase64Encoded:", event.isBase64Encoded);
 
+    // Les headers pour les réponses JSON
+    const jsonHeaders = { 'Content-Type': 'application/json' };
 
     if (!apiKey) {
         console.error("API Key not configured.");
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ error: "API Key not configured." }),
-            headers: { 'Content-Type': 'application/json' }
-        };
+        // MODIFICATION : Retourner un objet Response
+        return new Response(JSON.stringify({ error: "API Key not configured." }), { status: 500, headers: jsonHeaders });
     }
 
     if (event.httpMethod !== "POST") {
-        return {
-            statusCode: 405,
-            body: "Method Not Allowed", // Pas de JSON pour cette erreur simple
-            headers: { 'Allow': ['POST'] } // Doit être un tableau pour la norme HTTP
-        };
+        // MODIFICATION : Retourner un objet Response
+        return new Response("Method Not Allowed", { status: 405, headers: { 'Allow': 'POST' } });
     }
 
     let inputData;
     let requestBodyString = event.body;
 
-    // --- DÉCODAGE BASE64 AJOUTÉ ---
     if (event.isBase64Encoded && typeof requestBodyString === 'string') {
         try {
              requestBodyString = Buffer.from(requestBodyString, 'base64').toString('utf-8');
-             console.log("Decoded Base64 body."); // Log succès décodage
+             console.log("Decoded Base64 body.");
         } catch(decodeError) {
             console.error("Failed to decode base64 body:", decodeError);
-             return {
-                 statusCode: 400, // Bad Request si décodage échoue
-                 body: JSON.stringify({ error: "Failed to decode request body." }),
-                 headers: { 'Content-Type': 'application/json' }
-             };
+             // MODIFICATION : Retourner un objet Response
+             return new Response(JSON.stringify({ error: "Failed to decode request body." }), { status: 400, headers: jsonHeaders });
         }
     } else if (typeof requestBodyString !== 'string') {
          console.error("Request body is not a string.");
-          return {
-              statusCode: 400, // Bad Request si le corps n'est pas une chaîne
-              body: JSON.stringify({ error: "Invalid request body type." }),
-              headers: { 'Content-Type': 'application/json' }
-          };
+         // MODIFICATION : Retourner un objet Response (Ce cas devrait être atteint avec le type 'object')
+          return new Response(JSON.stringify({ error: `Invalid request body type: ${typeof requestBodyString}. Expected string.` }), { status: 400, headers: jsonHeaders }); // Ajout du type dans le message
     }
-    // --- FIN DÉCODAGE BASE64 ---
-
 
     try {
-        // MODIFICATION : Lire et parser le corps de la requête décodé
-        // Le parsing se fait MAINTENANT sur requestBodyString après décodage/vérification
         inputData = JSON.parse(requestBodyString);
         console.log("Received parsed request data (outline w/ summary):", inputData);
     } catch (parseError) {
-        console.error("Failed to parse request body as JSON:", parseError.message); // Log spécifique parse error
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ error: "Invalid JSON body format." }),
-            headers: { 'Content-Type': 'application/json' }
-        };
+        console.error("Failed to parse request body as JSON:", parseError.message);
+        // MODIFICATION : Retourner un objet Response
+        return new Response(JSON.stringify({ error: "Invalid JSON body format." }), { status: 400, headers: jsonHeaders });
     }
 
-    // Le reste du code reste similaire, utilisant inputData
-    const { keywords, genre, style, tone, details } = inputData || {}; // Utiliser inputData après parsing
+    const { keywords, genre, style, tone, details } = inputData || {};
 
     if (!keywords || !genre || !style || !tone) {
         console.error("Missing required input fields after parsing:", { keywords, genre, style, tone });
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ error: "Missing required input fields." }),
-            headers: { 'Content-Type': 'application/json' }
-        };
+        // MODIFICATION : Retourner un objet Response
+        return new Response(JSON.stringify({ error: "Missing required input fields." }), { status: 400, headers: jsonHeaders });
     }
 
     console.log("--- CONSTRUCTING OUTLINE PROMPT (with summaries) ---");
-    // ... (prompt construction utilisant keywords, genre, style, tone, details) ...
-     let prompt = `Tâche : Créer une **ossature détaillée** pour une bande dessinée d'environ 48 pages. NE PAS écrire le scénario complet, seulement l'organisation.\n\nINPUTS UTILISATEUR :\n- Idée/Mots-clés : ${keywords}\n- Genre : ${genre}\n- Style Visuel Cible (pour info) : ${style}\n- Ton : ${tone}\n`;
+    let prompt = `Tâche : Créer une **ossature détaillée** pour une bande dessinée d'environ 48 pages. NE PAS écrire le scénario complet, seulement l'organisation.\n\nINPUTS UTILISATEUR :\n- Idée/Mots-clés : ${keywords}\n- Genre : ${genre}\n- Style Visuel Cible (pour info) : ${style}\n- Ton : ${tone}\n`;
     if (details) { prompt += `- Détails Additionnels : ${details}\n`; }
     prompt += `\nINSTRUCTIONS SPÉCIFIQUES POUR L'OSSATURE :\n1. **Langue : ÉCRIS TOUTE LA RÉPONSE EN FRANÇAIS.**\n2. Crée un **TITRE GLOBAL** accrocheur.\n3. Divise l'histoire en environ **10 CHAPITRES** logiques.\n4. Pour **CHAQUE chapitre**, fournis :\n   - Un **TITRE DE CHAPITRE**.\n   - Un **RÉSUMÉ DE CHAPITRE** très court (**1 à 2 phrases MAXIMUM**).\n5. **NE PAS écrire les dialogues, descriptions de cases...**\n\nFORMAT DE SORTIE ATTENDU (IMPORTANT - Suivre EXACTEMENT) :\n\nTITRE GLOBAL : [Titre global ici]\n\nCHAPITRE 1 : [Titre Chapitre 1]\nRÉSUMÉ CHAPITRE 1 : [Résumé 1-2 phrases]\n\nCHAPITRE 2 : [Titre Chapitre 2]\nRÉSUMÉ CHAPITRE 2 : [Résumé 1-2 phrases]\n\n[...]\n\nCHAPITRE 10 : [Titre Chapitre 10]\nRÉSUMÉ CHAPITRE 10 : [Résumé 1-2 phrases]\n\n**RAPPEL FINAL : Génère UNIQUEMENT l'ossature (titre global, titres chapitres, résumés courts) en FRANÇAIS.**\nOSSATURE CI-DESSOUS :\n------------------------------------\n`;
     console.log("Sending OUTLINE prompt (with summaries) to Gemini...");
-
 
     try {
         const genAI = new GoogleGenerativeAI(apiKey);
@@ -156,12 +130,8 @@ export default async function handler(event, context) {
         if (parsedOutline.parsingError) { console.warn("Outline parsing failed."); }
         else { console.log("Outline parsed successfully."); }
 
-        // Retourner au format Netlify Functions
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ outline: parsedOutline }),
-            headers: { 'Content-Type': 'application/json' }
-        };
+        // MODIFICATION : Retourner un objet Response en cas de succès
+        return new Response(JSON.stringify({ outline: parsedOutline }), { status: 200, headers: jsonHeaders });
 
     } catch (error) {
         console.error("Error calling Google AI API (outline w/ summary):", error);
@@ -172,13 +142,9 @@ export default async function handler(event, context) {
          else if (error.status === 404) { errorMessage = `Modèle non trouvé: ${error.message}`; statusCode = 404; }
          else if (error.status === 429 || error.message?.includes('429 Too Many Requests')) { errorMessage = `Quota API dépassé. Veuillez réessayer plus tard ou vérifier votre plan Google AI.`; statusCode = 429; }
          else if (error.status) { errorMessage = `Erreur API: ${error.status}`; statusCode = error.status; }
-         else { errorMessage = `Erreur API générale: ${error.message}`; } // Message d'erreur plus générique avec détail
+         else { errorMessage = `Erreur API générale: ${error.message}`; }
 
-        // Retourner au format Netlify Functions dans le bloc catch
-        return {
-            statusCode: statusCode,
-            body: JSON.stringify({ error: `Échec génération ossature.`, details: errorMessage }),
-            headers: { 'Content-Type': 'application/json' }
-        };
+        // MODIFICATION : Retourner un objet Response en cas d'erreur
+        return new Response(JSON.stringify({ error: `Échec génération ossature.`, details: errorMessage }), { status: statusCode, headers: jsonHeaders });
     }
 }
